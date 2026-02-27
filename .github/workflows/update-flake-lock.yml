@@ -1,0 +1,45 @@
+name: Update flake.lock
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-flake:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Lix
+        run: |
+          curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
+
+      - name: Setup SSH Key
+        run: |
+           mkdir -p ~/.ssh
+           echo "${{ secrets.GHA_DEPLOY_PRIVATE }}" > ~/.ssh/id_ed25519
+           chmod 600 ~/.ssh/id_ed25519
+           ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Enable flakes
+        run: |
+          mkdir -p ~/.config/nix
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.config
+
+      - name: Update flake.lock
+        run: nix flake update
+
+      - name: Commit changes if needed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add flake.lock
+            git commit -m "chore: update flake.lock"
+            git push
+          fi
