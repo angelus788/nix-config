@@ -21,6 +21,7 @@
     #./hardware-configuration.nix
     ./secrets
     ../../../misc/ryzen-undervolting
+    ../../../misc/samsung-tv
     ../_common/apps/tailscale
     #../../../misc/lgtv
     inputs.jovian.nixosModules.default
@@ -74,6 +75,14 @@
     #  user = "angelus";
     #  group = "angelus";
     #};
+    samsungtv = {
+      enable = true;
+      ipAddress = tvIpAddress;
+      macAddress = tvMacAddress;
+      hdmiInput = "HDMI1";
+      user = "angelus";
+      group = "angelus";
+    };
     ryzen-undervolting = {
       enable = true;
       offset = -25;

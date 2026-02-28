@@ -154,7 +154,7 @@ in
     #./backup
     ./homelab
     ./secrets
-    ./disko.nix
+    #./disko.nix
   ];
 
   services.duckdns = {
