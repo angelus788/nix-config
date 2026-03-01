@@ -93,7 +93,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
-        User = "root"; # Or your specific user
+        User = "angelus"; # Or your specific user
       };
       script = "${tv-on}/bin/tv-on";
     };
