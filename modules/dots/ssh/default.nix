@@ -32,6 +32,13 @@
         port = 69;
         identityFile = "~/.ssh/angelus";
       };
+      mimir = {
+        hostname = "192.168.1.251";
+        user = "angelus";
+        port = 22;
+        identityFile = "~/.ssh/angelus";
+
+      };
       mjolnir = {
         hostname = "mjolnir";
         port = 69;
