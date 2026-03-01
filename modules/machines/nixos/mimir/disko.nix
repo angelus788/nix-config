@@ -5,8 +5,10 @@ let
     "ata-2.5__SATA_SSD_3MG2-P_20180326AA1322000496"
   ];
 
-  diskMain = builtins.head config.zfs-root.bootDevices;
-  diskMirror = builtins.tail config.zfs-root.bootDevices;
+  #diskMain = builtins.head config.zfs-root.bootDevices;
+  #diskMirror = builtins.tail config.zfs-root.bootDevices;
+  diskMain = builtins.elemAt devices 0;
+  diskMirror = builtins.elemAt devices 1;
 in
 {
   disko.devices = {
