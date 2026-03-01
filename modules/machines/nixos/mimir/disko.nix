@@ -1,4 +1,4 @@
-{ config, builtins, ... }:
+{ config, ... }:
 let
   devices = config.zfs-root.bootDevices or [
     "nvme-CT500P1SSD8_1937E21ED6C8"
