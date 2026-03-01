@@ -9,7 +9,7 @@
     "i915"
     "cp210x"
   ];
-  hardware.cpu.ryzen.updateMicrocode = true;
+  hardware.cpu.amd.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
