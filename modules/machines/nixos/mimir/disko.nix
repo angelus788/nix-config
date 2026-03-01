@@ -1,6 +1,7 @@
-{ config, ... }:
+{ config ? { }, ... }: # Add the '? { }' to make config optional
 let
-  devices = config.zfs-root.bootDevices or [
+  # We use 'or' to provide the hardcoded IDs if config.zfs-root isn't found
+  bootDevices = config.zfs-root.bootDevices or [
     "nvme-CT500P1SSD8_1937E21ED6C8"
     "ata-2.5__SATA_SSD_3MG2-P_20180326AA1322000496"
   ];
