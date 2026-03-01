@@ -1,7 +1,15 @@
-{ config, builtins, ... }:
+{ config ? { }, ... }: # Add the '? { }' to make config optional
 let
-  diskMain = builtins.head config.zfs-root.bootDevices;
-  diskMirror = builtins.tail config.zfs-root.bootDevices;
+  # We use 'or' to provide the hardcoded IDs if config.zfs-root isn't found
+  devices = config.zfs-root.bootDevices or [
+        "ata-CT500MX500SSD1_1947E228A4C0"
+        "ata-CT500MX500SSD1_1947E228A5E2"
+  ];
+
+  #diskMain = builtins.head config.zfs-root.bootDevices;
+  #diskMirror = builtins.tail config.zfs-root.bootDevices;
+  diskMain = builtins.elemAt devices 0;
+  diskMirror = builtins.elemAt devices 1;
 in
 {
   disko.devices = {
