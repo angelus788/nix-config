@@ -82,6 +82,11 @@
       url = "git+https://git.notthebe.ee/notthebee/AutoASPM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    invoiceplane = {
+      url = "git+https://git.notthebe.ee/notthebee/invoiceplane-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

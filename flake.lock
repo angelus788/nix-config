@@ -250,6 +250,26 @@
         "type": "github"
       }
     },
+    "invoiceplane": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1767431777,
+        "narHash": "sha256-Hf90ZQfswYhz8cmG9cnKFBvz2P9/jMszmgGEo7tIKT8=",
+        "ref": "refs/heads/main",
+        "rev": "159278edcc7198ed8a26bb3e084296a73ade11e8",
+        "revCount": 11,
+        "type": "git",
+        "url": "https://git.notthebe.ee/notthebee/invoiceplane-nixos"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.notthebe.ee/notthebee/invoiceplane-nixos"
+      }
+    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -532,6 +552,7 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "home-manager-unstable": "home-manager-unstable",
+        "invoiceplane": "invoiceplane",
         "jovian": "jovian",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

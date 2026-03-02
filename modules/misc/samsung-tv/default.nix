@@ -7,14 +7,11 @@
 let
   cfg = config.services.samsungtv;
 
-  # Create a Python environment with the Samsung TV library
   samsungPython = pkgs.python3.withPackages (ps: [
     ps.samsungtvws
     ps.wakeonlan
   ]);
 
-  # Helper to run the Python commands
-  # Note: The first run requires manual 'Allow' on the TV screen
   samsung-ctl = pkgs.writeShellScriptBin "samsung-ctl" ''
     ${samsungPython}/bin/python3 -c "
 import sys
@@ -25,7 +22,6 @@ tv = SamsungTVWS('${cfg.ipAddress}')
 
 if sys.argv[1] == 'on':
     send_magic_packet('${cfg.macAddress}')
-    # Power on usually takes a few seconds before the WS API responds
 elif sys.argv[1] == 'off':
     tv.shortcuts().power()
 elif sys.argv[1] == 'input':
@@ -34,7 +30,7 @@ elif sys.argv[1] == 'input':
   '';
 
   tv-on = pkgs.writeShellScriptBin "tv-on" ''
-    echo "Sending Wake-on-LAN..."
+    echo "Sending Wake-on-LAN to ${cfg.macAddress}..."
     ${pkgs.wol}/bin/wol ${cfg.macAddress}
     
     count=0
@@ -47,13 +43,12 @@ elif sys.argv[1] == 'input':
       sleep 2
       count=$((count + 1))
     done
-    echo "Failed to switch input after 15 tries."
     exit 1
   '';
 
   tv-off = pkgs.writeShellScriptBin "tv-off" ''
     ${samsung-ctl}/bin/samsung-ctl off
-  '';
+  '' ;
 in
 {
   options.services.samsungtv = {
@@ -68,8 +63,19 @@ in
     };
     hdmiInput = lib.mkOption {
       type = lib.types.str;
-      default = "HDMI"; # Usually "HDMI", "HDMI1", etc.
+      default = "HDMI";
       description = "The HDMI source name";
+    };
+    # Added these back to satisfy your configuration.nix
+    user = lib.mkOption {
+      type = lib.types.str;
+      description = "User to run the commands as";
+      default = "root";
+    };
+    group = lib.mkOption {
+      type = lib.types.str;
+      description = "Group to run the commands as";
+      default = "wheel";
     };
   };
 
@@ -81,11 +87,9 @@ in
       tv-off
     ];
 
-    # Automation: Run on sleep/wake
     powerManagement.resumeCommands = "${tv-on}/bin/tv-on";
     powerManagement.powerDownCommands = "${tv-off}/bin/tv-off";
 
-    # Optional Systemd service to ensure it runs on boot
     systemd.services.samsungtv-on = {
       description = "Turn on Samsung TV and set input";
       after = [ "network-online.target" ];
@@ -93,7 +97,8 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
-        User = "angelus"; # Or your specific user
+        User = cfg.user;  # Now uses the option you defined
+        Group = cfg.group; # Now uses the option you defined
       };
       script = "${tv-on}/bin/tv-on";
     };

@@ -4,11 +4,13 @@
 , inputs
 , ...
 }:
-#let
-#  iot = config.homelab.networks.local.iot.reservations;
+let
+  iot = config.homelab.networks.local.iot.reservations;
 #  tvIpAddress = iot.lgtv.Address;
 #  tvMacAddress = iot.lgtv.MACAddress;
-#in
+  tvIpAddress = iot.samsungtv.Address;
+  tvMacAddress = iot.samsungtv.MACAddress;
+in
 {
 
   boot.loader.systemd-boot.enable = true;
