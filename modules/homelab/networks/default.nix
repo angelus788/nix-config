@@ -108,6 +108,6 @@ in
   };
   config.homelab.networks = {
     external = networkSecrets.external;
-    local = networkSecets.external;
+    local = networkSecrets.external;
   };
 }
