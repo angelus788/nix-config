@@ -61,7 +61,7 @@ in
                 self.inputs.disko.nixosModules.disko
                 #self.inputs.adios-bot.nixosModules.default
                 self.inputs.autoaspm.nixosModules.default
-                #self.inputs.invoiceplane.nixosModules.default
+                self.inputs.invoiceplane.nixosModules.default
                 self.inputs."home-manager${
                 lib.attrsets.attrByPath [ name ] "" nixpkgsMap
               }".nixosModules.home-manager

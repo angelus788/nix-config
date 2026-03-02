@@ -133,7 +133,7 @@ in
     ./forgejo-runner
     ./homepage
     ./immich
-    #./invoiceplane
+    ./invoiceplane
     #./jellyfin
     ./keycloak
     ./matrix
