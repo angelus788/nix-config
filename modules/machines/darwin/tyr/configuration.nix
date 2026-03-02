@@ -49,6 +49,7 @@
       #"monitorcontrol"
       "notion"
       "pocket-casts"
+      "proton-pass"
       "raycast"
       "signal"
       "soundsource"
@@ -71,16 +72,16 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # (python312.withPackages (
-    #   ps: with ps; [
-    #     pip
-    #     jmespath
-    #     requests
-    #     setuptools
-    #     pyyaml
-    #     pyopenssl
-    #   ]
-    # ))
+     (python312.withPackages (
+       ps: with ps; [
+         pip
+         jmespath
+         requests
+         setuptools
+         pyyaml
+         pyopenssl
+       ]
+     ))
     #_1password-gui
     _1password-cli
     # alacritty
@@ -102,6 +103,7 @@
     nixfmt-rfc-style
     neofetch
     obsidian
+    #proton-pass
     #pkgs.ghostty
     rsync
     #spotify

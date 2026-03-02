@@ -8,6 +8,10 @@
     keycloakCloudflared.file = "${inputs.secrets}/keycloakCloudflared.age";
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";
     initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
+    invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
+    nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
+    paperlessPassword.file = "${inputs.secrets}/paperlessPassword.age";
+    paperlessWebdav.file = "${inputs.secrets}/paperlessWebdav.age";
     radicaleHtpasswd.file = "${inputs.secrets}/radicaleHtpasswd.age";
     resticPassword = {
       file = "${inputs.secrets}/resticPassword.age";
