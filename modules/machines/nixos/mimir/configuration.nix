@@ -59,12 +59,12 @@
     };
     services = {
       enable = true;
-      homeassistant.enable = true;
-      raspberrymatic.enable = true;
+      homeassistant.enable = false;
+      raspberrymatic.enable = false;
       uptime-kuma.enable = true;
       grafana.enable = true;
       prometheus = {
-        enable = true;
+        enable = false;
         scrapeTargets = lib.lists.forEach [ "smartctl" "node" "systemd" "shellyplug" ] (exporter: {
           job_name = exporter;
           static_configs = [

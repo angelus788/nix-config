@@ -141,16 +141,16 @@ in
     ./microbin
     ./miniflux
     ./monitoring/grafana
-    #./monitoring/prometheus
-    #./monitoring/prometheus/exporters/shelly_plug_exporter
+    ./monitoring/prometheus
+    ./monitoring/prometheus/exporters/shelly_plug_exporter
     ./navidrome
     ./nextcloud
-    #./smarthome/homeassistant
-    #./smarthome/raspberrymatic
+    ./smarthome/homeassistant
+    ./smarthome/raspberrymatic
     #./paperless-ngx
-    #./radicale
+    ./radicale
     #./sabnzbd
-    #./slskd
+    ./slskd
     #./uptime-kuma
     ./vaultwarden
     ./wireguard-netns
