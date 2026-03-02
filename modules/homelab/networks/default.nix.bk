@@ -1,7 +1,6 @@
 { lib, config, ... }:
 let
   cfg = config.homelab.networks;
-  networkSecrets = import ../../secrets/networks.nix; 
 in
 {
   options.homelab.networks = {
@@ -106,8 +105,19 @@ in
       );
     };
   };
-  config.homelab.networks = {
-    external = networkSecrets.external;
-    local = networkSecets.external;
+
+  # THE FIX: Assigning the actual data to the options defined above.
+  config.homelab.networks.external = {
+    heimdall = {
+      v4 = { 
+        address = "159.65.167.45/24"; 
+        gateway = "159.65.160.1"; 
+      };
+      v6 = { 
+        address = "fe80::d893:84ff:fe33:1370/64"; 
+        gateway = "fe80::1"; 
+      };
+      interface = "ens3";
+    };
   };
 }
