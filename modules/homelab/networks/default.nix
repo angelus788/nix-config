@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, inputs, ... }:
 let
   cfg = config.homelab.networks;
   networkSecrets = import "${inputs.secrets}/networks.nix"; 
