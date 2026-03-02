@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   cfg = config.homelab.networks;
-  networkSecrets = import ../../secrets/networks.nix; 
+  networkSecrets = import ../../../secrets/networks.nix;
 in
 {
   options.homelab.networks = {
