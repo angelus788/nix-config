@@ -9,7 +9,13 @@
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";
     initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
     invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
+    nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
+    oauth2ProxyEnvFile = {
+      file = "${inputs.secrets}/oauth2ProxyEnvFile.age";
+      owner = "oauth2-proxy";
+      group = "oauth2-proxy";
+    };
     paperlessPassword.file = "${inputs.secrets}/paperlessPassword.age";
     paperlessWebdav.file = "${inputs.secrets}/paperlessWebdav.age";
     radicaleHtpasswd.file = "${inputs.secrets}/radicaleHtpasswd.age";
