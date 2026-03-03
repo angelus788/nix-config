@@ -569,11 +569,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1772572225,
-        "narHash": "sha256-89yflQiZb0aOzkz1A9A9cJHQQd1tn3W9P4Y1d5NDL9k=",
+        "lastModified": 1772572580,
+        "narHash": "sha256-82Pm0dbSbclnqniQZPZmOQ9pMl6AJj+lCtZk9EqoL4I=",
         "ref": "refs/heads/main",
-        "rev": "c1dc5d4fd5a707a2f84ad02cf81674f985ae4112",
-        "revCount": 132,
+        "rev": "6c8f17d50fb5909570159e4d147117dc17d58c5d",
+        "revCount": 133,
         "type": "git",
         "url": "ssh://git@github.com/angelus788/nix-private.git"
       },
