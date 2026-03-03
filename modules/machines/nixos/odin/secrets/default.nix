@@ -28,5 +28,6 @@
       owner = "share";
   };
     tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
+    wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
   };
 }
