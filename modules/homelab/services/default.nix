@@ -151,7 +151,7 @@ in
     ./radicale
     #./sabnzbd
     ./slskd
-    #./uptime-kuma
+    ./uptime-kuma
     ./vaultwarden
     ./wireguard-netns
   ];

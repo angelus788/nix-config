@@ -3,17 +3,17 @@
 let
 
   net = config.homelab.networks;
-  #mainNet = net.external.heimdall or null;
+  mainNet = net.external.heimdall;
   # This provides a fallback empty string if the attribute is missing
   #mainNet = net.external.heimdall or { };
-  mainNet =
-    if lib.hasAttr "heimdall" net.external
-    then net.external.heimdall
-    else {
-      interface = "eth-fail";
-      v4 = { address = "159.65.167.45/24"; gateway = "159.65.160.1"; };
-      v6 = { address = "fe80::d893:84ff:fe33:1370/64"; gateway = "fe80::1"; };
-    };
+  #mainNet =
+  #  if lib.hasAttr "heimdall" net.external
+  #  then net.external.heimdall
+  #  else {
+  #    interface = "eth-fail";
+  #    v4 = { address = "159.65.167.45/24"; gateway = "159.65.160.1"; };
+  #    v6 = { address = "fe80::d893:84ff:fe33:1370/64"; gateway = "fe80::1"; };
+  #  };
   wg0Net = net.local.wireguard-ext;
 
 in
