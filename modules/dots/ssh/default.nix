@@ -1,6 +1,8 @@
 {
   programs.ssh = {
     enable = true;
+    # This silences the warning
+    enableDefaultConfig = false;
 
     matchBlocks = {
       thor = {
