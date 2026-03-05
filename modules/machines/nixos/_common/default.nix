@@ -59,7 +59,7 @@
   imports = [
     ./filesystems
     ./nix
-    #"${inputs.secrets}/networks.nix"
+    "${inputs.secrets}/networks.nix"
   ];
 
   time.timeZone = "America/New_York";
