@@ -3,9 +3,9 @@
   networking.hosts =
     let
       heimdall = config.hostName;
-      #heimdallAddress = lib.removeSuffix "/24" config.homelab.networks.external.heimdall.v4.address;
+      heimdallAddress = lib.removeSuffix "/24" config.homelab.networks.external.heimdall.v4.address;
       # This provides a fallback empty string if the attribute is missing
-      heimdallAddress = lib.removeSuffix "/24" (config.homelab.networks.external.heimdall.v4.address or "127.0.0.1/24");
+      #heimdallAddress = lib.removeSuffix "/24" (config.homelab.networks.external.heimdall.v4.address or "127.0.0.1/24");
     in
     {
       "${heimdallAddress}" = [
