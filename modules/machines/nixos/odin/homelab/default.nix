@@ -15,7 +15,7 @@ in
   };
   homelab = {
     enable = true;
-    baseDomain = "avgtechguy.com";
+    baseDomain = "internalnetwork.party";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentials.path;
     timeZone = "America/New_York";
     mounts = {
@@ -61,10 +61,10 @@ in
     };
     services = {
       enable = true;
-        slskd = {
-          enable = true;
-          environmentFile = config.age.secrets.slskdEnvironmentFile.path;
-        };
+      slskd = {
+        enable = true;
+        environmentFile = config.age.secrets.slskdEnvironmentFile.path;
+      };
       #backup = {
       #  enable = false;
       #  passwordFile = config.age.secrets.resticPassword.path;
@@ -115,7 +115,7 @@ in
           }
           {
             "Immich (Parents)" = {
-              href = "https://photos.aria.avgtechguy.com";
+              href = "https://photos.aria.internalnetwork.party";
               description = "Self-hosted photo and video management solution";
               icon = "immich.svg";
               siteMonitor = "";

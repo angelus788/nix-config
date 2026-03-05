@@ -22,7 +22,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "music.avgtechguy.com";
+      default = "music.internalnetwork.party";
     };
     environmentFile = lib.mkOption {
       type = lib.types.path;
@@ -98,7 +98,7 @@ in
       # server
       {
         services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = "avgtechguy.com";
+          useACMEHost = "internalnetwork.party";
           extraConfig = ''
             reverse_proxy http://${config.services.${service}.settings.Address}:${
               toString config.services.${service}.settings.Port

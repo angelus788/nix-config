@@ -14,7 +14,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "login.avgtechguy.com";
+      default = "login.internalnetwork.party";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -142,7 +142,7 @@ in
       # server
       {
         services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = "avgtechguy.com";
+          useACMEHost = "internalnetwork.party";
           extraConfig = ''
             reverse_proxy http://127.0.0.1:8821
             handle /oauth2/* {

@@ -18,7 +18,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "news.avgtechguy.com";
+      default = "news.internalnetwork.party";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -88,7 +88,7 @@ in
       })
       {
         services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = "avgtechguy.com";
+          useACMEHost = "internalnetwork.party";
           extraConfig = ''
             reverse_proxy http://${addr}:${toString port}
           '';

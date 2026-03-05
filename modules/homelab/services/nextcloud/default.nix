@@ -23,7 +23,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "cloud.avgtechguy.com";
+      default = "cloud.internalnetwork.party";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -140,7 +140,7 @@ in
       # server
       {
         services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = "avgtechguy.com";
+          useACMEHost = "internalnetwork.party";
           extraConfig = ''
             reverse_proxy http://127.0.0.1:8009
           '';

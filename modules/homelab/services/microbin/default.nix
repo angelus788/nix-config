@@ -28,7 +28,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "bin.avgtechguy.com";
+      default = "bin.internalnetwork.party";
     };
     passwordFile = lib.mkOption {
       default = "";
@@ -127,15 +127,15 @@ in
       # server
       {
         services.caddy.virtualHosts."${cfg.url}" = {
-          useACMEHost = "avgtechguy.com";
+          useACMEHost = "internalnetwork.party";
           extraConfig = ''
             handle {
               forward_auth 127.0.0.1:4192 {
-                uri https://login.avgtechguy.com/oauth2/auth
+                uri https://login.internalnetwork.party/oauth2/auth
                 header_up X-Real-IP {remote_host}
                 @error status 401
                 handle_response @error {
-                  redir * https://login.avgtechguy.com/oauth2/start?rd={scheme}://{host}{uri}
+                  redir * https://login.internalnetwork.party/oauth2/start?rd={scheme}://{host}{uri}
                 }
               }
               reverse_proxy http://${addr}:${toString port}
