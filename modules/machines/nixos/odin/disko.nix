@@ -1,4 +1,5 @@
-{ config ? { }, ... }: # Add the '? { }' to make config optional
+#{ config ? { }, ... }: # Add the '? { }' to make config optional
+{ config, builtins, ... }:
 let
   # We use 'or' to provide the hardcoded IDs if config.zfs-root isn't found
   devices = config.zfs-root.bootDevices or [
