@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config ? {}, ... }:
 let
   diskMain = builtins.head config.zfs-root.bootDevices;
 in

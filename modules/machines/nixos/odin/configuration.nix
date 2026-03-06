@@ -60,9 +60,6 @@ in
   };
   
   boot.kernelModules = [ "nct6775" ];
-  hardware.cpu.intel.updateMicrocode = true;
-  hardware.enableRedistributableFirmware = true;
-  hardware.graphics.enable = true;
   boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
     "pcie_aspm=force"
