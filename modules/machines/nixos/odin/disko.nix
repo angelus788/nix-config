@@ -2,10 +2,10 @@
 { config, builtins, ... }:
 let
   # We use 'or' to provide the hardcoded IDs if config.zfs-root isn't found
-  devices = config.zfs-root.bootDevices or [
-        "ata-CT500MX500SSD1_1947E228A4C0"
-        "ata-CT500MX500SSD1_1947E228A5E2"
-  ];
+  #devices = config.zfs-root.bootDevices or [
+  #      "ata-CT500MX500SSD1_1947E228A4C0"
+  #      "ata-CT500MX500SSD1_1947E228A5E2"
+  #];
 
   diskMain = builtins.head config.zfs-root.bootDevices;
   diskMirror = builtins.tail config.zfs-root.bootDevices;

@@ -1,7 +1,6 @@
 { lib, config, inputs, ... }:
 let
   cfg = config.homelab.networks;
-  #networkSecrets = import "${inputs.secrets}/networks.nix"; 
 in
 {
   options.homelab.networks = {
@@ -106,8 +105,4 @@ in
       );
     };
   };
-  #config.homelab.networks = {
-  #  external = networkSecrets.external;
-  #  local = networkSecrets.local;
-  #};
 }
