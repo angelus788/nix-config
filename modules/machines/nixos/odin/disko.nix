@@ -1,8 +1,19 @@
 { config ? {}, ... }:
 let
-  diskMain = builtins.head config.zfs-root.bootDevices;
+  devices = config.zfs-root.bootDevices or [ "ata-CT500MX500SSD1_1947E228A4C0" ];
+  #diskMain = builtins.head config.zfs-root.bootDevices;
+  #diskMirror = builtins.tail config.zfs-root.bootDevices;
+  diskMain = builtins.elemAt devices 0;
+  #diskMirror = builtins.elemAt devices 1;
+
+
 in
 {
+  imports = [  
+    ../../../misc/zfs-root 
+  #  ./configuration.nix
+    ];
+
   disko.devices = {
     disk = {
       main = {
