@@ -7,10 +7,10 @@ let
         "ata-CT500MX500SSD1_1947E228A5E2"
   ];
 
-  #diskMain = builtins.head config.zfs-root.bootDevices;
-  #diskMirror = builtins.tail config.zfs-root.bootDevices;
-  diskMain = builtins.elemAt devices 0;
-  diskMirror = builtins.elemAt devices 1;
+  diskMain = builtins.head config.zfs-root.bootDevices;
+  diskMirror = builtins.tail config.zfs-root.bootDevices;
+  #diskMain = builtins.elemAt devices 0;
+  #diskMirror = builtins.elemAt devices 1;
 in
 {
   disko.devices = {
