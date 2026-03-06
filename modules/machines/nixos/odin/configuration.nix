@@ -12,7 +12,6 @@ let
     "/dev/disk/by-label/Data2"
     "/dev/disk/by-label/Data3"
     "/dev/disk/by-label/Data4"
-    "/dev/disk/by-label/Data5"
     "/dev/disk/by-label/Parity1"
   ];
 in
@@ -59,20 +58,32 @@ in
       ];
     };
   };
-  boot = {
-    zfs.forceImportRoot = true;
-    kernelParams = [
-      "pcie_aspm=force"
-      "consoleblank=60"
-      "acpi_enforce_resources=lax"
-      "nvme_core.default_ps_max_latency_us=50000"
-    ];
-    kernelModules = [
-      "coretemp"
-      "jc42"
-      "lm78"
-      "f71882fg"
-    ];
+  
+  boot.kernelModules = [ "nct6775" ];
+  hardware.cpu.intel.updateMicrocode = true;
+  hardware.enableRedistributableFirmware = true;
+  hardware.graphics.enable = true;
+  boot.zfs.forceImportRoot = true;
+  boot.kernelParams = [
+    "pcie_aspm=force"
+    "consoleblank=60"
+  ];
+  zfs-root = {
+    boot = {
+      devNodes = "/dev/disk/by-id/";
+      bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0"
+              #"ata-CT500MX500SSD1_1947E228A5E2"
+       ];
+      immutable = true;
+      availableKernelModules = [
+        "uhci_hcd"
+        "ehci_pci"
+        "ahci"
+        "sd_mod"
+        "sr_mod"
+      ];
+      removableEfi = true;
+    };
   };
 
   systemd.network = {
@@ -121,31 +132,7 @@ in
       ];
     };
   };
-  zfs-root = {
-    boot = {
-      partitionScheme = {
-        biosBoot = "-part4";
-        efiBoot = "-part2";
-        bootPool = "-part1";
-        rootPool = "-part3";
-      };
-      bootDevices = [
-        #"ata-Samsung_SSD_870_EVO_250GB_S6PENL0T902873K"
-        #"ata-Samsung_SSD_870_EVO_250GB_S6PENL0T905657B"
-        "ata-CT500MX500SSD1_1947E228A4C0"
-        "ata-CT500MX500SSD1_1947E228A5E2"
-      ];
-      immutable = true;
-      availableKernelModules = [
-        "uhci_hcd"
-        "ehci_pci"
-        "ahci"
-        "sd_mod"
-        "sr_mod"
-      ];
-      removableEfi = true;
-    };
-  };
+
   imports = [
     ../../../misc/tailscale
     ../../../misc/zfs-root
