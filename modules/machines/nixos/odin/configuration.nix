@@ -73,11 +73,12 @@ in
        ];
       immutable = true;
       availableKernelModules = [
-        "uhci_hcd"
-        "ehci_pci"
-        "ahci"
-        "sd_mod"
-        "sr_mod"
+        "xhci_pci" 
+        "ahci" 
+        "usbhid" 
+        "usb_storage" 
+        "sd_mod" 
+        "sr_mod" 
       ];
       removableEfi = true;
     };
