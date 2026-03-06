@@ -38,7 +38,7 @@ in
         };
       };
 
-      # --- Parity HDD (XFS) ---
+      # --- Parity HDD (XFS + Label) ---
       parity1 = {
         type = "disk";
         device = "/dev/disk/by-id/${parityDisk}";
@@ -50,12 +50,13 @@ in
               type = "filesystem";
               format = "xfs";
               mountpoint = "/mnt/parity1";
+              extraArgs = [ "-L" "parity1" ];
             };
           };
         };
       };
 
-      # --- Data HDDs (XFS) ---
+      # --- Data HDDs (XFS + Labels) ---
       data1 = {
         type = "disk";
         device = "/dev/disk/by-id/${builtins.elemAt dataDisks 0}";
@@ -63,7 +64,12 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data1"; };
+            content = { 
+              type = "filesystem"; 
+              format = "xfs"; 
+              mountpoint = "/mnt/data1";
+              extraArgs = [ "-L" "data1" ];
+            };
           };
         };
       };
@@ -74,7 +80,12 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data2"; };
+            content = { 
+              type = "filesystem"; 
+              format = "xfs"; 
+              mountpoint = "/mnt/data2";
+              extraArgs = [ "-L" "data2" ];
+            };
           };
         };
       };
@@ -85,7 +96,12 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data3"; };
+            content = { 
+              type = "filesystem"; 
+              format = "xfs"; 
+              mountpoint = "/mnt/data3";
+              extraArgs = [ "-L" "data3" ];
+            };
           };
         };
       };
@@ -96,13 +112,17 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data4"; };
+            content = { 
+              type = "filesystem"; 
+              format = "xfs"; 
+              mountpoint = "/mnt/data4";
+              extraArgs = [ "-L" "data4" ];
+            };
           };
         };
       };
     };
 
-    # --- ZFS Pool Definitions (OS Only) ---
     zpool = {
       bpool = {
         type = "zpool";
