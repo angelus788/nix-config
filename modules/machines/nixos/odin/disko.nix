@@ -10,16 +10,15 @@ let
   # 6TB WDC Drives
   parityDisk = "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V";
   dataDisks = [
-    "ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL" # sdd
-    "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC" # sde
-    "ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR" # sdf
-    "ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC" # sdg
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL" # sdd (Index 0)
+    "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC" # sde (Index 1)
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR" # sdf (Index 2)
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC" # sdg (Index 3)
   ];
 in
 {
   disko.devices = {
     disk = {
-      # --- OS SSD (ZFS rpool) ---
       main = {
         type = "disk";
         device = "/dev/disk/by-id/${diskMain}";
@@ -37,7 +36,6 @@ in
         };
       };
 
-      # --- Cache SSD (ZFS cache pool) ---
       cache_ssd = {
         type = "disk";
         device = "/dev/disk/by-id/${diskCache}";
@@ -45,15 +43,11 @@ in
           type = "gpt";
           partitions.zfs = {
             size = "100%";
-            content = {
-              type = "zfs";
-              pool = "cache"; # This names the pool 'cache'
-            };
+            content = { type = "zfs"; pool = "cache"; };
           };
         };
       };
 
-      # --- Parity & Data HDDs (XFS + Labels) ---
       parity1 = {
         type = "disk";
         device = "/dev/disk/by-id/${parityDisk}";
@@ -61,10 +55,16 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/parity1"; extraArgs = [ "-L" "parity1" ]; };
+            content = {
+              type = "filesystem";
+              format = "xfs";
+              mountpoint = "/parity1"; # Cleaned path
+              extraArgs = [ "-L" "parity1" ];
+            };
           };
         };
       };
+
       data1 = {
         type = "disk";
         device = "/dev/disk/by-id/${builtins.elemAt dataDisks 0}";
@@ -72,40 +72,43 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data1"; extraArgs = [ "-L" "data1" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/data1"; extraArgs = [ "-L" "data1" ]; };
           };
         };
       };
+
       data2 = {
         type = "disk";
-        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 3}";
+        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 1}"; # Fixed Index
         content = {
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data2"; extraArgs = [ "-L" "data2" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/data2"; extraArgs = [ "-L" "data2" ]; };
           };
         };
       };
+
       data3 = {
         type = "disk";
-        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 3}";
+        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 2}"; # Fixed Index
         content = {
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data3"; extraArgs = [ "-L" "data3" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/data3"; extraArgs = [ "-L" "data3" ]; };
           };
         };
       };
+
       data4 = {
         type = "disk";
-        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 3}";
+        device = "/dev/disk/by-id/${builtins.elemAt dataDisks 3}"; # Fixed Index
         content = {
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data4"; extraArgs = [ "-L" "data4" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/data4"; extraArgs = [ "-L" "data4" ]; };
           };
         };
       };
@@ -129,13 +132,12 @@ in
           "nixos/persist" = { type = "zfs_fs"; mountpoint = "/persist"; options.mountpoint = "legacy"; };
         };
       };
-      # --- NEW CACHE POOL ---
       cache = {
         type = "zpool";
         datasets = {
           "data" = {
             type = "zfs_fs";
-            # This allows it to be used as rpool/nixos/data or cache/data
+            mountpoint = "/cache"; # Explicitly mount this dataset at /cache
             options.mountpoint = "legacy";
           };
         };
