@@ -17,7 +17,16 @@
       d2 = "/mnt/data2";
       d3 = "/mnt/data3";
       d4 = "/mnt/data4";
-      d5 = "/mnt/data5";
     };
+    exclude = [
+      "*.unrecoverable"
+      "/tmp/"
+      "/lost+found/"
+      ".Thumbs.db"
+      ".fseventsd"
+      ".Spotlight-V100"
+      "._*"
+      ".DS_Store"
+    ];
   };
 }

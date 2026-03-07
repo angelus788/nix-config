@@ -68,10 +68,9 @@ in
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0"
-              #"ata-CT500MX500SSD1_1947E228A5E2"
-       ];
+      bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       immutable = true;
+      supportedFilesystems = [ "zfs" "xfs" ];
       availableKernelModules = [
         "xhci_pci" 
         "ahci" 
@@ -120,7 +119,7 @@ in
   networking = {
     useDHCP = false;
     hostName = "odin";
-    hostId = "0730ae51";
+    hostId = "a2d081a7";
     firewall = {
       enable = true;
       allowPing = true;
