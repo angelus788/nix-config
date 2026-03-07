@@ -58,7 +58,14 @@ in
       ];
     };
   };
-  
+
+  #added by 
+  boot.supportedFilesystems = [ "zfs" "xfs" ];
+  boot.zfs.devNodes = "/dev/disk/by-id";
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+
   boot.kernelModules = [ "nct6775" ];
   boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
@@ -72,12 +79,12 @@ in
       immutable = true;
       supportedFilesystems = [ "zfs" "xfs" ];
       availableKernelModules = [
-        "xhci_pci" 
-        "ahci" 
-        "usbhid" 
-        "usb_storage" 
-        "sd_mod" 
-        "sr_mod" 
+        "xhci_pci"
+        "ahci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+        "sr_mod"
       ];
       removableEfi = true;
     };

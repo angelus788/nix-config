@@ -5,7 +5,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
@@ -14,53 +15,69 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "rpool/nixos/empty";
+    {
+      device = "rpool/nixos/empty";
       fsType = "zfs";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/7854-DEDD";
+    {
+      device = "/dev/disk/by-uuid/929C-5468";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/home" =
-    { device = "rpool/nixos/home";
+  fileSystems."/cache" =
+    {
+      device = "cache/data";
       fsType = "zfs";
     };
 
-  fileSystems."/mnt/data1" =
-    { device = "/dev/disk/by-uuid/fb9c328b-f050-4f1f-a6c8-fd97e8bc3d75";
+  fileSystems."/data1" =
+    {
+      device = "/dev/disk/by-uuid/0fd96c56-7ed5-4489-9404-96d460d1cae8";
       fsType = "xfs";
     };
 
-  fileSystems."/mnt/data2" =
-    { device = "/dev/disk/by-uuid/9d5331f3-30d1-4ea9-bda6-e1a764da8a9d";
+  fileSystems."/data2" =
+    {
+      device = "/dev/disk/by-uuid/a2790f3f-58de-44b8-9fe0-f765363d80f5";
       fsType = "xfs";
     };
 
-  fileSystems."/mnt/data3" =
-    { device = "/dev/disk/by-uuid/8cd3dad2-e1f5-4773-bbb2-e129a07725df";
+  fileSystems."/data3" =
+    {
+      device = "/dev/disk/by-uuid/bfd9fc8f-2a31-4e9b-8d22-e09354b551c9";
       fsType = "xfs";
     };
 
-  fileSystems."/mnt/data4" =
-    { device = "/dev/disk/by-uuid/68d68b7f-f712-41c8-a299-21079239c259";
+  fileSystems."/data4" =
+    {
+      device = "/dev/disk/by-uuid/434c3e5a-ce36-4489-af37-c6c6c1f9fb1e";
       fsType = "xfs";
     };
 
-  fileSystems."/mnt/parity1" =
-    { device = "/dev/disk/by-uuid/bc75c502-81c5-468f-981f-0a4091ceb416";
-      fsType = "xfs";
+  fileSystems."/home" =
+    {
+      device = "rpool/nixos/home";
+      fsType = "zfs";
     };
 
   fileSystems."/nix" =
-    { device = "rpool/nixos/nix";
+    {
+      device = "rpool/nixos/nix";
       fsType = "zfs";
     };
 
+  fileSystems."/parity1" =
+    {
+      device = "/dev/disk/by-uuid/222910c8-980b-4446-b4c3-ef09d0836785";
+      fsType = "xfs";
+    };
+
   fileSystems."/persist" =
-    { device = "rpool/nixos/persist";
+    {
+      device = "rpool/nixos/persist";
       fsType = "zfs";
     };
 
