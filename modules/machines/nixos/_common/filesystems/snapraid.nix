@@ -5,6 +5,11 @@
     "/tmp/"
     "/lost+found/"
     "/Media/"
+    ".Thumbs.db"
+    ".fseventsd"
+    ".Spotlight-V100"
+    "._*"
+    ".DS_Store"
   ];
 
   systemd.services = lib.attrsets.optionalAttrs (config.services.snapraid.enable) {

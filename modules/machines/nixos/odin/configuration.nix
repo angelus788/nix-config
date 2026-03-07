@@ -59,25 +59,25 @@ in
     };
   };
 
-  #added by 
-  boot.supportedFilesystems = [ "zfs" "xfs" ];
-  boot.zfs.devNodes = "/dev/disk/by-id";
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-
   boot.kernelModules = [ "nct6775" ];
   boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
   ];
+
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
+      partitionScheme = {
+        biosBoot = "-part1"; # Not used on UEFI, but prevents errors
+        efiBoot = "-part1";  # This is your vfat partition
+        bootPool = "-part2"; # This is your bpool
+        rootPool = "-part3"; # This is your rpool
+      };
       immutable = true;
-      supportedFilesystems = [ "zfs" "xfs" ];
+      removableEfi = true; #might need to remove ... 
       availableKernelModules = [
         "xhci_pci"
         "ahci"
