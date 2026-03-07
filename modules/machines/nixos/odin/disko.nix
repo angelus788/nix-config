@@ -83,7 +83,7 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data4"; extraArgs = [ "-L" "data2" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data2"; extraArgs = [ "-L" "data2" ]; };
           };
         };
       };
@@ -94,7 +94,7 @@ in
           type = "gpt";
           partitions.primary = {
             size = "100%";
-            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data4"; extraArgs = [ "-L" "data3" ]; };
+            content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/data3"; extraArgs = [ "-L" "data3" ]; };
           };
         };
       };

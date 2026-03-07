@@ -5,6 +5,10 @@
     enableDefaultConfig = false;
 
     matchBlocks = {
+      "*" = {
+        forwardAgent = true;
+        identityAgent = "~/.bitwarden-ssh-agent.sock";
+      };
       thor = {
         hostname = "thor";
         port = 69;
@@ -39,7 +43,6 @@
         user = "angelus";
         port = 22;
         identityFile = "~/.ssh/angelus";
-
       };
       mjolnir = {
         hostname = "mjolnir";
