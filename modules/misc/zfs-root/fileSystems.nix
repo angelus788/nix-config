@@ -1,5 +1,6 @@
 { config, lib, ... }:
 
+with lib;
 let
   cfg = config.zfs-root.fileSystems;
 in
@@ -26,6 +27,26 @@ in
       default = { };
     };
   };
+ 
+  config = mkIf cfg.enable {
+    # Move ALL settings (environment, fileSystems, etc.) inside here
+    environment.persistence."/persist" = {
+      hideMounts = true;
+      directories = [
+        "/var/log"
+        "/var/lib/nixos"
+        "/etc/ssh" 
+      ];
+      files = [ "/etc/machine-id" ];
+    };
+
+    fileSystems."/" = {
+      device = "rpool/nixos/empty";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
+  };
+
   config.fileSystems = lib.mkMerge (
     lib.mapAttrsToList (dataset: mountpoint: {
       "${mountpoint}" = {
@@ -66,16 +87,4 @@ in
       };
     }
   );
-  environment.persistence."/persist" = {
-  hideMounts = true;
-  directories = [
-    "/var/log"
-    "/var/lib/nixos"
-    "/etc/ssh" # This keeps your SSH host keys consistent!
-  ];
-  files = [
-    "/etc/machine-id"
-    "/etc/adjtime"
-  ];
-};
 }
