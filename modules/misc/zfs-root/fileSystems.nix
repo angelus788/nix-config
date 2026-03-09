@@ -66,4 +66,16 @@ in
       };
     }
   );
+  environment.persistence."/persist" = {
+  hideMounts = true;
+  directories = [
+    "/var/log"
+    "/var/lib/nixos"
+    "/etc/ssh" # This keeps your SSH host keys consistent!
+  ];
+  files = [
+    "/etc/machine-id"
+    "/etc/adjtime"
+  ];
+};
 }

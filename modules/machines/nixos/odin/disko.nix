@@ -148,7 +148,7 @@ in
         };
         datasets = {
           "nixos" = { type = "zfs_fs"; options.mountpoint = "none"; };
-          "nixos/empty" = {
+          "nixos/root" = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
             mountpoint = "/";

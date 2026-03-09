@@ -60,6 +60,7 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
+  boot.zfs.extraPools = [ "cache" ]; #might need to remove
   boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
     "pcie_aspm=force"
@@ -145,6 +146,7 @@ in
     ./homelab
     ./secrets
     #./disko.nix
+    ./boot.nix
   ];
 
   services.duckdns = {
