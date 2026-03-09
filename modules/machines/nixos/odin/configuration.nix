@@ -125,7 +125,7 @@ in
   networking = {
     useDHCP = false;
     hostName = "odin";
-    hostId = "0234e8df";
+    hostId = "437fdd78";
     firewall = {
       enable = true;
       allowPing = true;
