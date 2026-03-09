@@ -6,85 +6,91 @@ let
 in
 {
   options.zfs-root.fileSystems = {
-    datasets = lib.mkOption {
+    enable = mkEnableOption "ZFS root file systems";
+    datasets = mkOption {
       description = "Set mountpoint for datasets";
-      type = lib.types.attrsOf lib.types.str;
+      type = types.attrsOf types.str;
       default = { };
     };
-    efiSystemPartitions = lib.mkOption {
+    efiSystemPartitions = mkOption {
       description = "Set mountpoint for efi system partitions";
-      type = lib.types.listOf lib.types.str;
+      type = types.listOf types.str;
       default = [ ];
     };
-    enableDockerZvol = lib.mkOption {
+    enableDockerZvol = mkOption {
       description = "Enable a separate ext4 zvol for Docker/Podman data";
-      type = lib.types.bool;
+      type = types.bool;
       default = true;
     };
-    bindmounts = lib.mkOption {
+    bindmounts = mkOption {
       description = "Set mountpoint for bindmounts";
-      type = lib.types.attrsOf lib.types.str;
+      type = types.attrsOf types.str;
       default = { };
     };
   };
- 
+
   config = mkIf cfg.enable {
-    # Move ALL settings (environment, fileSystems, etc.) inside here
+    # 1. Persistence Layer (Anchors your SSH keys and machine ID)
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
         "/var/log"
         "/var/lib/nixos"
-        "/etc/ssh" 
+        "/etc/ssh"
       ];
       files = [ "/etc/machine-id" ];
     };
 
-    fileSystems."/" = {
-      device = "rpool/nixos/empty";
-      fsType = "zfs";
-      neededForBoot = true;
-    };
+    # 2. Filesystem Mount Logic (Merged into one block)
+    fileSystems = mkMerge (
+      [
+        # The base root mount
+        {
+          "/" = {
+            device = "rpool/nixos/empty";
+            fsType = "zfs";
+            neededForBoot = true;
+          };
+        }
+      ]
+      ++ (mapAttrsToList (dataset: mountpoint: {
+        "${mountpoint}" = {
+          device = "${dataset}";
+          fsType = "zfs";
+          neededForBoot = true;
+        };
+      }) cfg.datasets)
+      ++ (map (esp: {
+        "/boot/efis/${esp}" = {
+          device = "${config.zfs-root.boot.devNodes}/${esp}";
+          fsType = "vfat";
+          options = [
+            "x-systemd.idle-timeout=1min"
+            "x-systemd.automount"
+            "noauto"
+            "nofail"
+            "noatime"
+            "X-mount.mkdir"
+          ];
+        };
+      }) cfg.efiSystemPartitions)
+      ++ (mapAttrsToList (bindsrc: mountpoint: {
+        "${mountpoint}" = {
+          device = "${bindsrc}";
+          fsType = "none";
+          options = [
+            "bind"
+            "X-mount.mkdir"
+            "noatime"
+          ];
+        };
+      }) cfg.bindmounts)
+      ++ (optional cfg.enableDockerZvol {
+        "/var/lib/containers" = {
+          device = "/dev/zvol/rpool/docker";
+          fsType = "ext4";
+        };
+      })
+    );
   };
-
-  config.fileSystems = lib.mkMerge (
-    lib.mapAttrsToList (dataset: mountpoint: {
-      "${mountpoint}" = {
-        device = "${dataset}";
-        fsType = "zfs";
-        neededForBoot = true;
-      };
-    }) cfg.datasets
-    ++ map (esp: {
-      "/boot/efis/${esp}" = {
-        device = "${config.zfs-root.boot.devNodes}/${esp}";
-        fsType = "vfat";
-        options = [
-          "x-systemd.idle-timeout=1min"
-          "x-systemd.automount"
-          "noauto"
-          "nofail"
-          "noatime"
-          "X-mount.mkdir"
-        ];
-      };
-    }) cfg.efiSystemPartitions
-    ++ lib.mapAttrsToList (bindsrc: mountpoint: {
-      "${mountpoint}" = {
-        device = "${bindsrc}";
-        fsType = "none";
-        options = [
-          "bind"
-          "X-mount.mkdir"
-          "noatime"
-        ];
-      };
-    }) cfg.bindmounts
-    ++ lib.lists.optional cfg.enableDockerZvol {
-      "/var/lib/containers" = {
-        device = "/dev/zvol/rpool/docker";
-        fsType = "ext4";
-      };
-    }
-  );
 }
