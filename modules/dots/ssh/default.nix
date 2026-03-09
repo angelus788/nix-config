@@ -5,10 +5,6 @@
     enableDefaultConfig = false;
 
     matchBlocks = {
-      "*" = {
-        forwardAgent = true;
-        identityAgent = "~/.bitwarden-ssh-agent.sock";
-      };
       thor = {
         hostname = "thor";
         port = 69;
@@ -65,7 +61,10 @@
         port = 22;
         identityFile = "~/.ssh/angelus";
       };
-
+      "*" = {
+        forwardAgent = true;
+        identityAgent = "~/.bitwarden-ssh-agent.sock";
+      };
     };
   };
 }

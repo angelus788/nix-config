@@ -22,7 +22,7 @@ in
     ../../dots/bitwarden/default.nix
     ../../dots/firefox/default.nix
     ../../dots/zsh/default.nix
-    ../../dots/neofetch/default.nix
+    #../../dots/neofetch/default.nix
     ../../dots/vscodium/default.nix
     ../../dots/zed/default.nix
     ../../dots/ssh/default.nix
