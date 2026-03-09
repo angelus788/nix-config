@@ -77,7 +77,7 @@ in
         rootPool = "-part3"; # This is your rpool
       };
       immutable = true;
-      removableEfi = true; #might need to remove ... 
+      removableEfi = true; 
       availableKernelModules = [
         "xhci_pci"
         "ahci"
@@ -86,7 +86,6 @@ in
         "sd_mod"
         "sr_mod"
       ];
-      removableEfi = true;
     };
   };
 
