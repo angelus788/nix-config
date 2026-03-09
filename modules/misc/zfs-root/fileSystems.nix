@@ -30,24 +30,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    # 1. Persistence Layer (Anchors your SSH keys and machine ID)
-    environment.persistence."/persist" = {
-      hideMounts = true;
-      directories = [
-        "/var/log"
-        "/var/lib/nixos"
-        "/etc/ssh"
-      ];
-      files = [ "/etc/machine-id" ];
-    };
-
-    # 2. Filesystem Mount Logic (Merged into one block)
     fileSystems = mkMerge (
       [
-        # The base root mount
         {
           "/" = {
-            device = "rpool/nixos/empty";
+            device = "rpool/nixos/root"; # Changed 'empty' back to 'root' if you want a normal disk
             fsType = "zfs";
             neededForBoot = true;
           };
@@ -78,11 +65,7 @@ in
         "${mountpoint}" = {
           device = "${bindsrc}";
           fsType = "none";
-          options = [
-            "bind"
-            "X-mount.mkdir"
-            "noatime"
-          ];
+          options = [ "bind" "X-mount.mkdir" "noatime" ];
         };
       }) cfg.bindmounts)
       ++ (optional cfg.enableDockerZvol {
