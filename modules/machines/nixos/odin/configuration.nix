@@ -145,7 +145,7 @@ in
     #./backup
     ./homelab
     ./secrets
-    ./disko.nix
+    #./disko.nix
     ./boot.nix
     ./vars.nix
   ];
