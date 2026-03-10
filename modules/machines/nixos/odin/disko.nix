@@ -54,36 +54,36 @@ in
 
         datasets = {
           "nixos" = {
-            type = "zfs_dataset";
+            type = "zfs_fs"; # Changed from zfs_dataset
             options.mountpoint = "none";
           };
           "nixos/root" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/";
             postCreateHook = "zfs snapshot rpool/nixos/root@blank";
           };
           "nixos/nix" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/nix";
           };
           "nixos/home" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/home";
           };
           "nixos/persist" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/persist";
           };
           "nixos/config" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/etc/nixos";
           };
           "nixos/var_log" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/var/log";
           };
           "nixos/var_lib" = {
-            type = "zfs_dataset";
+            type = "zfs_fs";
             mountpoint = "/var/lib";
           };
         };
