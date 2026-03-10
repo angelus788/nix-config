@@ -73,12 +73,12 @@ in
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       partitionScheme = {
         biosBoot = "-part1"; # Not used on UEFI, but prevents errors
-        efiBoot = "-part1";  # This is your vfat partition
+        efiBoot = "-part1"; # This is your vfat partition
         bootPool = "-part2"; # This is your bpool
         rootPool = "-part3"; # This is your rpool
       };
       immutable = true;
-      removableEfi = true; 
+      removableEfi = true;
       availableKernelModules = [
         "xhci_pci"
         "ahci"
@@ -145,7 +145,7 @@ in
     #./backup
     ./homelab
     ./secrets
-    #./disko.nix
+    ./disko.nix
     ./boot.nix
   ];
 
