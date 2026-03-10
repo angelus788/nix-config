@@ -1,6 +1,5 @@
 { config, lib, ... }:
 let
-  # Using the disk ID we verified earlier
   diskMain = "ata-CT500MX500SSD1_1947E228A4C0";
 in
 {
