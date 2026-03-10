@@ -147,6 +147,7 @@ in
     ./secrets
     ./disko.nix
     ./boot.nix
+    ./vars.nix
   ];
 
   services.duckdns = {
