@@ -1,4 +1,3 @@
-{ config, lib, ... }:
 let
   diskMain = "ata-CT500MX500SSD1_1947E228A4C0";
 in
@@ -13,7 +12,7 @@ in
           partitions = {
             boot = {
               size = "1M";
-              type = "EF02"; # For legacy boot compatibility
+              type = "EF02";
             };
             ESP = {
               size = "1G";
