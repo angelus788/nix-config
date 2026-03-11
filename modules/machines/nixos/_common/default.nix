@@ -140,6 +140,7 @@
   homelab.motd.enable = true;
 
   environment.systemPackages = with pkgs; [
+    tmux
     wget
     iperf3
     eza

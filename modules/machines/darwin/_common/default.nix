@@ -38,6 +38,7 @@
     [
       nixd # The Language Server
       nixpkgs-fmt # Optional: For auto-formatting
+      tmux
     ];
 
 }
