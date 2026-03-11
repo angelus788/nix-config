@@ -1,10 +1,12 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    tmux
+    #tmux
   ];
   programs.tmux = {
     enable = true;
+    package = null;
+
     sensibleOnTop = false;
     extraConfig = ''
       set -g default-terminal "xterm-256color"

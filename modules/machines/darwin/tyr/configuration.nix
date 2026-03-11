@@ -108,6 +108,7 @@
     rsync
     #spotify
     stow
+    tmux
     vim
     vscode
     vscodium
