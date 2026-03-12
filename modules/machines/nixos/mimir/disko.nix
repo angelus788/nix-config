@@ -1,32 +1,29 @@
-{ config ? { }, ... }: # Add the '? { }' to make config optional
+{ config ? { }, ... }:
 let
-  # We use 'or' to provide the hardcoded IDs if config.zfs-root isn't found
-  devices = config.zfs-root.bootDevices or [
-    "nvme-CT500P1SSD8_1937E21ED6C8"
-    "ata-2.5__SATA_SSD_3MG2-P_20180326AA1322000496"
-  ];
-
-  #diskMain = builtins.head config.zfs-root.bootDevices;
-  #diskMirror = builtins.tail config.zfs-root.bootDevices;
-  diskMain = builtins.elemAt devices 0;
-  diskMirror = builtins.elemAt devices 1;
+  # Selecting the larger NVMe drive as the primary
+  # nvme-CT500P1SSD8_1937E21ED6C8
+  device = config.zfs-root.bootDevice or "nvme-CT500P1SSD8_1937E21ED6C8";
 in
 {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/${diskMain}";
+        device = "/dev/disk/by-id/${device}";
         content = {
           type = "gpt";
           partitions = {
-            efi = {
+            boot = {
+              size = "1M";
+              type = "EF02"; # BIOS boot
+            };
+            esp = {
               size = "1G";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/${diskMain}-part2";
+                mountpoint = "/boot/efi";
               };
             };
             bpool = {
@@ -37,51 +34,11 @@ in
               };
             };
             rpool = {
-              end = "-1M";
+              size = "100%";
               content = {
                 type = "zfs";
                 pool = "rpool";
               };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
-            };
-          };
-        };
-      };
-      mirror = {
-        type = "disk";
-        device = "/dev/disk/by-id/${diskMirror}";
-        content = {
-          type = "gpt";
-          partitions = {
-            efi = {
-              size = "1G";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot/efis/${diskMirror}-part2";
-              };
-            };
-            bpool = {
-              size = "4G";
-              content = {
-                type = "zfs";
-                pool = "bpool";
-              };
-            };
-            rpool = {
-              end = "-1M";
-              content = {
-                type = "zfs";
-                pool = "rpool";
-              };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
             };
           };
         };
@@ -90,7 +47,7 @@ in
     zpool = {
       bpool = {
         type = "zpool";
-        mode = "mirror";
+        # Mode removed (defaults to single disk)
         options = {
           ashift = "12";
           autotrim = "on";
@@ -100,15 +57,12 @@ in
           acltype = "posixacl";
           canmount = "off";
           compression = "lz4";
-          devices = "off";
           normalization = "formD";
           relatime = "on";
           xattr = "sa";
-          "com.sun:auto-snapshot" = "false";
         };
-        mountpoint = "/boot";
         datasets = {
-          nixos = {
+          "nixos" = {
             type = "zfs_fs";
             options.mountpoint = "none";
           };
@@ -121,7 +75,7 @@ in
       };
       rpool = {
         type = "zpool";
-        mode = "mirror";
+        # Mode removed
         options = {
           ashift = "12";
           autotrim = "on";
@@ -134,15 +88,9 @@ in
           normalization = "formD";
           relatime = "on";
           xattr = "sa";
-          "com.sun:auto-snapshot" = "false";
         };
-        mountpoint = "/";
         datasets = {
-          nixos = {
-            type = "zfs_fs";
-            options.mountpoint = "none";
-          };
-          "nixos/var" = {
+          "nixos" = {
             type = "zfs_fs";
             options.mountpoint = "none";
           };
@@ -152,37 +100,13 @@ in
             mountpoint = "/";
             postCreateHook = "zfs snapshot rpool/nixos/empty@start";
           };
-          "nixos/home" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/home";
-          };
-          "nixos/var/log" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/var/log";
-          };
-          "nixos/var/lib" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/var/lib";
-          };
-          "nixos/config" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/etc/nixos";
-          };
-          "nixos/persist" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/persist";
-          };
-          "nixos/nix" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/nix";
-          };
-          docker = {
+          "nixos/home" = { type = "zfs_fs"; options.mountpoint = "legacy"; mountpoint = "/home"; };
+          "nixos/var" = { type = "zfs_fs"; options.mountpoint = "none"; };
+          "nixos/var/log" = { type = "zfs_fs"; options.mountpoint = "legacy"; mountpoint = "/var/log"; };
+          "nixos/var/lib" = { type = "zfs_fs"; options.mountpoint = "legacy"; mountpoint = "/var/lib"; };
+          "nixos/nix" = { type = "zfs_fs"; options.mountpoint = "legacy"; mountpoint = "/nix"; };
+          "nixos/persist" = { type = "zfs_fs"; options.mountpoint = "legacy"; mountpoint = "/persist"; };
+          "docker" = {
             type = "zfs_volume";
             size = "50G";
             content = {
