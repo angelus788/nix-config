@@ -1,14 +1,17 @@
-{...}:
-{
-boot.loader.grub = {
-  enable = true;
-  zfsSupport = true;
-  efiSupport = true;
-  copyKernels = true; # Helpful for ZFS to ensure kernels are on the FAT32 partition
-  devices = [ "nodev" ];
-  mirroredBoots = [
-    { devices = [ "/dev/sda" ]; path = "/boot/efis/boot0"; }
-    { devices = [ "/dev/sdb" ]; path = "/boot/efis/boot1"; }
+{ lib, ... }: {
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  
+  # Disable GRUB entirely
+  boot.loader.grub.enable = false;
+
+  # This is the "secret sauce" for mirrored ZFS boot with systemd-boot
+  # It ensures the kernel/initrd are copied to both EFI partitions
+  boot.loader.mirroredBoots = [
+    { devices = [ "nodev" ]; path = "/boot/efis/boot0"; }
+    { devices = [ "nodev" ]; path = "/boot/efis/boot1"; }
   ];
-};
+
+  networking.hostId = "your_8_digit_id";
+  boot.supportedFilesystems = [ "zfs" ];
 }

@@ -63,7 +63,7 @@ in
   boot.zfs.extraPools = [ "cache" ]; #might need to remove
   boot.zfs.forceImportRoot = true;
   boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.devNodes = "/dev/disk/by-id";
+  boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
