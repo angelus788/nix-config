@@ -1,17 +1,21 @@
-{ lib, ... }: {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  
-  # Disable GRUB entirely
+{
+  boot.loader = {
+    # 1. Enable systemd-boot
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+
+    # 2. Mirror the configuration to both EFI partitions
+    # This is a top-level loader option, NOT inside systemd-boot {}
+    mirroredBoots = [
+      { devices = [ "nodev" ]; path = "/boot/efis/boot0"; }
+      { devices = [ "nodev" ]; path = "/boot/efis/boot1"; }
+    ];
+  };
+
+  # Make sure GRUB is disabled so it doesn't conflict
   boot.loader.grub.enable = false;
 
-  # This is the "secret sauce" for mirrored ZFS boot with systemd-boot
-  # It ensures the kernel/initrd are copied to both EFI partitions
-  boot.loader.mirroredBoots = [
-    { devices = [ "nodev" ]; path = "/boot/efis/boot0"; }
-    { devices = [ "nodev" ]; path = "/boot/efis/boot1"; }
-  ];
-
-  networking.hostId = "your_8_digit_id";
+  # ZFS Requirements
+  networking.hostId = "your_8_digit_hex";
   boot.supportedFilesystems = [ "zfs" ];
 }
