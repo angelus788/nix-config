@@ -1,43 +1,73 @@
 { config, ... }:
 let
-  diskMain = builtins.head config.zfs-root.bootDevices;
+  # OS Drives (Crucial SSDs)
+  bootDrives = [
+    "ata-CT500MX500SSD1_1947E228A4C0"
+    "ata-CT500MX500SSD1_1947E228A5E2"
+  ];
+
+  # Storage Drives (WD 6TB)
+  storageDrives = [
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"
+    "ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"
+    "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC"
+    "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V"
+  ];
 in
 {
   disko.devices = {
-    disk.main = {
-      type = "disk"; # Added type: "disk" here
-      device = "/dev/disk/by-id/${diskMain}";
-      content = {
-        type = "gpt";
-        partitions = {
-          boot = {
-            size = "1M";
-            type = "EF02";
-          };
-          ESP = {
-            size = "1G";
-            type = "EF00";
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              mountpoint = "/boot";
-              mountOptions = [ "umask=0077" ];
+    # Generate Boot Disk configurations
+    disk = (builtins.listToAttrs (builtins.genList (i: {
+      name = "boot${toString i}";
+      value = {
+        type = "disk";
+        device = "/dev/disk/by-id/${builtins.elemAt bootDrives i}";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = { size = "1M"; type = "EF02"; };
+            ESP = {
+              size = "1G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot/efis/boot${toString i}";
+                mountOptions = [ "umask=0077" ];
+              };
             };
-          };
-          zfs = {
-            size = "100%";
-            content = {
-              type = "zfs";
-              pool = "rpool";
+            zfs = {
+              size = "100%";
+              content = { type = "zfs"; pool = "rpool"; };
             };
           };
         };
       };
-    };
-    # Moved zpool INSIDE disko.devices
+    }) (builtins.length bootDrives))) // 
+    # Generate Storage Disk configurations
+    (builtins.listToAttrs (builtins.genList (i: {
+      name = "storage${toString i}";
+      value = {
+        type = "disk";
+        device = "/dev/disk/by-id/${builtins.elemAt storageDrives i}";
+        content = {
+          type = "gpt";
+          partitions = {
+            zfs = {
+              size = "100%";
+              content = { type = "zfs"; pool = "dpool"; };
+            };
+          };
+        };
+      };
+    }) (builtins.length storageDrives)));
+
     zpool = {
       rpool = {
         type = "zpool";
+        mode = "mirror";
+        options = { ashift = "12"; autotrim = "on"; };
         rootFsOptions = {
           acltype = "posixacl";
           dnodesize = "auto";
@@ -47,54 +77,46 @@ in
           mountpoint = "none";
           canmount = "off";
         };
-        options = {
-          ashift = "12";
-          autotrim = "on";
-        };
-
         datasets = {
-          "nixos" = {
-            type = "zfs_fs";
-            options.mountpoint = "none";
-          };
+          "nixos" = { type = "zfs_fs"; options.mountpoint = "none"; };
           "nixos/root" = {
             type = "zfs_fs";
             mountpoint = "/";
-            options.mountpoint = "legacy"; # Best practice for ephemeral roots
+            options.mountpoint = "legacy";
             postCreateHook = "zfs snapshot rpool/nixos/root@blank";
           };
-          "nixos/nix" = {
+          "nixos/nix" = { type = "zfs_fs"; mountpoint = "/nix"; options.mountpoint = "legacy"; };
+          "nixos/home" = { type = "zfs_fs"; mountpoint = "/home"; options.mountpoint = "legacy"; };
+          "nixos/persist" = { type = "zfs_fs"; mountpoint = "/persist"; options.mountpoint = "legacy"; };
+          "nixos/var_log" = { type = "zfs_fs"; mountpoint = "/var/log"; options.mountpoint = "legacy"; };
+          "nixos/var_lib" = { type = "zfs_fs"; mountpoint = "/var/lib"; options.mountpoint = "legacy"; };
+        };
+      };
+
+      dpool = {
+        type = "zpool";
+        mode = "raidz"; # Single parity for 5 drives
+        options = { ashift = "12"; autotrim = "on"; };
+        rootFsOptions = {
+          compression = "zstd";
+          normalization = "formD";
+          relatime = "on";
+          xattr = "sa";
+          mountpoint = "none";
+        };
+        datasets = {
+          "data" = {
             type = "zfs_fs";
-            mountpoint = "/nix";
+            mountpoint = "/data";
             options.mountpoint = "legacy";
           };
-          "nixos/home" = {
+          "media" = {
             type = "zfs_fs";
-            mountpoint = "/home";
-            options.mountpoint = "legacy";
-          };
-          "nixos/persist" = {
-            type = "zfs_fs";
-            mountpoint = "/persist";
-            options.mountpoint = "legacy";
-          };
-          "nixos/config" = {
-            type = "zfs_fs";
-            mountpoint = "/etc/nixos";
-            options.mountpoint = "legacy";
-          };
-          "nixos/var_log" = {
-            type = "zfs_fs";
-            mountpoint = "/var/log";
-            options.mountpoint = "legacy";
-          };
-          "nixos/var_lib" = {
-            type = "zfs_fs";
-            mountpoint = "/var/lib";
+            mountpoint = "/data/media";
             options.mountpoint = "legacy";
           };
         };
       };
     };
-  }; # End of disko.devices
+  };
 }
