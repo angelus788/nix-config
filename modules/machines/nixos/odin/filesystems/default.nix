@@ -26,6 +26,12 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
+  fileSystems."/" = {
+    device = "rpool/nixos/root";
+    fsType = "zfs";
+  # This is critical for ephemeral root setups
+    neededForBoot = true; 
+};
   fileSystems.${hl.mounts.fast} = {
     device = "cache";
     fsType = "zfs";
