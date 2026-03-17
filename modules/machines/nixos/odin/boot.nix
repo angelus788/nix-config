@@ -14,8 +14,4 @@
 
   # Make sure GRUB is disabled so it doesn't conflict
   boot.loader.grub.enable = false;
-
-  # ZFS Requirements
-  networking.hostId = "your_8_digit_hex";
-  boot.supportedFilesystems = [ "zfs" ];
 }
