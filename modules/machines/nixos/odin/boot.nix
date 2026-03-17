@@ -1,11 +1,11 @@
 {...}:
 {
 boot.loader.grub = {
-enable = true;
+  enable = true;
   zfsSupport = true;
   efiSupport = true;
-  # Use 'nodev' because we are specifying the EFI mount logic
-  devices = [ "nodev" ]; 
+  copyKernels = true; # Helpful for ZFS to ensure kernels are on the FAT32 partition
+  devices = [ "nodev" ];
   mirroredBoots = [
     { devices = [ "/dev/sda" ]; path = "/boot/efis/boot0"; }
     { devices = [ "/dev/sdb" ]; path = "/boot/efis/boot1"; }
