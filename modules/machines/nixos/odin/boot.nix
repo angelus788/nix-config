@@ -1,20 +1,16 @@
 { lib, ... }:
 {
   boot.loader = {
+    # Force GRUB off (overrides the shared module)
     grub.enable = lib.mkForce false;
-    # 1. Enable systemd-boot
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-    efi.efiSysMountPoint = lib.mkForce "/boot/efis/boot0";
 
+    # Enable systemd-boot
+    systemd-boot.enable = lib.mkForce true;
 
-    # 2. Mirror the configuration to both EFI partitions
-    # This is a top-level loader option, NOT inside systemd-boot {}
-    #mirroredBoots = [
-    #  { devices = [ "nodev" ]; path = "/boot/efis/boot0"; }
-    #  { devices = [ "nodev" ]; path = "/boot/efis/boot1"; }
-    #];
+    # Force EFI variable access (overrides the shared module's "false")
+    efi.canTouchEfiVariables = lib.mkForce true;
+
+    # Direct the install to the first EFI partition
+    efi.efiSysMountPoint = "/boot/efis/boot0";
   };
-
 }
-  
