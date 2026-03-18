@@ -7,10 +7,10 @@
     # Enable systemd-boot
     systemd-boot.enable = lib.mkForce true;
 
-    # Force EFI variable access (overrides the shared module's "false")
+    # Force UEFI variable access
     efi.canTouchEfiVariables = lib.mkForce true;
 
-    # Direct the install to the first EFI partition
-    efi.efiSysMountPoint = "/boot/efis/boot0";
+    # FORCE the mountpoint to override the long serial ID from the shared module
+    efi.efiSysMountPoint = lib.mkForce "/boot/efis/boot0";
   };
 }
