@@ -16,8 +16,5 @@
     #];
   };
 
-  # Make sure GRUB is disabled so it doesn't conflict
-  options.boot.loader.mirroredBoots = lib.mkForce [ ];
-
 }
   
