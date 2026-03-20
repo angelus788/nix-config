@@ -67,7 +67,8 @@ in
     "pcie_aspm=force"
     "consoleblank=60"
   ];
-
+  boot.loader.grub.device = lib.mkForce "nodev";
+  
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
