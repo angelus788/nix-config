@@ -26,7 +26,7 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems."/" lib.mkForce = {
+  fileSystems."/" = lib.mkForce {
     device = "rpool/nixos/root";
     fsType = "zfs";
   # This is critical for ephemeral root setups
@@ -37,27 +37,27 @@ in
     fsType = "zfs";
   };
 
-  fileSystems."/mnt/data1" lib.mkForce = {
+  fileSystems."/mnt/data1" = lib.mkForce {
     device = "/dev/disk/by-label/Data1";
     fsType = "xfs";
   };
 
-  fileSystems."/mnt/data2" lib.mkForce = {
+  fileSystems."/mnt/data2" = lib.mkForce {
     device = "/dev/disk/by-label/Data2";
     fsType = "xfs";
   };
 
-  fileSystems."/mnt/data3" lib.mkForce = {
+  fileSystems."/mnt/data3" = lib.mkForce {
     device = "/dev/disk/by-label/Data3";
     fsType = "xfs";
   };
   
-  fileSystems."/mnt/data4" lib.mkForce = {
+  fileSystems."/mnt/data4" = lib.mkForce  {
     device = "/dev/disk/by-label/Data4";
     fsType = "xfs";
   };
 
-  fileSystems."/mnt/parity1" lib.mkForce = {
+  fileSystems."/mnt/parity1" = lib.mkForce  {
     device = "/dev/disk/by-label/Parity1";
     fsType = "xfs";
   };
