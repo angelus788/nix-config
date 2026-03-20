@@ -80,6 +80,7 @@ in
         bootPool = "-part1";
         rootPool = "-part3";
       };
+      };
       
       availableKernelModules = [
         "uhci_hcd"
