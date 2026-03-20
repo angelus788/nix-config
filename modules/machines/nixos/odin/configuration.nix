@@ -68,7 +68,7 @@ in
     "consoleblank=60"
   ];
   boot.loader.grub.device = lib.mkForce "nodev";
-  
+
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -148,7 +148,7 @@ in
     ./homelab
     ./secrets
     ./disko.nix
-    ./boot.nix
+    #./boot.nix
     ./vars.nix
   ];
 
