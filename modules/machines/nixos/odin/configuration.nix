@@ -72,6 +72,7 @@ in
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       immutable = true;
+      loader.efi.efiSysMountPoint = lib.mkForce "/boot/efis/boot0";
       availableKernelModules = [
         "uhci_hcd"
         "ehci_pci"
