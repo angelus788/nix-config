@@ -74,12 +74,10 @@ in
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       immutable = true;
       partitionScheme = lib.mkOption {
-      default = {
         biosBoot = "-part4";
         efiBoot = "-part2";
         bootPool = "-part1";
         rootPool = "-part3";
-      };
       };
       
       availableKernelModules = [
