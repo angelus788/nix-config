@@ -56,11 +56,6 @@ in
     device = "/dev/disk/by-label/Data4";
     fsType = "xfs";
   };
-  
-  fileSystems."/mnt/data5" = {
-    device = "/dev/disk/by-label/Data5";
-    fsType = "xfs";
-  };
 
   fileSystems."/mnt/parity1" = {
     device = "/dev/disk/by-label/Parity1";

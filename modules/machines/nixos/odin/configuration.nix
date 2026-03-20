@@ -60,7 +60,6 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
-  boot.zfs.extraPools = [ "cache" ]; #might need to remove
   boot.zfs.forceImportRoot = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
@@ -68,7 +67,6 @@ in
     "pcie_aspm=force"
     "consoleblank=60"
   ];
-
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
@@ -140,7 +138,7 @@ in
     #./backup
     ./homelab
     ./secrets
-    #./disko.nix
+    ./disko.nix
     #./boot.nix
     ./vars.nix
   ];
