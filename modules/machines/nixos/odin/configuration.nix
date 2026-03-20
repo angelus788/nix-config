@@ -147,7 +147,7 @@ in
     ./homelab
     ./secrets
     ./disko.nix
-    #./boot.nix
+    ./boot.nix
     ./vars.nix
   ];
 
