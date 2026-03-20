@@ -63,7 +63,7 @@ in
     fsType = "xfs";
   };
 
-  fileSystems.${hl.mounts.slow} = {
+  fileSystems.${hl.mounts.slow} = lib.mkForce {
     device = "/mnt/data*";
     options = [
       "category.create=mfs"
@@ -81,7 +81,7 @@ in
     fsType = "fuse.mergerfs";
   };
 
-  fileSystems.${hl.mounts.merged} = {
+  fileSystems.${hl.mounts.merged} = lib.mkForce {
     device = "${hl.mounts.fast}:${hl.mounts.slow}";
     options = [
       "category.create=epff"
