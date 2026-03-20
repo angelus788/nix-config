@@ -58,7 +58,7 @@ in
       ];
     };
   };
-
+  boot.loader.efi.efiSysMountPoint = lib.mkForce "/boot/efis/boot0";
   boot.kernelModules = [ "nct6775" ];
   boot.zfs.forceImportRoot = true;
   boot.supportedFilesystems = [ "zfs" ];
@@ -67,12 +67,13 @@ in
     "pcie_aspm=force"
     "consoleblank=60"
   ];
+
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       immutable = true;
-      loader.efi.efiSysMountPoint = lib.mkForce "/boot/efis/boot0";
+      
       availableKernelModules = [
         "uhci_hcd"
         "ehci_pci"
