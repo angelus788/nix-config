@@ -29,19 +29,19 @@ in
 
   fileSystems."/" = lib.mkForce {
     device = "rpool/nixos/root";
-    fsType = "zfs";
+    fsType = "btrfs";
   # This is critical for ephemeral root setups
     neededForBoot = true; 
   };
   
   fileSystems."/boot" = {
     device = "rpool/nixos/boot";
-    fsType = "zfs";
+    fsType = "vfat";
   };
 
   fileSystems.${hl.mounts.fast} = lib.mkForce {
     device = "cache";
-    fsType = "zfs";
+    fsType = "btrfs";
   };
 
   fileSystems."/mnt/data1" = lib.mkForce {
