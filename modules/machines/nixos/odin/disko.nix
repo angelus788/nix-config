@@ -1,6 +1,5 @@
 { config ? { }, ... }:
 let
-  # Fallback to the primary Crucial MX500 if config isn't passed
   bootDrives = config.zfs-root.bootDevices or [
     "ata-CT500MX500SSD1_1947E228A4C0"
   ];
@@ -30,14 +29,36 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/efis/boot${toString i}";
+                mountpoint = "/boot"; # Simplified mountpoint for Btrfs setup
               };
             };
-            zfs = {
+            root = {
               size = "100%";
               content = {
-                type = "zfs";
-                pool = "rpool";
+                type = "btrfs";
+                extraArgs = [ "-f" ]; # Override existing ZFS labels
+                subvolumes = {
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/var_log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                };
               };
             };
           };
@@ -45,7 +66,7 @@ in
       };
     }) (builtins.length bootDrives))) // 
 
-    # Generate XFS Data Disks
+    # Generate XFS Data Disks (Remains Unchanged)
     (builtins.listToAttrs (map (item: {
       name = item.label;
       value = {
@@ -67,62 +88,5 @@ in
         };
       };
     }) dataDiskIds));
-
-    zpool.rpool = {
-      type = "zpool";
-      # mode = "mirror"; # Removed for single-drive setup
-      options = {
-        ashift = "12";
-        autotrim = "on";
-      };
-      rootFsOptions = {
-        acltype = "posixacl";
-        canmount = "off";
-        dnodesize = "auto";
-        normalization = "formD";
-        relatime = "on";
-        xattr = "sa";
-        mountpoint = "none";
-      };
-      datasets = {
-        "nixos" = { 
-          type = "zfs_fs"; 
-          options.mountpoint = "none"; 
-        };
-        "nixos/root" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/"; 
-          options.mountpoint = "legacy"; 
-          # Perfect for your Impermanence setup
-          postCreateHook = "zfs snapshot rpool/nixos/root@blank"; 
-        };
-        "nixos/nix" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/nix"; 
-          options.mountpoint = "legacy"; 
-          options.atime = "off"; 
-        };
-        "nixos/persist" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/persist"; 
-          options.mountpoint = "legacy"; 
-        };
-        "nixos/home" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/home"; 
-          options.mountpoint = "legacy"; 
-        };
-        "nixos/var_log" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/var/log"; 
-          options.mountpoint = "legacy"; 
-        };
-        "nixos/var_lib" = { 
-          type = "zfs_fs"; 
-          mountpoint = "/var/lib"; 
-          options.mountpoint = "legacy"; 
-        };
-      };
-    };
   };
 }
