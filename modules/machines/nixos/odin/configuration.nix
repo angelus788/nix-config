@@ -81,6 +81,7 @@ in
   # Ensure the bootloader only cares about the root pool
   boot.zfs.forceImportRoot = true;
   boot.zfs.forceImportAll = false;
+  boot.zfs.package = pkgs.zfs_unstable;
 
   zfs-root = {
     boot = {
@@ -142,7 +143,7 @@ in
   networking = {
     useDHCP = false;
     hostName = "odin";
-    hostId = "38541569";
+    hostId = "d97b737d";
     firewall = {
       enable = true;
       allowPing = true;
