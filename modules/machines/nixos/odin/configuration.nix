@@ -76,6 +76,12 @@ in
       path = "/boot/efis/ata-CT500MX500SSD1_1947E228A4C0-part2";
     }
   ];
+  # Force an empty list so it doesn't try to auto-import anything
+  boot.zfs.extraPools = lib.mkForce [ ];
+  
+  # Ensure the bootloader only cares about the root pool
+  boot.zfs.forceImportRoot = true;
+  boot.zfs.forceImportAll = false;
 
   zfs-root = {
     boot = {
