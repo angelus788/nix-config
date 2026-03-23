@@ -29,9 +29,9 @@ in
 
    fileSystems."/" =
     { device = "tmpfs";
-      fsType = "tmpfs";
+      fsType = lib.mkForce "tmpfs";
     };
-    
+
   fileSystems."/mnt/boot" = {
     device = "/dev/disk/by-uuid/62EB-3349";
     fsType = "vfat";
