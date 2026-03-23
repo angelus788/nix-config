@@ -32,8 +32,14 @@ in
     fsType = "zfs";
   # This is critical for ephemeral root setups
     neededForBoot = true; 
-};
-  fileSystems.${hl.mounts.fast} = {
+  };
+  
+  fileSystems."/boot" = {
+    device = "rpool/nixos/boot";
+    fsType = "zfs";
+  };
+
+  fileSystems.${hl.mounts.fast} = lib.mkForce {
     device = "cache";
     fsType = "zfs";
   };
