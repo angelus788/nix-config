@@ -28,7 +28,7 @@ in
   boot.initrd.systemd.enable = true;
 
    fileSystems."/" =
-    { device = "tmpfs";
+    { device = lib.mkForce "tmpfs";
       fsType = lib.mkForce "tmpfs";
     };
 
