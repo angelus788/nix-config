@@ -60,52 +60,16 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
+  boot.supportedFilesystems = [ "btrfs" "xfs" ];
+  #boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
   ];
   boot.loader.grub.device = lib.mkForce "nodev";
 
-  # Ensure mirroredBoots doesn't accidentally pull in a device path
-  boot.loader.grub.mirroredBoots = lib.mkForce [
-    {
-      devices = [ "nodev" ];
-      path = "/boot/efis/ata-CT500MX500SSD1_1947E228A4C0-part2";
-    }
-  ];
-  # Force an empty list so it doesn't try to auto-import anything
-  boot.zfs.extraPools = lib.mkForce [ ];
-  
-  # Ensure the bootloader only cares about the root pool
-  boot.zfs.forceImportRoot = true;
-  boot.zfs.forceImportAll = false;
-  boot.zfs.package = pkgs.zfs_unstable;
-
-  zfs-root = {
-    boot = {
-      enable = true;
-      devNodes = "/dev/disk/by-id/";
-      bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
-      immutable = true;
-      partitionScheme = {
-        biosBoot = "-part4";
-        efiBoot = "-part2";
-        bootPool = "-part1";
-        rootPool = "-part3";
-      };
-      
-      availableKernelModules = [
-        "uhci_hcd"
-        "ehci_pci"
-        "ahci"
-        "sd_mod"
-        "sr_mod"
-      ];
-      removableEfi = true;
-    };
-  };
+# NEW GENERIC VERSION:
+boot-root.devices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
 
   systemd.network = {
     enable = true;
@@ -157,7 +121,7 @@ in
 
   imports = [
     ../../../misc/tailscale
-    ../../../misc/zfs-root
+    #../../../misc/zfs-root
     ../../../misc/agenix
     ./filesystems
     #./backup
