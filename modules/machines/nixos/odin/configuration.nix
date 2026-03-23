@@ -143,7 +143,7 @@ in
   networking = {
     useDHCP = false;
     hostName = "odin";
-    hostId = "d97b737d";
+    hostId = "54c69b54";
     firewall = {
       enable = true;
       allowPing = true;
