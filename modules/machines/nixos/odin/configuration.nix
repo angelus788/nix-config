@@ -69,6 +69,14 @@ in
   ];
   boot.loader.grub.device = lib.mkForce "nodev";
 
+  # Ensure mirroredBoots doesn't accidentally pull in a device path
+  boot.loader.grub.mirroredBoots = lib.mkForce [
+    {
+      devices = [ "nodev" ];
+      path = "/boot/efis/ata-CT500MX500SSD1_1947E228A4C0-part2";
+    }
+  ];
+
   zfs-root = {
     boot = {
       enable = true;
