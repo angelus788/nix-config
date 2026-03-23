@@ -36,7 +36,7 @@ in
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing ZFS labels
+                extraArgs = [ "-f" ]; 
                 subvolumes = {
                   "/root" = {
                     mountpoint = "/";
@@ -48,6 +48,10 @@ in
                   };
                   "/persist" = {
                     mountpoint = "/persist";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/persist/ssh" = {
+                    mountpoint = "/persist/ssh";
                     mountOptions = [ "compress=zstd" "noatime" ];
                   };
                   "/home" = {
