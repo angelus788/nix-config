@@ -71,6 +71,7 @@ in
 
   zfs-root = {
     boot = {
+      enable = true;
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
       immutable = true;
