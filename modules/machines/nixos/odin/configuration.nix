@@ -60,12 +60,11 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
-  boot.supportedFilesystems = [ "btrfs" "xfs" ];
+  boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
   ];
-  boot.loader.grub.device = lib.mkForce "nodev";
 
   systemd.network = {
     enable = true;
