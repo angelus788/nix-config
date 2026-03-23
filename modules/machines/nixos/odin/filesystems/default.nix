@@ -27,16 +27,15 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems."/" = lib.mkForce {
-    device = "rpool/nixos/root";
-    fsType = "btrfs";
-  # This is critical for ephemeral root setups
-    neededForBoot = true; 
-  };
-  
-  fileSystems."/boot" = {
-    device = "rpool/nixos/boot";
+   fileSystems."/" =
+    { device = "tmpfs";
+      fsType = "tmpfs";
+    };
+    
+  fileSystems."/mnt/boot" = {
+    device = "/dev/disk/by-uuid/62EB-3349";
     fsType = "vfat";
+    options = [ "fmask=0022" "dmask=0022" ];
   };
 
   fileSystems.${hl.mounts.fast} = lib.mkForce {
