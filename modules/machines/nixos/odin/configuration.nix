@@ -61,7 +61,6 @@ in
 
   boot.kernelModules = [ "nct6775" ];
   boot.supportedFilesystems = [ "btrfs" "xfs" ];
-  #boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
@@ -104,7 +103,6 @@ in
   networking = {
     useDHCP = false;
     hostName = "odin";
-    hostId = "54c69b54";
     firewall = {
       enable = true;
       allowPing = true;
@@ -125,8 +123,6 @@ in
     ./homelab
     ./secrets
     ./disko.nix
-    #./boot.nix
-    ./vars.nix
   ];
 
   services.duckdns = {
