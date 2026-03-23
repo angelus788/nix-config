@@ -68,9 +68,6 @@ in
   ];
   boot.loader.grub.device = lib.mkForce "nodev";
 
-# NEW GENERIC VERSION:
-boot-root.devices = [ "ata-CT500MX500SSD1_1947E228A4C0" ];
-
   systemd.network = {
     enable = true;
     networks = {

@@ -1,6 +1,6 @@
 { config ? { }, ... }:
 let
-  bootDrives = config.zfs-root.bootDevices or [
+  bootDrives = [
     "ata-CT500MX500SSD1_1947E228A4C0"
   ];
 
