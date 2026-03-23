@@ -141,7 +141,7 @@ in
     };
   };
   networking = {
-    useDHCP = false;
+    useDHCP = true;
     hostName = "odin";
     hostId = "38541569";
     firewall = {
@@ -150,6 +150,7 @@ in
       trustedInterfaces = [
         "lan1"
         "tailscale0"
+        "enp1s0"
       ];
     };
   };
