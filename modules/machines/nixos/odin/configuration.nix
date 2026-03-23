@@ -60,7 +60,6 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
-  boot.zfs.forceImportRoot = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = lib.mkForce "/dev/disk/by-id";
   boot.kernelParams = [
