@@ -19,6 +19,7 @@ in
   home = home;
 
   imports = [
+    ../../dots/ghostty/default.nix
     ../../dots/bitwarden/default.nix
     ../../dots/firefox/default.nix
     ../../dots/zsh/default.nix

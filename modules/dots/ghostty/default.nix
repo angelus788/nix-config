@@ -10,7 +10,7 @@ in
     package = if isLinux then pkgs.ghostty else pkgs.ghostty-bin;
 
     settings = {
-      theme = "nord";
+      theme = "Nord";
       font-size = 16;
       font-family = "Comic Code Ligatures";
 
