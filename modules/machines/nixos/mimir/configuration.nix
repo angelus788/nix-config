@@ -14,6 +14,10 @@
     "pcie_aspm=force"
     "consoleblank=60"
   ];
+
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   networking = {
     hostName = "mimir";
   };
@@ -23,6 +27,7 @@
     ./router
     ./filesystems
     ./secrets
+    ./disko.nix
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
@@ -69,5 +74,6 @@
     gnumake
     gcc
     dig.dnsutils
+    btrfs-progs
   ];
 }
