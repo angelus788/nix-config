@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
+{ pkgs
+, config
+, lib
+, ...
 }:
 {
   boot.kernelModules = [
@@ -11,36 +10,15 @@
   ];
   hardware.cpu.amd.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
-  boot.zfs.forceImportRoot = true;
   boot.kernelParams = [
     "pcie_aspm=force"
     "consoleblank=60"
   ];
   networking = {
     hostName = "mimir";
-    hostId = "73cd46a7";
-  };
-
-  zfs-root = {
-    boot = {
-      bootDevices = [
-        "nvme-CT500P1SSD8_1937E21ED6C8"
-        "ata-2.5__SATA_SSD_3MG2-P_20180326AA1322000496"
-      ];
-      immutable = false;
-      availableKernelModules = [
-        "uhci_hcd"
-        "ehci_pci"
-        "ahci"
-        "sd_mod"
-        "sr_mod"
-      ];
-      removableEfi = true;
-    };
   };
 
   imports = [
-    ../../../misc/zfs-root
     ../../../misc/agenix
     ./router
     ./filesystems
