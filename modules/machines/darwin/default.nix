@@ -18,7 +18,7 @@ let
       ../../users/angelus/dots.nix
       ../../users/angelus/age.nix
       ../../dots/tmux
-      ../../dots/ghostty
+      #../../dots/ghostty
       ../../dots/nvim
     ];
     home-manager.backupFileExtension = "bak";
