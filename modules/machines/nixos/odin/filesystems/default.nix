@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, lib
+, ...
 }:
 let
   hl = config.homelab;
@@ -27,6 +26,19 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
+  fileSystems."/persist" = lib.mkForce {
+    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    fsType = "btrfs";
+    options = [ "subvol=persist" "compress=zstd" "noatime" ];
+    neededForBoot = true; # <--- ADD THIS
+  };
+
+  fileSystems."/var/log" = lib.mkForce {
+    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    fsType = "btrfs";
+    options = [ "subvol=var_log" "compress=zstd" ];
+    neededForBoot = true; # <--- ADD THIS
+  };
 
   fileSystems.${hl.mounts.fast} = lib.mkForce {
     device = "cache";

@@ -26,28 +26,7 @@ in
   # 3. Double-check the ZFS kill-switch
   networking.hostId = lib.mkForce null;
 
-  boot.initrd.systemd.services.rollback = {
-    description = "Rollback Btrfs root subvolume";
-    wantedBy = [ "initrd.target" ];
-    # Ensure the disk is present and Btrfs is ready
-    after = [ "dev-disk-by-uuid-63c744e6\x2d5552\x2d47a5\x2d8407\x2d5c620b7958cf.device" ];
-    before = [ "sysroot.mount" ];
-    unitConfig.DefaultDependencies = "no";
-    serviceConfig.Type = "oneshot";
-    script = ''
-      mkdir -p /mnt
-      mount -t btrfs /dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf /mnt
-    
-      # Same logic as before, but safer in systemd
-      if [ -e /mnt/root ]; then
-        btrfs subvolume delete /mnt/root
-      fi
-      btrfs subvolume snapshot /mnt/root-blank /mnt/root
-      btrfs property set -ts /mnt/root ro false
-    
-      umount /mnt
-    '';
-  };
+
 
   #services.prometheus.exporters = {
   #  shellyplug = {
@@ -94,11 +73,39 @@ in
 
   boot.kernelModules = [ "nct6775" ];
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
-  boot.kernelParams = [
-    "pcie_aspm=force"
-    "consoleblank=60"
-    "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf"
-  ];
+  #boot.kernelParams = [
+  #  "pcie_aspm=force"
+  #  "consoleblank=60"
+  #  "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf"
+  #];
+
+  # 1. Force hardware detection in Stage 1
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
+
+  # 2. Explicitly tell the kernel where the root is to avoid "root=fstab" timing issues
+  boot.kernelParams = [ "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf" ];
+
+  # 3. The Modernized Systemd Rollback
+  boot.initrd.systemd.enable = true;
+  boot.initrd.systemd.services.rollback = {
+    description = "Rollback Btrfs root subvolume";
+    wantedBy = [ "initrd.target" ];
+    after = [ "dev-disk-by-uuid-63c744e6\x2d5552\x2d47a5\x2d8407\x2d5c620b7958cf.device" ];
+    before = [ "sysroot.mount" ];
+    unitConfig.DefaultDependencies = "no";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      mkdir -p /mnt
+      mount -t btrfs /dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf /mnt
+      if [ -e /mnt/root ]; then
+        btrfs subvolume delete /mnt/root
+      fi
+      btrfs subvolume snapshot /mnt/root-blank /mnt/root
+      # Crucial: Ensure the new root is writable
+      btrfs property set -ts /mnt/root ro false
+      umount /mnt
+    '';
+  };
 
   systemd.network = {
     enable = true;
