@@ -16,6 +16,17 @@ let
   ];
 in
 {
+  # 1. Disable GRUB
+boot.loader.grub.enable = false;
+
+# 2. Enable systemd-boot
+boot.loader.systemd-boot.enable = true;
+boot.loader.efi.canTouchEfiVariables = true;
+
+# 3. Double-check the ZFS kill-switch
+networking.hostId = lib.mkForce null;
+boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
+
   #services.prometheus.exporters = {
   #  shellyplug = {
   ##    enable = true;
