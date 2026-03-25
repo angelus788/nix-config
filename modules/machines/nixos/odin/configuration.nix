@@ -73,17 +73,19 @@ in
 
   boot.kernelModules = [ "nct6775" ];
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
-  #boot.kernelParams = [
-  #  "pcie_aspm=force"
-  #  "consoleblank=60"
-  #  "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf"
-  #];
+  boot.kernelParams = lib.mkForce [
+    "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf"
+    "rootrw" # Tells the kernel the root should be writable
+    "rootdelay=5" # Gives the SSD 5 seconds to wake up
+    "pcie_aspm=force"
+    "consoleblank=60"
+    "loglevel=4"
+  ];
 
   # 1. Force hardware detection in Stage 1
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
 
   # 2. Explicitly tell the kernel where the root is to avoid "root=fstab" timing issues
-  boot.kernelParams = [ "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf" ];
 
   # 3. The Modernized Systemd Rollback
   boot.initrd.systemd.enable = true;

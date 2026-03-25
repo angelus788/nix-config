@@ -26,6 +26,12 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
+  fileSystems."/" = lib.mkForce {
+    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    fsType = "btrfs";
+    options = [ "subvol=root" "compress=zstd" "noatime" ];
+  };
+
   fileSystems."/persist" = lib.mkForce {
     device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
     fsType = "btrfs";
