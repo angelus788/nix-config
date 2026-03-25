@@ -1,100 +1,89 @@
-{ config ? { }, ... }:
-let
-  bootDrives = [
-    "ata-CT500MX500SSD1_1947E228A4C0"
-  ];
-
-  dataDiskIds = [
-    { id = "ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"; label = "Data1"; }
-    { id = "ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"; label = "Data2"; }
-    { id = "ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"; label = "Data3"; }
-    { id = "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC"; label = "Data4"; }
-    { id = "ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V"; label = "Parity1"; }
-  ];
-in
 {
   disko.devices = {
-    disk = (builtins.listToAttrs (builtins.genList
-      (i: {
-        name = "boot${toString i}";
-        value = {
-          type = "disk";
-          device = "/dev/disk/by-id/${builtins.elemAt bootDrives i}";
-          content = {
-            type = "gpt";
-            partitions = {
-              boot = { size = "1M"; type = "EF02"; }; # BIOS compatibility
-              ESP = {
-                size = "1G";
-                type = "EF00";
-                content = {
-                  type = "filesystem";
-                  format = "vfat";
-                  mountpoint = "/boot"; # Simplified mountpoint for Btrfs setup
-                };
+    disk = {
+      # OS Drive (Currently sda)
+      boot0 = {
+        type = "disk";
+        device = "/dev/disk/by-id/ata-CT500MX500SSD1_1947E228A4C0";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02"; # BIOS compatibility
+              priority = 1;
+            };
+            ESP = {
+              size = "1G";
+              type = "EF00";
+              priority = 2;
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
-              root = {
-                size = "100%";
-                content = {
-                  type = "btrfs";
-                  extraArgs = [ "-f" ];
-                  subvolumes = {
-                    "/root" = {
-                      mountpoint = "/";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/persist" = {
-                      mountpoint = "/persist";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/persist/ssh" = {
-                      mountpoint = "/persist/ssh";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/home" = {
-                      mountpoint = "/home";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/var_log" = {
-                      mountpoint = "/var/log";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
+            };
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ];
+                subvolumes = {
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/var_log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [ "compress=zstd" "noatime" ];
                   };
                 };
               };
             };
           };
         };
-      })
-      (builtins.length bootDrives))) //
+      };
 
-    # Generate XFS Data Disks (Remains Unchanged)
-    (builtins.listToAttrs (map
-      (item: {
-        name = item.label;
-        value = {
-          type = "disk";
-          device = "/dev/disk/by-id/${item.id}";
-          content = {
-            type = "gpt";
-            partitions = {
-              primary = {
-                size = "100%";
-                content = {
-                  type = "filesystem";
-                  format = "xfs";
-                  extraArgs = [ "-L" item.label ];
-                  mountpoint = "/mnt/${item.label}";
-                };
+      # New Cache Drive (sdb)
+      # Note: Replace the ID below with the actual ID for your second 500GB SSD
+      cache0 = {
+        type = "disk";
+        device = "/dev/disk/by-id/ata-CT500MX500SSD1_XXXXXXXXXXXX"; # <-- UPDATE THIS ID
+        content = {
+          type = "gpt";
+          partitions = {
+            primary = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "xfs";
+                mountpoint = "/mnt/cache";
+                mountOptions = [ "defaults" "nofail" ];
               };
             };
           };
         };
-      })
-      dataDiskIds));
+      };
+
+      # Data Pool (5.5TB Drives)
+      Data1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data1"; mountOptions = [ "nofail" ]; }; }; }; }; };
+      Data2 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data2"; mountOptions = [ "nofail" ]; }; }; }; }; };
+      Data3 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data3"; mountOptions = [ "nofail" ]; }; }; }; }; };
+      Data4 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data4"; mountOptions = [ "nofail" ]; }; }; }; }; };
+      Parity1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Parity1"; mountOptions = [ "nofail" ]; }; }; }; }; };
+    };
   };
 }
