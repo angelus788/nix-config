@@ -14,83 +14,87 @@ let
 in
 {
   disko.devices = {
-    disk = (builtins.listToAttrs (builtins.genList (i: {
-      name = "boot${toString i}";
-      value = {
-        type = "disk";
-        device = "/dev/disk/by-id/${builtins.elemAt bootDrives i}";
-        content = {
-          type = "gpt";
-          partitions = {
-            boot = { size = "1M"; type = "EF02"; }; # BIOS compatibility
-            ESP = {
-              size = "1G";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot"; # Simplified mountpoint for Btrfs setup
+    disk = (builtins.listToAttrs (builtins.genList
+      (i: {
+        name = "boot${toString i}";
+        value = {
+          type = "disk";
+          device = "/dev/disk/by-id/${builtins.elemAt bootDrives i}";
+          content = {
+            type = "gpt";
+            partitions = {
+              boot = { size = "1M"; type = "EF02"; }; # BIOS compatibility
+              ESP = {
+                size = "1G";
+                type = "EF00";
+                content = {
+                  type = "filesystem";
+                  format = "vfat";
+                  mountpoint = "/boot"; # Simplified mountpoint for Btrfs setup
+                };
               };
-            };
-            root = {
-              size = "100%";
-              content = {
-                type = "btrfs";
-                extraArgs = [ "-f" ]; 
-                subvolumes = {
-                  "/root" = {
-                    mountpoint = "/";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/persist/ssh" = {
-                    mountpoint = "/persist/ssh";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/var_log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [ "compress=zstd" "noatime" ];
+              root = {
+                size = "100%";
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-f" ];
+                  subvolumes = {
+                    "/root" = {
+                      mountpoint = "/";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/persist/ssh" = {
+                      mountpoint = "/persist/ssh";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/home" = {
+                      mountpoint = "/home";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/var_log" = {
+                      mountpoint = "/var/log";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
                   };
                 };
               };
             };
           };
         };
-      };
-    }) (builtins.length bootDrives))) // 
+      })
+      (builtins.length bootDrives))) //
 
     # Generate XFS Data Disks (Remains Unchanged)
-    (builtins.listToAttrs (map (item: {
-      name = item.label;
-      value = {
-        type = "disk";
-        device = "/dev/disk/by-id/${item.id}";
-        content = {
-          type = "gpt";
-          partitions = {
-            primary = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                format = "xfs";
-                extraArgs = [ "-L" item.label ];
-                mountpoint = "/mnt/${item.label}";
+    (builtins.listToAttrs (map
+      (item: {
+        name = item.label;
+        value = {
+          type = "disk";
+          device = "/dev/disk/by-id/${item.id}";
+          content = {
+            type = "gpt";
+            partitions = {
+              primary = {
+                size = "100%";
+                content = {
+                  type = "filesystem";
+                  format = "xfs";
+                  extraArgs = [ "-L" item.label ];
+                  mountpoint = "/mnt/${item.label}";
+                };
               };
             };
           };
         };
-      };
-    }) dataDiskIds));
+      })
+      dataDiskIds));
   };
 }
