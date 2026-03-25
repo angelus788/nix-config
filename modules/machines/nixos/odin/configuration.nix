@@ -22,6 +22,7 @@ in
   # 2. Enable systemd-boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelParams = [ "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf" ];
 
   # 3. Double-check the ZFS kill-switch
   networking.hostId = lib.mkForce null;
