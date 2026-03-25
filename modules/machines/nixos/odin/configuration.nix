@@ -17,14 +17,32 @@ let
 in
 {
   # 1. Disable GRUB
-boot.loader.grub.enable = false;
+  boot.loader.grub.enable = false;
 
-# 2. Enable systemd-boot
-boot.loader.systemd-boot.enable = true;
-boot.loader.efi.canTouchEfiVariables = true;
+  # 2. Enable systemd-boot
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-# 3. Double-check the ZFS kill-switch
-networking.hostId = lib.mkForce null;
+  # 3. Double-check the ZFS kill-switch
+  networking.hostId = lib.mkForce null;
+
+  boot.initrd.postDeviceCommands = lib.mkAfter ''
+    mkdir -p /mnt
+    # Updated UUID for sda3
+    mount -t btrfs /dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf /mnt
+  
+    if [ -e /mnt/root ]; then
+      btrfs subvolume delete /mnt/root
+    fi
+  
+    # This relies on root-blank existing at the top level
+    btrfs subvolume snapshot /mnt/root-blank /mnt/root
+  
+    # Ensure the new root is writable
+    btrfs property set -ts /mnt/root ro false
+  
+    umount /mnt
+  '';
 
   #services.prometheus.exporters = {
   #  shellyplug = {
