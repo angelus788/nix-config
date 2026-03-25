@@ -1,7 +1,7 @@
 {
   disko.devices = {
     disk = {
-      # OS Drive (Currently sda)
+      # OS Drive (sda)
       boot0 = {
         type = "disk";
         device = "/dev/disk/by-id/ata-CT500MX500SSD1_1947E228A4C0";
@@ -10,7 +10,7 @@
           partitions = {
             boot = {
               size = "1M";
-              type = "EF02"; # BIOS compatibility
+              type = "EF02";
               priority = 1;
             };
             ESP = {
@@ -30,26 +30,11 @@
                 type = "btrfs";
                 extraArgs = [ "-f" ];
                 subvolumes = {
-                  "/root" = {
-                    mountpoint = "/";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/var_log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
+                  "/root" = { mountpoint = "/"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/nix" = { mountpoint = "/nix"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/persist" = { mountpoint = "/persist"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/home" = { mountpoint = "/home"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/var_log" = { mountpoint = "/var/log"; mountOptions = [ "compress=zstd" "noatime" ]; };
                 };
               };
             };
@@ -57,11 +42,10 @@
         };
       };
 
-      # New Cache Drive (sdb)
-      # Note: Replace the ID below with the actual ID for your second 500GB SSD
+      # Cache Drive (sdb)
       cache0 = {
         type = "disk";
-        device = "/dev/disk/by-id/ata-CT500MX500SSD1_XXXXXXXXXXXX"; # <-- UPDATE THIS ID
+        device = "/dev/disk/by-id/ata-CT500MX500SSD1_1947E228A5E2";
         content = {
           type = "gpt";
           partitions = {
@@ -71,14 +55,14 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/mnt/cache";
-                mountOptions = [ "defaults" "nofail" ];
+                mountOptions = [ "defaults" "discard" "nofail" ];
               };
             };
           };
         };
       };
 
-      # Data Pool (5.5TB Drives)
+      # Data Pool (XFS)
       Data1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data1"; mountOptions = [ "nofail" ]; }; }; }; }; };
       Data2 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data2"; mountOptions = [ "nofail" ]; }; }; }; }; };
       Data3 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data3"; mountOptions = [ "nofail" ]; }; }; }; }; };
