@@ -23,29 +23,13 @@
               content = {
                 type = "btrfs";
                 extraArgs = [ "-L" "odin-root" "-f" ];
-                # Force NixOS to mount this partition by Label in fstab
-                device = "/dev/disk/by-label/odin-root";
+                # Removed manual device path to avoid the "No such file" error
                 subvolumes = {
-                  "/root" = {
-                    mountpoint = "/";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
-                  "/var_log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = [ "compress=zstd" "noatime" ];
-                  };
+                  "/root" = { mountpoint = "/"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/home" = { mountpoint = "/home"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/nix" = { mountpoint = "/nix"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/persist" = { mountpoint = "/persist"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/var_log" = { mountpoint = "/var/log"; mountOptions = [ "compress=zstd" "noatime" ]; };
                 };
               };
             };
@@ -67,7 +51,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/cache";
                 extraArgs = [ "-L" "odin-cache" "-f" ];
-                device = "/dev/disk/by-label/odin-cache";
                 mountOptions = [ "nofail" ];
               };
             };
@@ -89,7 +72,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/Data1";
                 extraArgs = [ "-L" "data1" "-f" ];
-                device = "/dev/disk/by-label/data1";
                 mountOptions = [ "nofail" ];
               };
             };
@@ -111,7 +93,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/Data2";
                 extraArgs = [ "-L" "data2" "-f" ];
-                device = "/dev/disk/by-label/data2";
                 mountOptions = [ "nofail" ];
               };
             };
@@ -133,7 +114,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/Data3";
                 extraArgs = [ "-L" "data3" "-f" ];
-                device = "/dev/disk/by-label/data3";
                 mountOptions = [ "nofail" ];
               };
             };
@@ -155,7 +135,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/Data4";
                 extraArgs = [ "-L" "data4" "-f" ];
-                device = "/dev/disk/by-label/data4";
                 mountOptions = [ "nofail" ];
               };
             };
@@ -177,7 +156,6 @@
                 format = "xfs";
                 mountpoint = "/mnt/Parity1";
                 extraArgs = [ "-L" "parity1" "-f" ];
-                device = "/dev/disk/by-label/parity1";
                 mountOptions = [ "nofail" ];
               };
             };
