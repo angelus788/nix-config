@@ -26,6 +26,8 @@
           IdentitiesOnly yes
           Host *
             IdentityAgent ~/.1password/agent.sock
+            Host *
+            IdentityAgent ~/.bitwarden/agent.sock
           Host *
             ControlMaster no
             ControlPersist no
