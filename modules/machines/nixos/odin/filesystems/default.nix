@@ -28,7 +28,7 @@ in
 
   fileSystems.${hl.mounts.fast} = {
     device = "cache";
-    fsType = "xfs";
+    fsType = "btrfs";
   };
 
   fileSystems."/" = lib.mkForce {
@@ -92,13 +92,6 @@ in
     fsType = "btrfs";
     options = [ "subvol=var_log" ];
   };
-
-
-  fileSystems.${hl.mounts.fast} = lib.mkForce {
-    device = "cache";
-    fsType = "btrfs";
-  };
-
 
   fileSystems.${hl.mounts.slow} = lib.mkForce {
     device = "/mnt/data*";
