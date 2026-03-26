@@ -76,41 +76,8 @@ in
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
   boot.initrd.kernelModules = [ "btrfs" ];
 
-  systemd.network = {
-    enable = true;
-    networks = {
-      "10-lan1" = {
-        matchConfig.Name = "lan1";
-        networkConfig = {
-          DHCP = true;
-          Address = odinIPAddress;
-          IPv6AcceptRA = true;
-          LinkLocalAddressing = "ipv6";
-        };
-        dhcpV4Config = {
-          UseHostname = false;
-          UseDNS = true;
-          UseNTP = true;
-          UseSIP = false;
-          ClientIdentifier = "mac";
-        };
-        ipv6AcceptRAConfig = {
-          UseDNS = true;
-          DHCPv6Client = true;
-        };
-        dhcpV6Config = {
-          WithoutRA = "solicit";
-          UseDelegatedPrefix = true;
-          UseHostname = false;
-          UseDNS = true;
-          UseNTP = false;
-        };
-        linkConfig.RequiredForOnline = "routable";
-      };
-    };
-  };
   networking = {
-    useDHCP = false;
+    useDHCP = true;
     hostName = "odin";
     firewall = {
       enable = true;
