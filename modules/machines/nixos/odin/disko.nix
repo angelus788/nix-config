@@ -47,9 +47,9 @@
               size = "100%";
               content = {
                 type = "filesystem";
-                format = "xfs";
-                mountpoint = "/cache"; # Changed from /mnt/cache
-                extraArgs = [ "-L" "odin-cache" "-f" ];
+                format = "btrfs";
+                mountpoint = "/cache";
+                extraArgs = [ "-L" "cache" "-f" ];
                 mountOptions = [ "nofail" ];
               };
             };
@@ -69,7 +69,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/Data1"; # Changed from /mnt/Data1
+                mountpoint = "/mnt/Data1"; # Changed from /mnt/Data1
                 extraArgs = [ "-L" "data1" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -90,7 +90,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/Data2";
+                mountpoint = "/mnt/Data2";
                 extraArgs = [ "-L" "data2" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -111,7 +111,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/Data3";
+                mountpoint = "/mnt/Data3";
                 extraArgs = [ "-L" "data3" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -132,7 +132,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/Data4";
+                mountpoint = "/mnt/Data4";
                 extraArgs = [ "-L" "data4" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -153,7 +153,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/Parity1";
+                mountpoint = "/mnt/Parity1";
                 extraArgs = [ "-L" "parity1" "-f" ];
                 mountOptions = [ "nofail" ];
               };
