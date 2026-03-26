@@ -53,7 +53,7 @@
       odin = {
         hostname = "192.168.1.233";
         user = "angelus";
-        port = 22;
+        port = 69;
         identityFile = "~/.ssh/angelus";
       };
       "github.com" = {
