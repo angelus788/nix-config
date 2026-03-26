@@ -99,7 +99,7 @@ in
   };
 
   fileSystems.${hl.mounts.slow} = lib.mkForce {
-    device = "/mnt/data*";
+    device = "/Data*";
     options = [
       "category.create=mfs"
       "defaults"
