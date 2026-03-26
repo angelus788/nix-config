@@ -26,9 +26,10 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
-  fileSystems.${hl.mounts.fast} = {
-    device = "cache";
+  fileSystems.${hl.mounts.fast} = lib.mkForce {
+    device = "/dev/disk/by-label/cache";
     fsType = "btrfs";
+    options = [ "subvol=cache" "noatime" "compress=zstd" ];
   };
 
   fileSystems."/" = lib.mkForce {
@@ -66,6 +67,7 @@ in
     device = "/dev/disk/by-label/BOOT";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
+    neededForBoot = true;
   };
 
 
