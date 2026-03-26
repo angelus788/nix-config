@@ -41,6 +41,7 @@
 
   system.stateVersion = "25.11";
 
+  nix.gc.automatic = true;
   systemd.services.nixos-upgrade.preStart = ''
     cd /etc/nixos
     chown -R root:root .
