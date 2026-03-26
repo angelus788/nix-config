@@ -71,11 +71,11 @@
         };
       };
       # DATA DRIVES (5.5TB WDs)
-      data1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data1"; extraArgs = [ "-L" "odin-data1" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
-      data2 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data2"; extraArgs = [ "-L" "odin-data2" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
-      data3 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data3"; extraArgs = [ "-L" "odin-data3" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
-      data4 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data4"; extraArgs = [ "-L" "odin-data4" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
-      parity1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Parity1"; extraArgs = [ "-L" "odin-parity1" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
+      data1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX92D62J3FRL"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data1"; extraArgs = [ "-L" "data1" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
+      data2 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX52DC0KY6JR"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data2"; extraArgs = [ "-L" "data2" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
+      data3 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EDAZ-11U78B0_WD-WX22A82EZPTC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data3"; extraArgs = [ "-L" "data3" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
+      data4 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D28H9YHC"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Data4"; extraArgs = [ "-L" "data4" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
+      parity1 = { type = "disk"; device = "/dev/disk/by-id/ata-WDC_WD60EFRX-68L0BN1_WD-WX11D57REZ0V"; content = { type = "gpt"; partitions = { primary = { size = "100%"; content = { type = "filesystem"; format = "xfs"; mountpoint = "/mnt/Parity1"; extraArgs = [ "-L" "parity1" "-f" ]; mountOptions = [ "nofail" ]; }; }; }; }; };
     };
   };
 }
