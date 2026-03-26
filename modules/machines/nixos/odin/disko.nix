@@ -23,7 +23,6 @@
               content = {
                 type = "btrfs";
                 extraArgs = [ "-L" "odin-root" "-f" ];
-                # Removed manual device path to avoid the "No such file" error
                 subvolumes = {
                   "/root" = { mountpoint = "/"; mountOptions = [ "compress=zstd" "noatime" ]; };
                   "/home" = { mountpoint = "/home"; mountOptions = [ "compress=zstd" "noatime" ]; };
@@ -49,7 +48,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/cache";
+                mountpoint = "/cache"; # Changed from /mnt/cache
                 extraArgs = [ "-L" "odin-cache" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -70,7 +69,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/Data1";
+                mountpoint = "/Data1"; # Changed from /mnt/Data1
                 extraArgs = [ "-L" "data1" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -91,7 +90,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/Data2";
+                mountpoint = "/Data2";
                 extraArgs = [ "-L" "data2" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -112,7 +111,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/Data3";
+                mountpoint = "/Data3";
                 extraArgs = [ "-L" "data3" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -133,7 +132,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/Data4";
+                mountpoint = "/Data4";
                 extraArgs = [ "-L" "data4" "-f" ];
                 mountOptions = [ "nofail" ];
               };
@@ -154,7 +153,7 @@
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = "/mnt/Parity1";
+                mountpoint = "/Parity1";
                 extraArgs = [ "-L" "parity1" "-f" ];
                 mountOptions = [ "nofail" ];
               };
