@@ -71,8 +71,8 @@ in
     };
   };
 
-  boot.kernelModules = [ "intel" ];
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "xhci_pci" "ahci" "usbhid" "sr_mod" ];
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
   boot.initrd.kernelModules = [ "btrfs" ];
 
