@@ -71,43 +71,9 @@ in
     };
   };
 
-  boot.kernelModules = [ "nct6775" ];
-  boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
-  boot.kernelParams = lib.mkForce [
-    "root=UUID=63c744e6-5552-47a5-8407-5c620b7958cf"
-    "rootrw" # Tells the kernel the root should be writable
-    "rootdelay=5" # Gives the SSD 5 seconds to wake up
-    "pcie_aspm=force"
-    "consoleblank=60"
-    "loglevel=4"
-  ];
-
-  # 1. Force hardware detection in Stage 1
+  boot.kernelModules = [ "intel" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
-
-  # 2. Explicitly tell the kernel where the root is to avoid "root=fstab" timing issues
-
-  # 3. The Modernized Systemd Rollback
-  boot.initrd.systemd.enable = true;
-  boot.initrd.systemd.services.rollback = {
-    description = "Rollback Btrfs root subvolume";
-    wantedBy = [ "initrd.target" ];
-    after = [ "dev-disk-by-uuid-63c744e6\x2d5552\x2d47a5\x2d8407\x2d5c620b7958cf.device" ];
-    before = [ "sysroot.mount" ];
-    unitConfig.DefaultDependencies = "no";
-    serviceConfig.Type = "oneshot";
-    script = ''
-      mkdir -p /mnt
-      mount -t btrfs /dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf /mnt
-      if [ -e /mnt/root ]; then
-        btrfs subvolume delete /mnt/root
-      fi
-      btrfs subvolume snapshot /mnt/root-blank /mnt/root
-      # Crucial: Ensure the new root is writable
-      btrfs property set -ts /mnt/root ro false
-      umount /mnt
-    '';
-  };
+  boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
 
   systemd.network = {
     enable = true;

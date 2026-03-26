@@ -26,25 +26,73 @@ in
   # This fixes the weird mergerfs permissions issue
   boot.initrd.systemd.enable = true;
 
+  fileSystems.${hl.mounts.fast} = {
+    device = "cache";
+    fsType = "xfs";
+  };
+
   fileSystems."/" = lib.mkForce {
-    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
-    options = [ "subvol=root" "compress=zstd" "noatime" ];
+    options = [ "subvol=root" ];
+  };
+
+  fileSystems."/Data1" = lib.mkForce {
+    device = "/dev/disk/by-label/data1";
+    fsType = "xfs";
+  };
+
+  fileSystems."/Data2" = lib.mkForce {
+    device = "/dev/disk/by-label/data2";
+    fsType = "xfs";
+  };
+
+  fileSystems."/Data3" = lib.mkForce {
+    device = "/dev/disk/by-label/data3";
+    fsType = "xfs";
+  };
+
+  fileSystems."/Data4" = lib.mkForce {
+    device = "/dev/disk/by-label/data4";
+    fsType = "xfs";
+  };
+
+  fileSystems."/Parity1" = lib.mkForce {
+    device = "/dev/disk/by-label/parity1";
+    fsType = "xfs";
+  };
+
+  fileSystems."/boot" = lib.mkForce {
+    device = "/dev/disk/by-label/3069-70F1";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
+
+
+  fileSystems."/home" = lib.mkForce {
+    device = "/dev/disk/by-label/odin-root";
+    fsType = "btrfs";
+    options = [ "subvol=home" ];
+  };
+
+  fileSystems."/nix" = lib.mkForce {
+    device = "/dev/disk/by-label/odin-root";
+    fsType = "btrfs";
+    options = [ "subvol=nix" ];
   };
 
   fileSystems."/persist" = lib.mkForce {
-    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
-    options = [ "subvol=persist" "compress=zstd" "noatime" ];
-    neededForBoot = true; # <--- ADD THIS
+    options = [ "subvol=persist" ];
   };
 
   fileSystems."/var/log" = lib.mkForce {
-    device = "/dev/disk/by-uuid/63c744e6-5552-47a5-8407-5c620b7958cf";
+    device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
-    options = [ "subvol=var_log" "compress=zstd" ];
-    neededForBoot = true; # <--- ADD THIS
+    options = [ "subvol=var_log" ];
   };
+
 
   fileSystems.${hl.mounts.fast} = lib.mkForce {
     device = "cache";
