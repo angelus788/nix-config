@@ -63,7 +63,7 @@ in
   };
 
   fileSystems."/boot" = lib.mkForce {
-    device = "/dev/disk/by-label/3069-70F1";
+    device = "/dev/disk/by-label/BOOT";
     fsType = "vfat";
     options = [ "fmask=0077" "dmask=0077" ];
   };
@@ -79,18 +79,21 @@ in
     device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
     options = [ "subvol=nix" ];
+    neededForBoot = true;
   };
 
   fileSystems."/persist" = lib.mkForce {
     device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
     options = [ "subvol=persist" ];
+    neededForBoot = true;
   };
 
   fileSystems."/var/log" = lib.mkForce {
     device = "/dev/disk/by-label/odin-root";
     fsType = "btrfs";
     options = [ "subvol=var_log" ];
+    neededForBoot = true;
   };
 
   fileSystems.${hl.mounts.slow} = lib.mkForce {

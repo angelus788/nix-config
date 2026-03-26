@@ -9,6 +9,8 @@
       "/var/lib/snapraid.content"
       "/mnt/data1/snapraid.content"
       "/mnt/data2/snapraid.content"
+      "/mnt/data3/snapraid.content"
+      "/mnt/data4/snapraid.content"
     ];
     dataDisks = {
       d1 = "/mnt/data1";
