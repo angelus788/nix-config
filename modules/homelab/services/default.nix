@@ -81,6 +81,12 @@ in
     };
     services.caddy = {
       enable = true;
+
+      package = pkgs.caddy.withPlugins {
+        plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20240828110512-9c9146141144" ];
+        hash = "sha256-RkQ0S3O/vW69YlK68/jVn/R8L4G6R8Y8/8L0R8Y8L0="; 
+      };
+
       globalConfig = ''
         auto_https off
       '';
