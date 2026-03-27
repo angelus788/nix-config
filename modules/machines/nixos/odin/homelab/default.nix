@@ -96,7 +96,6 @@ in
             PiKVM =
               let
                 ip = config.homelab.networks.local.lan.reservations.pikvm.Address;
-                #ip = "192.168.1.242";
               in
               {
                 href = "https://${ip}";
