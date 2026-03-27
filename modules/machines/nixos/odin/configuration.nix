@@ -137,6 +137,8 @@ in
 
   system.autoUpgrade.enable = true;
 
+  
+
   #services.withings2intervals = {
   #  enable = true;
   #  configFile = config.age.secrets.withings2intervals.path;
@@ -176,8 +178,9 @@ in
     cpufrequtils
     intel-gpu-tools
     powertop
+    caddy
   ];
-
+  
   #tg-notify = {
   #  enable = true;
   #  credentialsFile = config.age.secrets.tgNotifyCredentials.path;

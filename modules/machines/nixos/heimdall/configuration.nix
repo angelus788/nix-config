@@ -45,6 +45,9 @@
   services.openssh = {
     openFirewall = true;
   };
+
+  environment.systemPackages = [ pkgs.caddy ];
+  
   imports =
     [
       ../../../misc/avgtechguy.com
