@@ -8,11 +8,11 @@ let
   lan = hl.networks.local.lan;
   odinIPAddress = lan.reservations.odin.Address;
   hardDrives = [
-    "/dev/disk/by-label/Data1"
-    "/dev/disk/by-label/Data2"
-    "/dev/disk/by-label/Data3"
-    "/dev/disk/by-label/Data4"
-    "/dev/disk/by-label/Parity1"
+    "/dev/disk/by-label/data1"
+    "/dev/disk/by-label/data2"
+    "/dev/disk/by-label/data3"
+    "/dev/disk/by-label/data4"
+    "/dev/disk/by-label/parity1"
   ];
 in
 {
@@ -71,7 +71,7 @@ in
     };
   };
 
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "nct6775" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "xhci_pci" "ahci" "usbhid" "sr_mod" ];
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
   boot.initrd.kernelModules = [ "btrfs" ];
@@ -125,7 +125,7 @@ in
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon2/device/pwm2:50:50" ];
+        pwmPaths = [ "/sys/class/hwmon/hwmon1/pwm2:50:50" ];
         extraArgs = [
           "-i 30sec"
         ];
