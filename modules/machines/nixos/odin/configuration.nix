@@ -145,25 +145,25 @@ in
   #  authCodeFile = config.age.secrets.withings2intervals_authcode.path;
   #};
 
-  #services.mover = {
-  #  enable = true;
-  #  cacheArray = hl.mounts.fast;
-  #  backingArray = hl.mounts.slow;
-  #  user = hl.user;
-  #  group = hl.group;
-  #  percentageFree = 60;
-  #  excludedPaths = [
-  #    "Media/Music"
-  #    "Media/Photos"
-  #    "YoutubeCurrent"
-  #    "Downloads.tmp"
-  #    "Media/Kiwix"
-  #    "Documents"
-  #    "TimeMachine"
-  #    ".DS_Store"
-  #    ".cache"
-  #  ];
-  #};
+  services.mover = {
+    enable = true;
+    cacheArray = hl.mounts.fast;
+    backingArray = hl.mounts.slow;
+    user = hl.user;
+    group = hl.group;
+    percentageFree = 60;
+    excludedPaths = [
+      "Media/Music"
+      "Media/Photos"
+      "YoutubeCurrent"
+      "Downloads.tmp"
+      "Media/Kiwix"
+      "Documents"
+      "TimeMachine"
+      ".DS_Store"
+      ".cache"
+    ];
+  };
 
   services.autoaspm.enable = true;
   powerManagement.powertop.enable = true;

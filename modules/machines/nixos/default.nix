@@ -55,7 +55,7 @@ in
                 ../../homelab
                 ../../misc/email
                 #../../misc/tg-notify
-                #../../misc/mover
+                ../../misc/mover
                 #../../misc/withings2intervals
                 self.inputs.agenix.nixosModules.default
                 self.inputs.disko.nixosModules.disko
