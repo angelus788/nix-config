@@ -38,8 +38,10 @@ in
       (
         config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
       ) [ 7000 ]);
+
     systemd.services.frp.serviceConfig.LoadCredential =
       lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+
     services.frp = lib.mkIf config.homelab.frp.enable {
       enable = true;
       role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
@@ -65,10 +67,13 @@ in
           }
           // common;
     };
+
     security.acme = {
       acceptTerms = true;
       defaults.email = "avgtechguy@mailbox.org";
-      certs.${config.homelab.baseDomain} = {
+      defaults.server = "https://acme-v02.api.letsencrypt.org/directory"; 
+
+      certs."${config.homelab.baseDomain}" = {
         reloadServices = [ "caddy.service" ];
         domain = "${config.homelab.baseDomain}";
         extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
@@ -79,29 +84,38 @@ in
         environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
     };
+    age.secrets.cloudflareDnsApiCredentials.owner = "acme";
+
     services.caddy = {
       enable = true;
       globalConfig = ''
-        auto_https off
+   
       '';
+
+      extraConfig = ''
+        (cloudflare) {
+          tls /var/lib/acme/${config.homelab.baseDomain}/fullchain.pem /var/lib/acme/${config.homelab.baseDomain}/key.pem
+        }
+      '';
+
       virtualHosts = {
-        "http://${config.homelab.baseDomain}" = {
+        "${config.homelab.baseDomain}" = {
           extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-        "http://*.${config.homelab.baseDomain}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
+            import cloudflare
+            reverse_proxy http://localhost:8080
           '';
         };
 
+        "http://${config.homelab.baseDomain}".extraConfig = "redir https://{host}{uri}";
+        "http://*.${config.homelab.baseDomain}".extraConfig = "redir https://{host}{uri}";
       };
     };
+
     nixpkgs.config.permittedInsecurePackages = [
       "dotnet-sdk-6.0.428"
       "aspnetcore-runtime-6.0.36"
     ];
+
     virtualisation.podman = {
       dockerCompat = true;
       autoPrune.enable = true;
@@ -110,13 +124,11 @@ in
         dns_enabled = true;
       };
     };
-    virtualisation.oci-containers = {
-      backend = "podman";
-    };
+
+    virtualisation.oci-containers.backend = "podman";
 
     networking.firewall.interfaces.podman0.allowedUDPPorts =
-      lib.lists.optionals config.virtualisation.podman.enable
-        [ 53 ];
+      lib.lists.optionals config.virtualisation.podman.enable [ 53 ];
   };
 
   imports = [

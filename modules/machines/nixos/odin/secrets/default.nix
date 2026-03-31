@@ -1,7 +1,13 @@
 { inputs, ... }:
 {
   age.secrets = {
-    cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+    cloudflareFirewallApiKey = {
+      file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+      owner = "acme";
+      group = "caddy";
+      mode = "0440";
+    };
+
     duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
     keycloakDbPasswordFile.file = "${inputs.secrets}/keycloakDbPasswordFile.age";
