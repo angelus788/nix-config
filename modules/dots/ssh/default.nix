@@ -51,6 +51,12 @@
         identityFile = "~/.ssh/angelus";
       };
       odin = {
+        hostname = "odin";
+        user = "angelus";
+        port = 69;
+        identityFile = "~/.ssh/angelus";
+      };
+      odinip = {
         hostname = "192.168.1.233";
         user = "angelus";
         port = 69;
