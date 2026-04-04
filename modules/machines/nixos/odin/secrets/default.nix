@@ -8,6 +8,8 @@
       mode = "0440";
     };
 
+    #borgBackupKey.file = "${inputs.secrets}/borgBackupKey.age";
+    #borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
     duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
     keycloakDbPasswordFile.file = "${inputs.secrets}/keycloakDbPasswordFile.age";
@@ -34,6 +36,7 @@
       owner = "share";
   };
     tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
+    #vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
   };
 }

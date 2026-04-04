@@ -77,8 +77,9 @@ in
   boot.initrd.kernelModules = [ "btrfs" ];
 
   networking = {
-    useDHCP = true;
+    useDHCP = false;
     hostName = "odin";
+    interfaces.enp1s0.useDHCP = true;
     firewall = {
       enable = true;
       allowPing = true;
