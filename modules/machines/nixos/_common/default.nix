@@ -41,7 +41,12 @@
 
   system.stateVersion = "25.11";
 
-  nix.gc.automatic = true;
+  nix.gc = {
+  automatic = true;
+  dates = "weekly";
+  options = "--delete-older-than 7d";
+};
+
   systemd.services.nixos-upgrade.preStart = ''
     cd /etc/nixos
     chown -R root:root .

@@ -3,6 +3,7 @@
 {
   # 1. Enable GRUB
   boot.loader.grub.enable = true;
+  boot.loader.grub.configurationLimit = 3;
 
   # 2. CLEAR the duplicated list and force it to be exactly what we want
   # This stops the 'mirroredBoots' error by overriding the cloud default.
@@ -47,7 +48,7 @@
   };
 
   environment.systemPackages = [ pkgs.caddy ];
-  
+
   imports =
     [
       ../../../misc/avgtechguy.com
