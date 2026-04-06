@@ -11,7 +11,7 @@ in
   services.fail2ban-cloudflare = {
     enable = true;
     apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
-    zoneId = "5a125e72bca5869bfb929db157d89d96";
+    zoneId = "4fdfcf6fe7bc561019d20992e5a53eb1";
   };
   homelab = {
     enable = true;
@@ -122,7 +122,7 @@ in
           }
         ];
       };
-      #jellyfin.enable = true;
+      jellyfin.enable = true;
       #paperless = {
       #  enable = true;
       #  passwordFile = config.age.secrets.paperlessPassword.path;

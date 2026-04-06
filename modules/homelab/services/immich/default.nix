@@ -65,15 +65,26 @@ in
     services.immich = {
       group = homelab.group;
       enable = true;
+      host = "0.0.0.0"; # Explicitly set to IPv4 loopback
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
+      environment = {
+        IMMICH_URL = "https://${cfg.url}";
+        IMMICH_TRUSTED_PROXIES = "100.94.78.77";
+      };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
-      '';
+        reverse_proxy http://100.94.78.77:2283 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+    
+    # STRIP THE TIMESTAMP (The 1970 fix)
+    header -Last-Modified
+        '';
     };
-  };
+  };        # reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
 
 }

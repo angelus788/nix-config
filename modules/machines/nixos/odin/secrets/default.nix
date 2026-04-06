@@ -27,16 +27,16 @@
     paperlessPassword.file = "${inputs.secrets}/paperlessPassword.age";
     paperlessWebdav.file = "${inputs.secrets}/paperlessWebdav.age";
     radicaleHtpasswd.file = "${inputs.secrets}/radicaleHtpasswd.age";
-    resticPassword = {
-      file = "${inputs.secrets}/resticPassword.age";
-      owner = "restic";
-    };
+    #resticPassword = {
+    #  file = "${inputs.secrets}/resticPassword.age";
+    #  owner = "restic";
+    #};
     slskdEnvironmentFile = {
-      file = "${inputs.secrets}/slskdEnviromentFile.age";
+      file = "${inputs.secrets}/slskdEnvironmentFile.age";
       owner = "share";
   };
     tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
-    #vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
+    vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
   };
 }

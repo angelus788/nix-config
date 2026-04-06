@@ -26,6 +26,11 @@
         environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
     };
+  services.caddy.virtualHosts."photos.internalnetwork.party" = {
+    useACMEHost = "internalnetwork.party";
+    extraConfig = "reverse_proxy http://odin-tailscale-ip:2283";
+  };
+    
   homelab = {
     baseDomain = "avgtechguy.com";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsAvgtechguy.path;

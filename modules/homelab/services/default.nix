@@ -146,7 +146,7 @@ in
     ./homepage
     ./immich
     ./invoiceplane
-    #./jellyfin
+    ./jellyfin
     ./keycloak
     ./matrix
     ./plausible

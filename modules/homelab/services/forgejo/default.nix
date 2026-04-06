@@ -47,6 +47,8 @@ in
           DOMAIN = cfg.url;
           ROOT_URL = "https://${cfg.url}/";
           HTTP_PORT = 3000;
+          #SSH_DOMAIN = "direct.${hl.baseDomain}"; #added
+          SSH_LISTEN_PORT = lib.head config.services.openssh.ports;
           LANDING_PAGE = "/avgtechguy"; #"login" #"/avgtechguy"; #"explore"
           SSH_PORT = lib.head config.services.openssh.ports;
         };

@@ -12,13 +12,13 @@
       gitIncludes.file = "${inputs.secrets}/gitIncludes.age";
       frpToken.file = "${inputs.secrets}/frpToken.age";
       
-      ssh = {
-      file = "${inputs.secrets}/ssh.nix";
-      path = "/home/angelus/.ssh/angelus";
-      owner = "angelus";
-      group = "users";
-      mode = "600";
-      };
+      #ssh = {
+      #file = "${inputs.secrets}/ssh.nix";
+      #path = "/home/angelus/.ssh/angelus";
+      #owner = "angelus";
+      #group = "users";
+      #mode = "600";
+      #};
     };
   };
 }

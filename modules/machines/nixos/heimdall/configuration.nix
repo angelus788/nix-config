@@ -33,7 +33,10 @@
     "console=ttyS0,115200"
   ];
 
-
+  boot.kernel.sysctl = {
+    "net.ipv4.tcp_mtu_probing" = 1; # Allows the kernel to detect and fix MTU issues
+  };
+  
   networking = {
     useDHCP = false;
     hostName = "heimdall";
@@ -66,6 +69,11 @@ environment.etc."clickhouse-server/config.d/low-retention-logs.xml".text = ''
   </clickhouse>
 '';
 
+networking.firewall.extraCommands = ''
+  # Force shrunken packets for all Tailscale traffic
+  iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+'';
+  
   imports =
     [
       ../../../misc/avgtechguy.com

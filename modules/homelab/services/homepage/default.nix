@@ -7,6 +7,7 @@ let
   service = "homepage-dashboard";
   cfg = config.homelab.services.homepage;
   homelab = config.homelab;
+  
 in
 {
   options.homelab.services.homepage = {
