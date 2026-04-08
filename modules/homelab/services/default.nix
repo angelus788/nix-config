@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   cfg = config.homelab;
@@ -35,9 +34,10 @@ in
       80
       443
     ]
-    ++ (lib.optionals (
-      config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
-    ) [ 7000 ]);
+    ++ (lib.optionals
+      (
+        config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
+      ) [ 7000 ]);
     systemd.services.frp.serviceConfig.LoadCredential =
       lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
     services.frp = lib.mkIf config.homelab.frp.enable {
@@ -76,9 +76,34 @@ in
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
         group = config.services.caddy.group;
-        environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
+        environmentFile = "/run/agenix/cloudflareDnsApiCredentials";
+        webroot = null; #tries to disable fallback
+        #listenHTTP = null; #tries to disable fallback
+        #environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        #environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
+
       };
     };
+
+    systemd.services."acme-order-renew-avgtechguy.com" = {
+      # Add systemd here so 'systemctl' works in the postrun
+      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash ];
+      serviceConfig = {
+        User = lib.mkForce "acme";
+        Group = lib.mkForce "deploy";
+        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
+      };
+    };
+
+    systemd.services."acme-order-renew-internalnetwork.party" = {
+      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash ];
+      serviceConfig = {
+        User = lib.mkForce "acme";
+        Group = lib.mkForce "deploy";
+        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
+      };
+    };
+
     services.caddy = {
       enable = true;
       globalConfig = ''
@@ -115,7 +140,8 @@ in
     };
 
     networking.firewall.interfaces.podman0.allowedUDPPorts =
-      lib.lists.optionals config.virtualisation.podman.enable
+      lib.lists.optionals
+        config.virtualisation.podman.enable
         [ 53 ];
   };
 

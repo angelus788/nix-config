@@ -30,8 +30,22 @@
       group = lib.mkForce "forgejo";
       mode = "0440";
     };
-    cloudflareDnsApiCredentialsAvgtechguy.file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age";
-    
+    cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+
+    cloudflareDnsApiCredentials = {
+      file = "${inputs.secrets}/cloudflareDnsApiCredentials.age";
+      owner = "acme";
+      group = "deploy";
+      mode = "0400";
+    };
+
+    cloudflareDnsApiCredentialsAvgtechguy = {
+      file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age";
+      owner = "acme";
+      group = "deploy";
+      mode = "0400";
+    };
+
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
     #duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     #duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";

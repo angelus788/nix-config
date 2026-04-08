@@ -1,11 +1,20 @@
 { inputs, ... }:
 {
   age.secrets = {
-    cloudflareFirewallApiKey = {
-      file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+    cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+
+    cloudflareDnsApiCredentials = {
+      file = "${inputs.secrets}/cloudflareDnsApiCredentials.age"; # adjust path
       owner = "acme";
-      group = "caddy";
-      mode = "0440";
+      group = "deploy";
+      mode = "0400";
+    };
+
+    cloudflareDnsApiCredentialsAvgtechguy = {
+      file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age"; # adjust path
+      owner = "acme";
+      group = "deploy";
+      mode = "0400";
     };
 
     #borgBackupKey.file = "${inputs.secrets}/borgBackupKey.age";
@@ -34,7 +43,7 @@
     slskdEnvironmentFile = {
       file = "${inputs.secrets}/slskdEnvironmentFile.age";
       owner = "share";
-  };
+    };
     tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";

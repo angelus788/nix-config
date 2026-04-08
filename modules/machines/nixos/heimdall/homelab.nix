@@ -15,7 +15,7 @@
       domain = "internalnetwork.party";
     in
     {
-      "${domain}" = {
+      "${domain}" = lib.mkForce {
         reloadServices = [ "caddy.service" ];
         domain = "${domain}";
         extraDomainNames = [ "*.${domain}" ];
@@ -23,14 +23,10 @@
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
         group = config.services.caddy.group;
-        environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
+        environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+        #environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
     };
-  services.caddy.virtualHosts."photos.internalnetwork.party" = {
-    useACMEHost = "internalnetwork.party";
-    extraConfig = "reverse_proxy http://odin-tailscale-ip:2283";
-  };
-    
   homelab = {
     baseDomain = "avgtechguy.com";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsAvgtechguy.path;

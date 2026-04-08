@@ -35,7 +35,7 @@
   boot.kernel.sysctl = {
     "net.ipv4.tcp_mtu_probing" = 1; # Allows the kernel to detect and fix MTU issues
   };
-  
+
   networking = {
     useDHCP = false;
     hostName = "heimdall";
@@ -43,7 +43,7 @@
     firewall = {
       enable = true;
       allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 80 443];
+      allowedTCPPorts = [ 80 443 ];
     };
   };
   services.openssh = {
@@ -52,28 +52,23 @@
 
   environment.systemPackages = [ pkgs.caddy ];
 
-environment.etc."clickhouse-server/config.d/low-retention-logs.xml".text = ''
-  <clickhouse>
-      <system_log_list>
-          <trace_log>
-              <database>system</database>
-              <table>trace_log</table>
-              <ttl>event_date + INTERVAL 1 DAY</ttl>
-          </trace_log>
-          <text_log>
-              <database>system</database>
-              <table>text_log</table>
-              <ttl>event_date + INTERVAL 1 DAY</ttl>
-          </text_log>
-      </system_log_list>
-  </clickhouse>
-'';
+  environment.etc."clickhouse-server/config.d/low-retention-logs.xml".text = ''
+    <clickhouse>
+        <system_log_list>
+            <trace_log>
+                <database>system</database>
+                <table>trace_log</table>
+                <ttl>event_date + INTERVAL 1 DAY</ttl>
+            </trace_log>
+            <text_log>
+                <database>system</database>
+                <table>text_log</table>
+                <ttl>event_date + INTERVAL 1 DAY</ttl>
+            </text_log>
+        </system_log_list>
+    </clickhouse>
+  '';
 
-networking.firewall.extraCommands = ''
-  # Force shrunken packets for all Tailscale traffic
-  iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-'';
-  
   imports =
     [
       ../../../misc/avgtechguy.com
