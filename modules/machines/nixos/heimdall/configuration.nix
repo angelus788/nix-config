@@ -20,7 +20,6 @@
   # Ensure the agent has the necessary environment
   systemd.services.do-agent.after = [ "network-online.target" ];
   systemd.services.do-agent.wants = [ "network-online.target" ];
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   boot.initrd.availableKernelModules = [
     "ata_piix"
@@ -44,6 +43,7 @@
     firewall = {
       enable = true;
       allowedUDPPorts = [ 51820 ];
+      allowedTCPPorts = [ 80 443];
     };
   };
   services.openssh = {
