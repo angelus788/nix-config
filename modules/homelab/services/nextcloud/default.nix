@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   service = "nextcloud";
@@ -23,7 +24,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "cloud.internalnetwork.party";
+      default = "cloud.goose.party";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -120,9 +121,6 @@ in
           settings = {
             overwriteprotocol = "https";
             default_phone_region = "US";
-
-            trusted_domains = [ "${cfg.url}" ];
-            trusted_proxies = [ "127.0.0.1" ];
           };
           config = {
             dbtype = "pgsql";
