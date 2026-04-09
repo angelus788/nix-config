@@ -1,7 +1,6 @@
-{
-  lib,
-  config,
-  ...
+{ lib
+, config
+, ...
 }:
 let
   networks = config.homelab.networks.local;
@@ -35,7 +34,7 @@ let
     ipv6PREF64Prefixes = [
       { Prefix = config.networking.jool.nat64.default.global.pool6; }
     ];
-    ipv6Prefixes = [ { Prefix = "${networks.${x}.cidr.v6}/64"; } ];
+    ipv6Prefixes = [{ Prefix = "${networks.${x}.cidr.v6}/64"; }];
     ipv6SendRAConfig = {
       DNS = "${networks.${x}.cidr.v6}";
       EmitDNS = true;
@@ -217,7 +216,7 @@ in
       "50-wg0" = {
         wireguardConfig = {
           ListenPort = 51820;
-          PrivateKeyFile = config.age.secrets.wireguardPrivateKeyMimir.path;
+          PrivateKeyFile = config.age.secrets.wireguardPrivateKeyAlison.path;
         };
         wireguardPeers =
           let
