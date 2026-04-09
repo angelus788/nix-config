@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   service = "nextcloud";
@@ -121,6 +120,7 @@ in
           settings = {
             overwriteprotocol = "https";
             default_phone_region = "US";
+            trusted_proxies = [ "127.0.0.1" "odin.tailcaed2.ts.net" ]; # Add Heimdall's Tailscale IP
           };
           config = {
             dbtype = "pgsql";

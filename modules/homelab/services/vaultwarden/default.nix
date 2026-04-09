@@ -57,8 +57,17 @@ in
       caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = "internalnetwork.party";
         extraConfig = ''         
-          reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
-            toString config.services.${service}.config.ROCKET_PORT
+          tls /var/lib/acme/internalnetwork.party/cert.pem /var/lib/acme/internalnetwork.party/key.pem
+          
+          header {
+            Strict-Transport-Security "max-age=31536000;"
+            X-Content-Type-Options nosniff
+            X-Frame-Options SAMEORIGIN
+          }
+
+          reverse_proxy http://127.0.0.1:8222 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Proto {scheme}
           }
         '';
       };
@@ -66,3 +75,7 @@ in
   };
 
 }
+
+
+
+

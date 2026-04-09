@@ -1,7 +1,6 @@
-{
-  config,
-  lib,
-  ...
+{ config
+, lib
+, ...
 }:
 let
   cfg = config.homelab.services.immich;
@@ -65,26 +64,27 @@ in
     services.immich = {
       group = homelab.group;
       enable = true;
-      host = "0.0.0.0"; # Explicitly set to IPv4 loopback
+      #host = "0.0.0.0"; # Explicitly set to IPv4 loopback
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
       environment = {
         IMMICH_URL = "https://${cfg.url}";
-        IMMICH_TRUSTED_PROXIES = "100.94.78.77";
+        IMMICH_TRUSTED_PROXIES = "odin.tailcaed2.ts.net";
+        #trusted_proxies = [ "127.0.0.1" "100.68.125.59" ]; # Add Heimdall's Tailscale IP
       };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://100.94.78.77:2283 {
-        header_up Host {host}
-        header_up X-Real-IP {remote_host}
-    }
+            reverse_proxy http://odin.tailcaed2.ts.net:2283 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
     
-    # STRIP THE TIMESTAMP (The 1970 fix)
-    header -Last-Modified
-        '';
+        # STRIP THE TIMESTAMP (The 1970 fix)
+        header -Last-Modified
+      '';
     };
-  };        # reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
+  }; # reverse_proxy http://${config.services.immich.host}:${toString config.services.immich.port}
 
 }

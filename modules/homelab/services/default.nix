@@ -38,8 +38,45 @@ in
       (
         config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
       ) [ 7000 ]);
-    systemd.services.frp.serviceConfig.LoadCredential =
-      lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+
+    systemd.services =
+      let
+        acmeFix = {
+          path = [
+            pkgs.diffutils
+            pkgs.findutils
+            pkgs.gnugrep
+            pkgs.coreutils
+            pkgs.lego
+          ];
+          serviceConfig = {
+            User = lib.mkForce "acme";
+            Group = lib.mkForce "deploy";
+            EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
+          };
+        };
+        # List all domains you want to fix
+        domains = [
+          config.homelab.baseDomain
+          "avgtechguy.com"
+          "internalnetwork.party"
+        ];
+        # Filter out duplicates and create the service attributes
+        acmeServices = lib.listToAttrs (map
+          (domain: {
+            name = "acme-order-renew-${domain}";
+            value = acmeFix;
+          })
+          (lib.unique domains));
+      in
+      {
+        #   frp service
+
+        #systemd.services.frp.serviceConfig.LoadCredential =
+        frp.serviceConfig.LoadCredential =
+          lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+      } // acmeServices; # Merge the fixed ACME services into the set
+
     services.frp = lib.mkIf config.homelab.frp.enable {
       enable = true;
       role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
@@ -83,35 +120,6 @@ in
 
       };
     };
-
-    systemd.services."acme-order-renew-avgtechguy.com" = {
-      # Added pkgs.diffutils for the 'cmp' command
-      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash pkgs.diffutils ];
-
-      environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.diffutils}/bin";
-
-      serviceConfig = {
-        User = lib.mkForce "acme";
-        Group = lib.mkForce "deploy";
-        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
-        RuntimeDirectoryPreserve = "yes";
-      };
-    };
-
-    systemd.services."acme-order-renew-internalnetwork.party" = {
-      # Added pkgs.diffutils for the 'cmp' command
-      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash pkgs.diffutils ];
-
-      environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.diffutils}/bin";
-
-      serviceConfig = {
-        User = lib.mkForce "acme";
-        Group = lib.mkForce "deploy";
-        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
-        RuntimeDirectoryPreserve = "yes";
-      };
-    };
-
     services.caddy = {
       enable = true;
       globalConfig = ''
