@@ -13,6 +13,7 @@ in
     apiKeyFile = config.age.secrets.cloudflareFirewallApiKey.path;
     zoneId = "4fdfcf6fe7bc561019d20992e5a53eb1";
   };
+
   homelab = {
     enable = true;
     baseDomain = "internalnetwork.party";

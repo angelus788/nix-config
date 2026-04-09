@@ -77,35 +77,40 @@ in
         dnsPropagationCheck = true;
         group = config.services.caddy.group;
         environmentFile = "/run/agenix/cloudflareDnsApiCredentials";
-        
+
         #environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
         #environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
 
       };
     };
 
-systemd.services."acme-order-renew-avgtechguy.com" = {
-    path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash ];
-    environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.bash}/bin";
-    serviceConfig = {
-      User = lib.mkForce "acme";
-      Group = lib.mkForce "deploy";
-      EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
-      RuntimeDirectoryPreserve = "yes";
-    };
-  };
+    systemd.services."acme-order-renew-avgtechguy.com" = {
+      # Added pkgs.diffutils for the 'cmp' command
+      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash pkgs.diffutils ];
 
-  systemd.services."acme-order-renew-internalnetwork.party" = {
-    path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash ];
-    environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.bash}/bin";
-    serviceConfig = {
-      User = lib.mkForce "acme";
-      Group = lib.mkForce "deploy";
-      # Ensure this matches the correct agenix path if it uses a different token
-      EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
-      RuntimeDirectoryPreserve = "yes";
+      environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.diffutils}/bin";
+
+      serviceConfig = {
+        User = lib.mkForce "acme";
+        Group = lib.mkForce "deploy";
+        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
+        RuntimeDirectoryPreserve = "yes";
+      };
     };
-  };
+
+    systemd.services."acme-order-renew-internalnetwork.party" = {
+      # Added pkgs.diffutils for the 'cmp' command
+      path = lib.mkForce [ pkgs.lego pkgs.coreutils pkgs.systemd pkgs.bash pkgs.diffutils ];
+
+      environment.PATH = lib.mkForce "${pkgs.lego}/bin:${pkgs.coreutils}/bin:${pkgs.systemd}/bin:${pkgs.diffutils}/bin";
+
+      serviceConfig = {
+        User = lib.mkForce "acme";
+        Group = lib.mkForce "deploy";
+        EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
+        RuntimeDirectoryPreserve = "yes";
+      };
+    };
 
     services.caddy = {
       enable = true;

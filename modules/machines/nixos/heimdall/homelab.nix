@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 {
   networking.hosts =
     let
@@ -27,6 +27,7 @@
         #environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
     };
+
   homelab = {
     baseDomain = "avgtechguy.com";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsAvgtechguy.path;
