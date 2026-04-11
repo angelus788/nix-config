@@ -47,6 +47,7 @@ in
         enable = true;
         config = {
           DOMAIN = "https://${cfg.url}";
+          DATA_FOLDER = cfg.configDir; # This tells Vaultwarden where to look
           SIGNUPS_ALLOWED = false;
           ROCKET_ADDRESS = "127.0.0.1";
           ROCKET_PORT = 8222;
@@ -56,18 +57,9 @@ in
       };
       caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = "internalnetwork.party";
-        extraConfig = ''         
-          tls /var/lib/acme/internalnetwork.party/cert.pem /var/lib/acme/internalnetwork.party/key.pem
-          
-          header {
-            Strict-Transport-Security "max-age=31536000;"
-            X-Content-Type-Options nosniff
-            X-Frame-Options SAMEORIGIN
-          }
-
-          reverse_proxy http://127.0.0.1:8222 {
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-Proto {scheme}
+        extraConfig = ''
+          reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
+            toString config.services.${service}.config.ROCKET_PORT
           }
         '';
       };
@@ -75,7 +67,3 @@ in
   };
 
 }
-
-
-
-
