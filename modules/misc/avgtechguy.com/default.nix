@@ -27,7 +27,9 @@ in
     deploy = { };
   };
   users.users.deploy = {
-    isNormalUser = true;
+    isSystemUser = true;
+    # Remove isNormalUser = true;
+    createHome = true;
     home = "/var/www/avgtechguy.com";
     group = "deploy";
     openssh.authorizedKeys.keys = [

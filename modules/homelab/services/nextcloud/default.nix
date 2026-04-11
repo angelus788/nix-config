@@ -23,7 +23,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "cloud.goose.party";
+      default = "cloud.internalnetwork.party";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -120,7 +120,8 @@ in
           settings = {
             overwriteprotocol = "https";
             default_phone_region = "US";
-            trusted_proxies = [ "127.0.0.1" "odin.tailcaed2.ts.net" ]; # Add Heimdall's Tailscale IP
+            trusted_domains = [ "${cfg.url}" ];
+            trusted_proxies = [ "127.0.0.1" ]; 
           };
           config = {
             dbtype = "pgsql";

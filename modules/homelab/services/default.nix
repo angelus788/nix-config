@@ -102,6 +102,11 @@ in
           }
           // common;
     };
+    users.groups.caddy = {};
+
+    services.caddy.user = "deploy";
+    services.caddy.group = "deploy";
+
     security.acme = {
       acceptTerms = true;
       defaults.email = "avgtechguy@mailbox.org";
@@ -112,7 +117,8 @@ in
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
-        group = config.services.caddy.group;
+        group = "caddy";
+        #group = config.services.caddy.group;
         environmentFile = "/run/agenix/cloudflareDnsApiCredentials";
 
         #environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
