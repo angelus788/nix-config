@@ -5,6 +5,7 @@
   nix.settings.trusted-users = [ "angelus" "root" ];
 
   users = {
+    # 1. DEFINE THE USERS
     users = {
       angelus = {
         shell = pkgs.zsh;
@@ -23,26 +24,29 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw"
         ];
       };
+
       deploy = {
-        isNormalUser = true;
-        #isSystemUser = true;
+        isNormalUser = true; # Changed to real user as requested
         group = "deploy";
         extraGroups = [ "caddy" "acme" ];
+        # Optional: Add authorized keys here if you want to SSH as deploy
       };
 
-      # Add the acme user modification here
       acme = {
-        extraGroups = [ "caddy" ];
+        isSystemUser = true;
+        group = "acme";
+        extraGroups = [ "caddy" ]; # The permission bridge
       };
     };
 
+    # 2. DEFINE THE GROUPS (No "users." prefix needed here)
     groups = {
       angelus = {
         gid = 1000;
       };
-
-      # Add the deploy group here
       deploy = { };
+      acme = { };
+      caddy = { }; # Ensure caddy group exists for the bridge
     };
   };
 
