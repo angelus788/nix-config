@@ -24,7 +24,8 @@
         ];
       };
       deploy = {
-        isSystemUser = true;
+        isNormalUser = true;
+        #isSystemUser = true;
         group = "deploy";
         extraGroups = [ "caddy" "acme" ];
       };

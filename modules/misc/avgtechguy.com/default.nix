@@ -27,8 +27,8 @@ in
     deploy = { };
   };
   users.users.deploy = {
-    isSystemUser = true;
-    # Remove isNormalUser = true;
+    #isSystemUser = true;
+    isNormalUser = true;
     createHome = true;
     home = "/var/www/avgtechguy.com";
     group = "deploy";
