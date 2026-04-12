@@ -34,6 +34,11 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+
+    systemd.tmpfiles.rules = [
+      "d ${cfg.configDir} 0750 vaultwarden vaultwarden -"
+    ];
+
     services = {
       fail2ban-cloudflare = lib.mkIf config.services.fail2ban-cloudflare.enable {
         jails = {
@@ -47,7 +52,7 @@ in
         enable = true;
         config = {
           DOMAIN = "https://${cfg.url}";
-          DATA_FOLDER = cfg.configDir; # This tells Vaultwarden where to look
+          WEB_VAULT_ENABLED = true;
           SIGNUPS_ALLOWED = false;
           ROCKET_ADDRESS = "127.0.0.1";
           ROCKET_PORT = 8222;
@@ -58,8 +63,11 @@ in
       caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = "internalnetwork.party";
         extraConfig = ''
-          reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
-            toString config.services.${service}.config.ROCKET_PORT
+          tls /var/lib/acme/internalnetwork.party/cert.pem /var/lib/acme/internalnetwork.party/key.pem
+          
+          reverse_proxy 127.0.0.1:8222 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
           }
         '';
       };
@@ -67,3 +75,5 @@ in
   };
 
 }
+#reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
+#           toString config.services.${service}.config.ROCKET_PORT
