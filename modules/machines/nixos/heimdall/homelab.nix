@@ -42,6 +42,7 @@
       navidrome.role = "server";
       miniflux.role = "server";
       microbin.role = "server";
+      vaultwarden.role = "server";
       forgejo-runner = {
         enable = true;
         forgejoUrl = config.homelab.services.forgejo.url;

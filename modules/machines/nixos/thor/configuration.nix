@@ -8,6 +8,7 @@
   imports =
     [
       # Include the results of the hardware scan.
+      ../../../misc/avgtechguy.com
       ./hardware-configuration.nix
       ../_common/apps/tailscale
       ./secrets

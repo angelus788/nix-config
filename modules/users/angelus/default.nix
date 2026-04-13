@@ -25,13 +25,6 @@
         ];
       };
 
-      deploy = {
-        isNormalUser = true; # Changed to real user as requested
-        group = "deploy";
-        extraGroups = [ "caddy" "acme" ];
-        # Optional: Add authorized keys here if you want to SSH as deploy
-      };
-
       acme = {
         isSystemUser = true;
         group = "acme";

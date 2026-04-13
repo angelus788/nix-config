@@ -92,6 +92,7 @@ in
   };
 
   imports = [
+    ../../../misc/avgtechguy.com
     ../../../misc/tailscale
     ../../../misc/agenix
     ./filesystems
@@ -138,7 +139,7 @@ in
 
   system.autoUpgrade.enable = true;
 
-  
+
 
   #services.withings2intervals = {
   #  enable = true;
@@ -181,7 +182,7 @@ in
     powertop
     caddy
   ];
-  
+
   #tg-notify = {
   #  enable = true;
   #  credentialsFile = config.age.secrets.tgNotifyCredentials.path;

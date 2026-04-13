@@ -75,6 +75,17 @@ in
         #systemd.services.frp.serviceConfig.LoadCredential =
         frp.serviceConfig.LoadCredential =
           lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+
+        # 2. ADD THE CADDY FIX HERE
+        caddy.serviceConfig = {
+          StateDirectory = "caddy";
+          ReadWritePaths = [ "/var/lib/caddy" ];
+          Environment = [ "HOME=/var/lib/caddy" ]; # Use list syntax for multiple env vars later
+          EnvironmentFile = lib.mkForce [ "/run/agenix/cloudflareDnsApiCredentials" ];
+          ProtectHome = true;
+        };
+
+
       } // acmeServices; # Merge the fixed ACME services into the set
 
     services.frp = lib.mkIf config.homelab.frp.enable {
@@ -102,10 +113,11 @@ in
           }
           // common;
     };
-    users.groups.caddy = {};
 
-    services.caddy.user = "deploy";
-    services.caddy.group = "deploy";
+    users.groups.caddy = { };
+
+    #services.caddy.user = "deploy";
+    #services.caddy.group = "deploy";
 
     security.acme = {
       acceptTerms = true;
@@ -117,8 +129,8 @@ in
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
-        group = "caddy";
-        #group = config.services.caddy.group;
+        #group = "caddy";
+        group = config.services.caddy.group;
         environmentFile = "/run/agenix/cloudflareDnsApiCredentials";
 
         #environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
@@ -126,11 +138,13 @@ in
 
       };
     };
+
     services.caddy = {
       enable = true;
-      globalConfig = ''
-        auto_https off
-      '';
+      #EnvironmentFile = [ "/run/agenix/cloudflareDnsApiCredentials" ];
+      #globalConfig = ''
+      #  auto_https off
+      #'';
       virtualHosts = {
         "http://${config.homelab.baseDomain}" = {
           extraConfig = ''

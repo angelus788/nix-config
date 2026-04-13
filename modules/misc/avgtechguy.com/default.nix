@@ -27,7 +27,7 @@ in
   };
 
   # 4. ACME Permission Bridge (Ensures Caddy can read certs)
-  security.acme.certs."${domain}".group = "caddy";
+  #security.acme.certs."${domain}".group = "caddy";
 
   # 5. Identities (Ensure these aren't duplicated in your common/default.nix)
   users = {
@@ -47,6 +47,11 @@ in
         isSystemUser = true;
         group = "acme";
         extraGroups = [ "caddy" ];
+      };
+      caddy = {
+        isSystemUser = true;
+        group = "caddy";
+        extraGroups = [ "deploy" ];
       };
     };
     groups = {
