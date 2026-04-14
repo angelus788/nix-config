@@ -64,13 +64,8 @@ in
     services.immich = {
       group = homelab.group;
       enable = true;
-      #host = "0.0.0.0"; # Explicitly set to IPv4 loopback
       port = 2283;
       mediaLocation = "${cfg.mediaDir}";
-      environment = {
-        IMMICH_URL = "https://${cfg.url}";
-        IMMICH_TRUSTED_PROXIES = "127.0.0.1";
-      };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

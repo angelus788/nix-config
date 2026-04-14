@@ -38,56 +38,8 @@ in
       (
         config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
       ) [ 7000 ]);
-
-    systemd.services =
-      let
-        acmeFix = {
-          path = [
-            pkgs.diffutils
-            pkgs.findutils
-            pkgs.gnugrep
-            pkgs.coreutils
-            pkgs.lego
-          ];
-          serviceConfig = {
-            User = lib.mkForce "acme";
-            Group = lib.mkForce "deploy";
-            EnvironmentFile = lib.mkForce "/run/agenix/cloudflareDnsApiCredentials";
-          };
-        };
-        # List all domains you want to fix
-        domains = [
-          config.homelab.baseDomain
-          "avgtechguy.com"
-          "internalnetwork.party"
-        ];
-        # Filter out duplicates and create the service attributes
-        acmeServices = lib.listToAttrs (map
-          (domain: {
-            name = "acme-order-renew-${domain}";
-            value = acmeFix;
-          })
-          (lib.unique domains));
-      in
-      {
-        #   frp service
-
-        #systemd.services.frp.serviceConfig.LoadCredential =
-        frp.serviceConfig.LoadCredential =
-          lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
-
-        # 2. ADD THE CADDY FIX HERE
-        caddy.serviceConfig = {
-          StateDirectory = "caddy";
-          ReadWritePaths = [ "/var/lib/caddy" ];
-          Environment = [ "HOME=/var/lib/caddy" ]; # Use list syntax for multiple env vars later
-          EnvironmentFile = lib.mkForce [ "/run/agenix/cloudflareDnsApiCredentials" ];
-          ProtectHome = true;
-        };
-
-
-      } // acmeServices; # Merge the fixed ACME services into the set
-
+    systemd.services.frp.serviceConfig.LoadCredential =
+      lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
     services.frp = lib.mkIf config.homelab.frp.enable {
       enable = true;
       role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
@@ -113,12 +65,6 @@ in
           }
           // common;
     };
-
-    users.groups.caddy = { };
-
-    #services.caddy.user = "deploy";
-    #services.caddy.group = "deploy";
-
     security.acme = {
       acceptTerms = true;
       defaults.email = "avgtechguy@mailbox.org";
@@ -129,29 +75,18 @@ in
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
-        #group = "caddy";
         group = config.services.caddy.group;
-        environmentFile = "/run/agenix/cloudflareDnsApiCredentials";
-
-        #environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
-        #environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
-
+        environmentFile = config.homelab.cloudflare.dnsCredentialsFile;
       };
     };
-
     services.caddy = {
       enable = true;
-      #EnvironmentFile = [ "/run/agenix/cloudflareDnsApiCredentials" ];
-      #globalConfig = ''
-      #  auto_https off
-      #'';
+      globalConfig = ''
+        auto_https off
+      '';
       virtualHosts = {
-        "http://${config.homelab.baseDomain}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-        "http://*.${config.homelab.baseDomain}" = {
+        # Simplified redirect block
+        "http://${config.homelab.baseDomain}, http://*.${config.homelab.baseDomain}" = {
           extraConfig = ''
             redir https://{host}{uri}
           '';
@@ -176,8 +111,7 @@ in
     };
 
     networking.firewall.interfaces.podman0.allowedUDPPorts =
-      lib.lists.optionals
-        config.virtualisation.podman.enable
+      lib.lists.optionals config.virtualisation.podman.enable
         [ 53 ];
   };
 
