@@ -200,9 +200,8 @@ in
     services.caddy.virtualHosts."${homelab.baseDomain}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        redir https://root.${homelab.baseDomain}{uri} permanent
-        reverse_proxy http://127.0.0.1:${toString config.services.homepage-dashboard.listenPort}
-      '';
+        reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort}
+			'';
     };
   };
 }
