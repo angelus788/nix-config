@@ -46,7 +46,7 @@ in
     services.glances.enable = true;
     services.${service} = {
       enable = true;
-      environmentFile = builtins.toFile "homepage.env" "HOMEPAGE_ALLOWED_HOSTS=${homelab.baseDomain},100.94.78.77,odin.tailcaed2.ts.net";
+      environmentFile = builtins.toFile "homepage.env" "HOMEPAGE_ALLOWED_HOSTS=root.${homelab.baseDomain},${homelab.baseDomain},100.94.78.77,odin,localhost,127.0.0.1,odin.tailcaed2.ts.net";
       customCSS = ''
         body, html {
           font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;
@@ -197,11 +197,16 @@ in
           }
         ];
     };
-    services.caddy.virtualHosts."${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."root.${homelab.baseDomain}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort}
-			'';
+        reverse_proxy http://127.0.0.1:8082 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+      '';
     };
   };
-}
+} #reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort} {
