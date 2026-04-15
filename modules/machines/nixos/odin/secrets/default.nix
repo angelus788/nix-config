@@ -3,19 +3,8 @@
   age.secrets = {
     cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
 
-    cloudflareDnsApiCredentials = {
-      file = "${inputs.secrets}/cloudflareDnsApiCredentials.age"; # adjust path
-      owner = "acme";
-      group = "deploy";
-      mode = "0400";
-    };
-
-    cloudflareDnsApiCredentialsAvgtechguy = {
-      file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age"; # adjust path
-      owner = "acme";
-      group = "deploy";
-      mode = "0400";
-    };
+    cloudflareDnsApiCredentials.file = "${inputs.secrets}/cloudflareDnsApiCredentials.age";
+    cloudflareDnsApiCredentialsAvgtechguy.file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age";
 
     #borgBackupKey.file = "${inputs.secrets}/borgBackupKey.age";
     #borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
@@ -26,6 +15,7 @@
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";
     initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
     invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
+    navidromeEnv.file = "${inputs.secrets}/navidromeEnv.age";
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
     oauth2ProxyEnvFile = {

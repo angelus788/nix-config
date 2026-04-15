@@ -153,10 +153,10 @@ in
       #  enable = true;
       #  adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
       #};
-      #navidrome = {
-      #  enable = true;
-      #  environmentFile = config.age.secrets.navidromeEnv.path;
-      #};
+      navidrome = {
+        enable = true;
+        environmentFile = config.age.secrets.navidromeEnv.path;
+      };
       #audiobookshelf.enable = true;
       #deluge.enable = true;
       wireguard-netns = {
