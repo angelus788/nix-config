@@ -8,16 +8,16 @@ permissions:
   contents: write
 
 jobs:
-  update-flake:
+  # --- GITHUB JOB ---
+  update-flake-github:
+    if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install Lix
-        run: |
-          curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
+        run: curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
 
       - name: Setup SSH Key
         run: |
@@ -43,3 +43,39 @@ jobs:
             git commit -m "chore: update flake.lock"
             git push
           fi
+
+  # --- FORGEJO JOB ---
+  update-flake-forgejo:
+    if: contains(github.server_url, 'git.avgtechguy.com')
+    runs-on: nix
+    environment: production
+    env:
+      FORGEJO_HOST: git.avgtechguy.com
+      ATTIC_HOST: cache.avgtechguy.com
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up SSH
+        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
+        with:
+          git-host: ${{ env.FORGEJO_HOST }}
+          ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
+          git-hostkey: ${{ secrets.GIT_HOSTKEY }}
+          
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
+        with:
+          attic-token: ${{ secrets.ATTIC_TOKEN }}
+          attic-url: https://${{ env.ATTIC_HOST }}
+          
+      - name: "Update nix flake"
+        run: nix flake update
+        
+      - name: "Commit and push the new flake.lock"
+        run: |
+          git config user.name forgejo-actions
+          git config user.email forgejo@git.avgtechguy.com
+          git add flake.lock
+          git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
+          git push origin main
+          
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
