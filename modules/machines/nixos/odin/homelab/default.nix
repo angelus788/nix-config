@@ -146,9 +146,9 @@ in
       vaultwarden = {
         enable = true;
       };
-      #microbin = {
-      #  enable = true;
-      #};
+      microbin = {
+        enable = true;
+      };
       #miniflux = {
       #  enable = true;
       #  adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;

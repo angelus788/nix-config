@@ -15,6 +15,8 @@
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";
     initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
     invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
+    #microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
+    minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
     navidromeEnv.file = "${inputs.secrets}/navidromeEnv.age";
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";
