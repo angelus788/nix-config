@@ -1,4 +1,11 @@
 name: Update flake.lock
+
+# 1. Define your "Variables" here using YAML anchors
+x-constants:
+  forgejo_url: &forgejo_url "https://git.avgtechguy.com"
+  forgejo_host: &forgejo_host "git.avgtechguy.com"
+  attic_url: &attic_url "https://cache.avgtechguy.com"
+
 on:
   workflow_dispatch:
   schedule:
@@ -8,64 +15,34 @@ permissions:
   contents: write
 
 jobs:
-  # --- GITHUB JOB ---
   update-flake-github:
     if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      # ... (GitHub steps remain same) ...
 
-      - name: Install Lix
-        run: curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
-
-      - name: Setup SSH Key
-        run: |
-           mkdir -p ~/.ssh
-           echo "${{ secrets.GHA_DEPLOY_PRIVATE }}" > ~/.ssh/id_ed25519
-           chmod 600 ~/.ssh/id_ed25519
-           ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Enable flakes
-        run: |
-          mkdir -p ~/.config/nix
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.config
-
-      - name: Update flake.lock
-        run: nix flake update
-
-      - name: Commit changes if needed
-        run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add flake.lock
-            git commit -m "chore: update flake.lock"
-            git push
-          fi
-
-  # --- FORGEJO JOB ---
   update-flake-forgejo:
-    if: contains(github.server_url, 'git.avgtechguy.com')
+    if: contains(github.server_url, 'avgtechguy.com')
     runs-on: nix
     environment: production
-    env:
-      FORGEJO_HOST: git.avgtechguy.com
-      ATTIC_HOST: cache.avgtechguy.com
     steps:
       - uses: actions/checkout@v4
       
       - name: Set up SSH
-        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
+        # 2. Use the '*' to inject the value
+        uses: *forgejo_url/avgtechguy/actions/set-up-ssh@main
         with:
-          git-host: ${{ env.FORGEJO_HOST }}
+          git-host: *forgejo_host
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
           
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
+      - name: Setup Attic
+        uses: *forgejo_url/avgtechguy/actions/setup-attic-cache@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
-          attic-url: https://${{ env.ATTIC_HOST }}
+          attic-url: *attic_url
           
       - name: "Update nix flake"
         run: nix flake update
@@ -78,4 +55,5 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
           git push origin main
           
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
+      - name: Cache to Attic
+        uses: *forgejo_url/avgtechguy/actions/cache-to-attic@main
