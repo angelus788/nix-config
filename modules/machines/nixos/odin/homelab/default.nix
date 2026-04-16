@@ -63,7 +63,7 @@ in
     services = {
       enable = true;
       slskd = {
-        enable = true;
+        enable = false; #need to address WG0
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;
       };
       #backup = {

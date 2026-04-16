@@ -143,7 +143,7 @@ in
     ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
-    #./paperless-ngx
+    ./paperless-ngx
     ./radicale
     #./sabnzbd
     ./slskd

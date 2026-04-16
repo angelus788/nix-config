@@ -87,10 +87,10 @@ in
         services.caddy.virtualHosts."${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            	            reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
-            	              toString config.services.${service}.config.ROCKET_PORT
-            	            }
-            	          '';
+            reverse_proxy http://${config.services.${service}.config.ROCKET_ADDRESS}:${
+              toString config.services.${service}.config.ROCKET_PORT
+            }
+          '';
         };
       };
 }
