@@ -132,14 +132,22 @@ in
           (cat: {
             "${cat}" =
               lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (homepageServices "${cat}"))
-                (x: {
-                  "${hl.${x}.homepage.name}" = {
-                    icon = hl.${x}.homepage.icon;
-                    description = hl.${x}.homepage.description;
-                    href = "https://${hl.${x}.url}";
-                    siteMonitor = "https://${hl.${x}.url}";
-                  };
-                });
+                (x:
+                  let
+                    # Define the URL once so you don't repeat the 'if' logic
+                    serviceUrl =
+                      if x == "forgejo"
+                      then "https://git.avgtechguy.com"
+                      else "https://${hl.${x}.url}";
+                  in
+                  {
+                    "${hl.${x}.homepage.name}" = {
+                      icon = hl.${x}.homepage.icon;
+                      description = hl.${x}.homepage.description;
+                      href = serviceUrl;
+                      siteMonitor = serviceUrl; # This will now show the green status for the custom URL
+                    };
+                  });
           })
         ++ [{ Misc = cfg.misc; }]
         ++ [
