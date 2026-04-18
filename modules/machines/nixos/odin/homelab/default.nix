@@ -106,19 +106,23 @@ in
               };
           }
           {
-            Verizon = {
-              href = "http://192.168.178.1";
-              siteMonitor = "http://192.168.178.1";
-              description = "Cable Modem WebUI";
-              icon = "avm-fritzbox.png";
-            };
+            Fios =
+              let
+                fios = config.homelab.networks.local.lan.reservations.fios.Address;
+              in
+              {
+                href = "https://${fios}";
+                siteMonitor = "https://${fios}";
+                description = "Cable Modem WebUI";
+                icon = "fios.png";
+              };
           }
           {
             "Proxmox" = {
-              href = "https://proxmox.internalnetwork.party/";
+              href = "https://proxmox.internalnetwork.party";
               description = "Self-hosted virtualization platform designed for the provisioning of hyper-converged infrastructure.";
               icon = "proxmox.svg";
-              siteMonitor = "https://proxmox.internalnetwork.party/";
+              siteMonitor = "https://proxmox.internalnetwork.party";
             };
           }
         ];
