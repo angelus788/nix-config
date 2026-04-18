@@ -114,11 +114,11 @@ in
             };
           }
           {
-            "Immich (Parents)" = {
-              href = "https://photos.aria.internalnetwork.party";
-              description = "Self-hosted photo and video management solution";
-              icon = "immich.svg";
-              siteMonitor = "";
+            "Proxmox" = {
+              href = "https://proxmox.internalnetwork.party/";
+              description = "Self-hosted virtualization platform designed for the provisioning of hyper-converged infrastructure.";
+              icon = "proxmox.svg";
+              siteMonitor = "https://proxmox.internalnetwork.party/";
             };
           }
         ];
