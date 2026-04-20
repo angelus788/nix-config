@@ -98,6 +98,8 @@ in
           email.domains = [ "*" ];
           extraConfig = {
             skip-provider-button = true;
+            code-challenge-method = "S256";
+            insecure-oidc-allow-unverified-email = "true";
             whitelist-domain = [ ("*" + (lib.strings.removePrefix "login" cfg.url)) ];
           };
         };
@@ -144,13 +146,19 @@ in
         services.caddy.virtualHosts."${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            reverse_proxy http://127.0.0.1:8821
-            handle /oauth2/* {
-              reverse_proxy http://127.0.0.1:4192 {
-                header_up X-Real-IP {remote_host}
-                header_up X-Forwarded-Uri {uri}
-              }
-            }
+            reverse_proxy http://127.0.0.1:8821 {
+                    header_up Host {host}
+                    header_up X-Real-IP {remote_host}
+                    header_up X-Forwarded-Proto {scheme}
+                }
+
+                # Route for the Auth Proxy
+                handle /oauth2/* {
+                  reverse_proxy http://127.0.0.1:4192 {
+                    header_up Host {host}
+                    header_up X-Real-IP {remote_host}
+                  }
+                }
           '';
         };
       };

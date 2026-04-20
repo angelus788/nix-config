@@ -26,6 +26,10 @@ in
   # 3. Double-check the ZFS kill-switch
   networking.hostId = lib.mkForce null;
 
+  networking.hosts = {
+    "127.0.0.1" = [ "login.internalnetwork.party" ];
+  };
+
 
 
   #services.prometheus.exporters = {

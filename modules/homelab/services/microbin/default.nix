@@ -73,7 +73,7 @@ in
           (lib.mkIf p yes)
           (lib.mkIf (!p) no)
         ];
-      addr = "127.0.0.1";
+      addr = "0.0.0.0";
       port = 8069;
     in
     mkIfElse (cfg.role == "client")
