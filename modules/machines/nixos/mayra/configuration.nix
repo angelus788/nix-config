@@ -6,8 +6,8 @@
 }:
 let
   iot = config.homelab.networks.local.iot.reservations;
-#  tvIpAddress = iot.lgtv.Address;
-#  tvMacAddress = iot.lgtv.MACAddress;
+  #  tvIpAddress = iot.lgtv.Address;
+  #  tvMacAddress = iot.lgtv.MACAddress;
   tvIpAddress = iot.samsungtv.Address;
   tvMacAddress = iot.samsungtv.MACAddress;
 in
@@ -116,6 +116,12 @@ in
     steamos = {
       useSteamOSConfig = true;
     };
+  };
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true; # Necessary for KMS display capture
+    openFirewall = true; # Opens the default ports: 47984-48010
   };
 
 }
