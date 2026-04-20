@@ -32,6 +32,15 @@ in
     samba = {
       enable = true;
       passwordFile = config.age.secrets.sambaPassword.path;
+
+      globalSettings = {
+        "host msdfs" = "no";
+        "msdfs root" = "no";
+        "unix extensions" = "no";
+        "wide links" = "yes";
+        "allow insecure wide links" = "yes";
+      };
+
       shares = {
         Backups = {
           path = "${hl.mounts.merged}/Backups";
@@ -128,10 +137,10 @@ in
         ];
       };
       jellyfin.enable = true;
-      #paperless = {
-      #  enable = true;
-      #  passwordFile = config.age.secrets.paperlessPassword.path;
-      #};
+      paperless = {
+        enable = true;
+        passwordFile = config.age.secrets.paperlessPassword.path;
+      };
       #sabnzbd.enable = true;
       #sonarr.enable = true;
       #radarr.enable = true;

@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   hl = config.homelab;
@@ -21,10 +20,12 @@ in
       description = "Samba shares for the homelab";
     };
     example = lib.mkOption {
-      default = lib.attrsets.mapAttrs (
-        _name: value: _name:
-        value.settings
-      ) cfg.shares;
+      default = lib.attrsets.mapAttrs
+        (
+          _name: value: _name:
+            value.settings
+        )
+        cfg.shares;
     };
     passwordFile = lib.mkOption {
       type = lib.types.path;
@@ -62,10 +63,14 @@ in
             "guest ok" = "no";
             "create mask" = "0644";
             "directory mask" = "0755";
-            "valid users" = hl.user;
+            "valid users" = "angelus share";
+
+            "force user" = "share";
+            "force group" = "share";
+
             "fruit:aapl" = "yes";
             "vfs objects" = "catia fruit streams_xattr";
-          }
+          } # "valid users" = hl.user;
           old
         ];
     };

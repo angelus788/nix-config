@@ -56,6 +56,11 @@ in
 
   };
   config = lib.mkIf cfg.enable {
+    systemd.services.paperless-scheduler.serviceConfig.ReadWritePaths = [ "${homelab.mounts.fast}/Documents/Paperless" ];
+    systemd.services.paperless-task-queue.serviceConfig.ReadWritePaths = [ "${homelab.mounts.fast}/Documents/Paperless" ];
+    systemd.services.paperless-consumer.serviceConfig.ReadWritePaths = [ "${homelab.mounts.fast}/Documents/Paperless" ];
+    systemd.services.paperless-web.serviceConfig.ReadWritePaths = [ "${homelab.mounts.fast}/Documents/Paperless" ];
+
     services = {
       ${service} = {
         enable = true;
