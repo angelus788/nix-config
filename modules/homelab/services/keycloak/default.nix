@@ -84,25 +84,46 @@ in
           reverseProxy = true;
           provider = "keycloak-oidc";
           oidcIssuerUrl = "https://${cfg.url}/realms/master";
+
           cookie = {
-            expire = "672h";
-            refresh = "1h";
-            secure = true;
-            httpOnly = true;
             domain = lib.strings.removePrefix "login" cfg.url;
+            secure = true;
+            # Setting these explicitly is fine, but they are defaults
+            # refresh = "1h"; 
           };
+
           httpAddress = "127.0.0.1:4192";
           clientID = "oauth2-proxy";
-          upstream = [ "http://[::]:0/" ];
+          upstream = [ "http://127.0.0.1:0/" ];
+
+          # Consolidated typical OIDC settings
           scope = "openid profile email";
           email.domains = [ "*" ];
-          extraConfig = {
-            skip-provider-button = true;
-            code-challenge-method = "S256";
-            insecure-oidc-allow-unverified-email = "true";
-            whitelist-domain = ".internalnetwork.party";
-            #whitelist-domain = [ ("*" + (lib.strings.removePrefix "login" cfg.url)) ];
-          };
+
+          extraConfig =
+            let
+              # Internal endpoint base to avoid repeating http://127.0.0.1:8821
+              internalRoot = "http://127.0.0.1:8821/realms/master/protocol/openid-connect";
+              publicRoot = "https://${cfg.url}/realms/master/protocol/openid-connect";
+            in
+            {
+              skip-oidc-discovery = "true";
+
+              # Cleanly mapped endpoints
+              login-url = "${publicRoot}/auth";
+              redeem-url = "${internalRoot}/token";
+              validate-url = "${internalRoot}/userinfo";
+              oidc-jwks-url = "${internalRoot}/certs";
+
+              # Grouped Security & Logic
+              insecure-oidc-skip-issuer-verification = "true";
+              ssl-insecure-skip-verify = "true";
+              insecure-oidc-allow-unverified-email = "true";
+
+              skip-provider-button = "true";
+              code-challenge-method = "S256";
+              whitelist-domain = ".internalnetwork.party";
+            };
         };
         services.${service} = {
           enable = true;
@@ -147,21 +168,18 @@ in
         services.caddy.virtualHosts."${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            reverse_proxy http://127.0.0.1:8821 {
-                    header_up Host {host}
-                    header_up X-Real-IP {remote_host}
-                    header_up X-Forwarded-Proto {scheme}
-                }
+            handle /oauth2/* {
+                reverse_proxy http://127.0.0.1:4192
+            }
 
-                # Route for the Auth Proxy
-                handle /oauth2/* {
-                  reverse_proxy http://127.0.0.1:4192 {
+            # 2. Everything else on this domain goes to Keycloak
+            handle {
+                reverse_proxy http://127.0.0.1:8821 {
                     header_up Host {host}
                     header_up X-Real-IP {remote_host}
-                  }
                 }
+            }
           '';
         };
       };
-
 }
