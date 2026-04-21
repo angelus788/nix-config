@@ -70,8 +70,17 @@ in
             LISTEN_ADDR = "${addr}:${toString port}";
             OAUTH2_PROVIDER = "oidc";
             OAUTH2_CLIENT_ID = "miniflux";
+
+            OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
+            OAUTH2_OIDC_TOKEN_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/token";
+            OAUTH2_OIDC_USERINFO_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/userinfo";
+            OAUTH2_OIDC_JWKS_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/certs";
+
             OAUTH2_REDIRECT_URL = "https://${cfg.url}/oauth2/oidc/callback";
-            OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${hl.services.keycloak.url}/realms/master";
+            OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master";
+            #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://127.0.0.1:8821/realms/master";
+            #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://login.internalnetwork.party/realms/master";
+            #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${hl.services.keycloak.url}/realms/master";
             OAUTH2_USER_CREATION = "1";
             DISABLE_LOCAL_AUTH = "true";
           };
@@ -90,8 +99,13 @@ in
         services.caddy.virtualHosts."${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            reverse_proxy http://${addr}:${toString port}
+            reverse_proxy 127.0.0.1:8821 {
+                  header_up X-Forwarded-Proto https
+                  header_up Host {host}
+                  header_up X-Real-IP {remote_host}
+                  header_up X-Forwarded-For {remote_host}
+                }
           '';
         };
       };
-}
+}# reverse_proxy http://${addr}:${toString port}

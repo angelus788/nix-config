@@ -162,10 +162,10 @@ in
       microbin = {
         enable = true;
       };
-      #miniflux = {
-      #  enable = true;
-      #  adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
-      #};
+      miniflux = {
+        enable = true;
+        adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
+      };
       navidrome = {
         enable = true;
         environmentFile = config.age.secrets.navidromeEnv.path;
