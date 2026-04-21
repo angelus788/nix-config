@@ -100,7 +100,8 @@ in
             skip-provider-button = true;
             code-challenge-method = "S256";
             insecure-oidc-allow-unverified-email = "true";
-            whitelist-domain = [ ("*" + (lib.strings.removePrefix "login" cfg.url)) ];
+            whitelist-domain = ".internalnetwork.party";
+            #whitelist-domain = [ ("*" + (lib.strings.removePrefix "login" cfg.url)) ];
           };
         };
         services.${service} = {
