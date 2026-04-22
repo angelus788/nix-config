@@ -48,6 +48,16 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    nixpkgs.overlays = [
+      (final: prev: {
+        invoiceplane-beta = prev.invoiceplane-beta.overrideAttrs (old: {
+          # We use recursiveUpdate or just override the specific vendor derivation
+          composerRepository = old.composerRepository.overrideAttrs (_: {
+            outputHash = "sha256-F9ip+1s2Vh76kYJLELeJBKOXKP6IDTKErKyPPD7WJiA=";
+          });
+        });
+      })
+    ];
     services.invoiceplane-beta = {
       sites.${cfg.url} = {
         invoiceTemplates =
@@ -56,8 +66,8 @@ in
           in
           [ notthebee ];
         settings = {
-          DISABLE_SETUP = true;
-          SETUP_COMPLETED = true;
+          DISABLE_SETUP = false;
+          SETUP_COMPLETED = false;
           IP_URL = "https://${cfg.url}";
           DISABLE_READ_ONLY = true;
           ENABLE_INVOICE_DELETION = true;
