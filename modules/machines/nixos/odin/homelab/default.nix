@@ -97,7 +97,7 @@ in
         mediaDir = "${hl.mounts.fast}/Media/Photos";
       };
       invoiceplane = {
-        enable = true;
+        enable = false;
       };
       homepage = {
         enable = true;
