@@ -9,9 +9,7 @@ let
 in
 {
   options.homelab.services.${service} = {
-    enable = lib.mkEnableOption {
-      description = "Enable ${service}";
-    };
+    enable = lib.mkEnableOption "Enable ${service}";
     configDir = lib.mkOption {
       type = lib.types.str;
       default = "/var/lib/${service}";
@@ -20,94 +18,81 @@ in
       type = lib.types.str;
       default = "news.internalnetwork.party";
     };
-    homepage.name = lib.mkOption {
-      type = lib.types.str;
-      default = "Miniflux";
-    };
-    homepage.description = lib.mkOption {
-      type = lib.types.str;
-      default = "Minimalist and opinionated feed reader";
-    };
-    homepage.icon = lib.mkOption {
-      type = lib.types.str;
-      default = "miniflux-light.svg";
-    };
-    homepage.category = lib.mkOption {
-      type = lib.types.str;
-      default = "Services";
+    homepage = {
+      name = lib.mkOption { type = lib.types.str; default = "Miniflux"; };
+      description = lib.mkOption { type = lib.types.str; default = "Minimalist feed reader"; };
+      icon = lib.mkOption { type = lib.types.str; default = "miniflux-light.svg"; };
+      category = lib.mkOption { type = lib.types.str; default = "Services"; };
     };
     adminCredentialsFile = lib.mkOption {
       description = "File with admin credentials";
       type = lib.types.path;
     };
     role = lib.mkOption {
-      type = lib.types.enum [
-        "client"
-        "server"
-      ];
+      type = lib.types.enum [ "client" "server" ];
       default = "client";
     };
   };
-  config =
-    let
-      mkIfElse =
-        p: yes: no:
-        lib.mkMerge [
-          (lib.mkIf p yes)
-          (lib.mkIf (!p) no)
-        ];
-      addr = "127.0.0.1";
-      port = 8067;
-    in
-    mkIfElse (cfg.role == "client")
-      (lib.mkIf cfg.enable {
-        services.${service} = {
-          enable = true;
-          adminCredentialsFile = cfg.adminCredentialsFile;
-          config = {
-            #BASE_URL = "https://${cfg.url}";
-            CREATE_ADMIN = true;
-            LISTEN_ADDR = "${addr}:${toString port}";
-            OAUTH2_PROVIDER = "oidc";
-            OAUTH2_CLIENT_ID = "miniflux";
 
-            # 1. Use the URL that actually returns JSON
-            OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://127.0.0.1:8821/realms/master";
+  config = lib.mkMerge [
+    # --- CLIENT ROLE: The Miniflux Service ---
+    (lib.mkIf (cfg.enable && cfg.role == "client") {
+      services.${service} = {
+        enable = true;
+        adminCredentialsFile = cfg.adminCredentialsFile;
+        config = {
+          # Boolean type (no quotes)
+          CREATE_ADMIN = true;
 
-            # 2. Tell Miniflux to NOT be a stickler about the URL names matching
-            # This is a hidden gem for local homelabs
-            OAUTH2_OIDC_SKIP_ISSUER_VERIFICATION = "1";
+          LISTEN_ADDR = "127.0.0.1:8067";
+          OAUTH2_PROVIDER = "oidc";
+          OAUTH2_CLIENT_ID = "miniflux";
 
-            # 3. Explicitly define the Auth endpoint for the browser
-            # This ensures the browser goes to the public HTTPS site, not local 8821
-            OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
+          OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
 
-            OAUTH2_USER_CREATION = "1";
-            DISABLE_LOCAL_AUTH = "1";
-            BASE_URL = "https://news.internalnetwork.party";
-          };
+          # Server-to-server uses internal path (Keep this as is)
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master";
+          OAUTH2_OIDC_TOKEN_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master/protocol/openid-connect/token";
+          # String types (with quotes)
+          OAUTH2_USER_CREATION = "1";
+          DISABLE_LOCAL_AUTH = "1";
+          BASE_URL = "https://${cfg.url}";
         };
-        services.frp.settings.proxies = [
-          {
-            name = service;
-            type = "tcp";
-            localIP = addr;
-            localPort = port;
-            remotePort = port;
-          }
-        ];
-      })
-      {
-        services.caddy.virtualHosts."${cfg.url}" = {
+      };
+
+      services.frp.settings.proxies = [{
+        name = service;
+        type = "tcp";
+        localIP = "127.0.0.1";
+        localPort = 8067;
+        remotePort = 8067;
+      }];
+    })
+
+    # --- SERVER ROLE: Caddy Reverse Proxy ---
+    (lib.mkIf (cfg.enable && cfg.role == "server") {
+      services.caddy.virtualHosts = {
+        # Redirect for the Miniflux Web UI
+        "${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            reverse_proxy 127.0.0.1:8821 {
-                  header_up X-Forwarded-Proto https
-                  header_up Host {host}
-                  header_up X-Real-IP {remote_host}
-                  header_up X-Forwarded-For {remote_host}
-                }
+            reverse_proxy http://127.0.0.1:8067
+          '';
+        };
+
+        # Redirect for Keycloak (The login subdomain)
+        "login.internalnetwork.party" = {
+          useACMEHost = "internalnetwork.party";
+          extraConfig = ''
+            reverse_proxy http://127.0.0.1:8821 {
+              header_up Host {host}
+              header_up X-Real-IP {remote_host}
+              header_up X-Forwarded-Proto https
+              header_up X-Forwarded-Host {host}
+            }
           '';
         };
       };
-}# reverse_proxy http://${addr}:${toString port}
+    })
+  ];
+}

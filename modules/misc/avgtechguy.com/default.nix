@@ -10,6 +10,7 @@ in
   systemd.tmpfiles.rules = [
     "d /var/www 0775 deploy deploy - -"
     "d /var/www/${domain} 0775 deploy deploy - -"
+    "d /var/www/${domain}/public 0775 deploy deploy - -"
   ];
 
   # 3. Caddy Service
@@ -19,9 +20,17 @@ in
     user = "deploy";
     group = "deploy";
     virtualHosts."${domain}" = {
+      # Use a dedicated sub-folder like 'public' to keep SSH/config files hidden
       extraConfig = ''
-        file_server
-        root * ${config.users.users.deploy.home}
+        # Switch between these two lines for testing vs production:
+                # root * /var/www/${domain}/public
+                root * ${(pkgs.writeTextDir "index.html" "<h1>Coming Soon!</h1>")}
+
+                file_server
+        
+                # Keep security active even during tests
+                @hidden path */.*
+                respond @hidden 403
       '';
     };
   };
@@ -60,4 +69,6 @@ in
       caddy = { };
     };
   };
+
 }
+

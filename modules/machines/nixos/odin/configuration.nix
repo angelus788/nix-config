@@ -96,7 +96,7 @@ in
   };
 
   imports = [
-    ../../../misc/avgtechguy.com
+    #../../../misc/avgtechguy.com
     ../../../misc/tailscale
     ../../../misc/agenix
     ./filesystems
