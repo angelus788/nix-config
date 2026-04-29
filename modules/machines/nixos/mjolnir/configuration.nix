@@ -65,6 +65,7 @@
   environment.systemPackages = with pkgs; [
     bitwarden-cli
     bitwarden-desktop
+    google-chrome
     brave
     #cosmic-polkit
     fprintd
