@@ -89,7 +89,7 @@ in
             domain = lib.strings.removePrefix "login" cfg.url;
             secure = true;
             # Setting these explicitly is fine, but they are defaults
-            # refresh = "1h"; 
+            # refresh = "1h";
           };
 
           httpAddress = "127.0.0.1:4192";
@@ -142,6 +142,7 @@ in
             hostname-strict = false;
             hostname-strict-https = false;
             proxy-headers = "xforwarded";
+            http-relative-path = "/";
             http-enabled = true;
           };
         };

@@ -41,22 +41,24 @@ in
         enable = true;
         adminCredentialsFile = cfg.adminCredentialsFile;
         config = {
-          # Boolean type (no quotes)
           CREATE_ADMIN = true;
-
-          LISTEN_ADDR = "127.0.0.1:8067";
+          LISTEN_ADDR = "0.0.0.0:8067";
           OAUTH2_PROVIDER = "oidc";
           OAUTH2_CLIENT_ID = "miniflux";
-
           OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
 
-          # Server-to-server uses internal path (Keep this as is)
+
+          # SERVER-FACING: Use the local loopback for the background heavy lifting
+          #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://127.0.0.1:8821/realms/master";
           OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master";
-          OAUTH2_OIDC_TOKEN_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master/protocol/openid-connect/token";
-          # String types (with quotes)
-          OAUTH2_USER_CREATION = "1";
-          DISABLE_LOCAL_AUTH = "1";
-          BASE_URL = "https://${cfg.url}";
+          OAUTH2_OIDC_TOKEN_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/token";
+          OAUTH2_OIDC_USERINFO_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/userinfo";
+          OAUTH2_OIDC_JWKS_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/certs";
+
+          # MUST be 1 because the discovery data won't match the local URL
+          OAUTH2_OIDC_SKIP_ISSUER_VERIFICATION = "1";
+          OAUTH2_REDIRECT_URL = "https://news.internalnetwork.party/oauth2/oidc/callback";
+          BASE_URL = "https://news.internalnetwork.party";
         };
       };
 
@@ -85,11 +87,9 @@ in
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
             reverse_proxy http://127.0.0.1:8821 {
-              header_up Host {host}
-              header_up X-Real-IP {remote_host}
-              header_up X-Forwarded-Proto https
-              header_up X-Forwarded-Host {host}
-            }
+                  header_up Host {host}
+                  header_up X-Real-IP {remote_host}
+                }
           '';
         };
       };
