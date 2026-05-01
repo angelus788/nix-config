@@ -78,7 +78,7 @@ in
     #  group = "angelus";
     #};
     samsungtv = {
-      enable = true;
+      enable = false;
       ipAddress = tvIpAddress;
       macAddress = tvMacAddress;
       hdmiInput = "HDMI1";
