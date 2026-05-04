@@ -141,14 +141,14 @@ in
         enable = true;
         passwordFile = config.age.secrets.paperlessPassword.path;
       };
-      #sabnzbd.enable = true;
-      #sonarr.enable = true;
-      #radarr.enable = true;
-      #bazarr.enable = true;
-      #prowlarr.enable = true;
-      #jellyseerr = {
-      #  enable = true;
-      #};
+      sabnzbd.enable = true;
+      sonarr.enable = true;
+      radarr.enable = true;
+      bazarr.enable = true;
+      prowlarr.enable = true;
+      jellyseerr = {
+        enable = true;
+      };
       nextcloud = {
         enable = true;
         admin = {

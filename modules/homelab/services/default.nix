@@ -116,14 +116,14 @@ in
   };
 
   imports = [
-    #./arr/prowlarr
-    #./arr/bazarr
-    #./arr/jellyseerr
-    #./arr/sonarr
-    #./arr/radarr
-    ##./arr/lidarr
-    #./audiobookshelf
-    #./deluge
+    ./arr/prowlarr
+    ./arr/bazarr
+    ./arr/jellyseerr
+    ./arr/sonarr
+    ./arr/radarr
+    ./arr/lidarr
+    ./audiobookshelf
+    ./deluge
     ##./deemix
     ./forgejo
     ./forgejo-runner
@@ -145,7 +145,7 @@ in
     ./smarthome/raspberrymatic
     ./paperless-ngx
     ./radicale
-    #./sabnzbd
+    ./sabnzbd
     ./slskd
     ./uptime-kuma
     ./vaultwarden

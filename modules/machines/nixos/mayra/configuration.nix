@@ -37,7 +37,7 @@ in
     pkgs.firefox-bin
     pkgs.bitwarden-cli
     pkgs.bitwarden-desktop
-    pkgs.lutris
+    #pkgs.lutris #enable later on
     pkgs.s-tui
     pkgs.stress
   ];
