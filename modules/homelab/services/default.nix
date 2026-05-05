@@ -123,6 +123,7 @@ in
     ./arr/radarr
     ./arr/lidarr
     ./audiobookshelf
+    ./couchdb
     ./deluge
     ##./deemix
     ./forgejo

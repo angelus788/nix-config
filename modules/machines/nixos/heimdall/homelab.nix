@@ -8,6 +8,7 @@
       "${heimdallAddress}" = [
         config.homelab.services.forgejo.url
         config.homelab.services.forgejo-runner.atticUrl
+        config.homelab.services.couchdb.url
       ];
     };
   security.acme.certs =
@@ -50,6 +51,7 @@
         atticTokenFile = config.age.secrets.atticTokenHeimdall.path;
       };
       forgejo.enable = true;
+      couchdb.enable = false;
       matrix = {
         registrationSecretFile = config.age.secrets.matrixRegistrationSecret.path;
         enable = true;
