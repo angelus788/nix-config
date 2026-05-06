@@ -69,6 +69,10 @@
     </clickhouse>
   '';
 
+  services.journald.extraConfig = ''
+    SystemMaxUse=500M
+  '';
+
   imports =
     [
       ../../../misc/avgtechguy.com

@@ -51,7 +51,10 @@
         atticTokenFile = config.age.secrets.atticTokenHeimdall.path;
       };
       forgejo.enable = true;
-      couchdb.enable = true;
+      couchdb = {
+        enable = true;
+        admin.passwordFile = config.age.secrets.couchdb-password.path;
+      };
       matrix = {
         registrationSecretFile = config.age.secrets.matrixRegistrationSecret.path;
         enable = true;

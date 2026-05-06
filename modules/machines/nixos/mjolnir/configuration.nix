@@ -77,6 +77,7 @@
     obsidian
     spotify
     stow
+    thunderbird
     #unstable.tailscale-gui #try again at a later date
     # variety
     vscodium

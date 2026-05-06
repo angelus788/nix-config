@@ -41,19 +41,14 @@ in
       type = lib.types.str;
       default = "Databases";
     };
-    admin.username = lib.mkOption {
-      type = lib.types.str;
-      default = "admin";
-    };
     admin.passwordFile = lib.mkOption {
       type = lib.types.str;
-      description = "Path to the agenix secret file containing COUCHDB_PASSWORD=yourpassword";
-      example = "config.age.secrets.couchdb-password.path";
+      description = "Path to agenix secret containing COUCHDB_USER and COUCHDB_PASSWORD";
+      # No default here ensures you don't forget to set it in your host config
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # Ensure directories exist with correct permissions
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0775 ${hl.user} ${hl.group} - -"
       "d ${cfg.configDir} 0775 ${hl.user} ${hl.group} - -"
@@ -80,12 +75,11 @@ in
               "${cfg.dataDir}:/opt/couchdb/data"
               "${cfg.configDir}:/opt/couchdb/etc/local.d"
             ];
+            # environmentFiles takes the path provided by agenix
             environmentFiles = [
               cfg.admin.passwordFile
             ];
-            environment = {
-              COUCHDB_USER = cfg.admin.username;
-            };
+            environment = { };
             extraOptions = [
               "--pull=newer"
             ];
