@@ -36,6 +36,8 @@
 
     cloudflareDnsApiCredentialsAvgtechguy.file = "${inputs.secrets}/cloudflareDnsApiCredentialsAvgtechguy.age";
 
+    couchdb-password.file = "${inputs.secrets}/couchdb-password.age";
+
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
     #duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     #duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
