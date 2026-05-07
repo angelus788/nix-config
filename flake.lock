@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1777878536,
-        "narHash": "sha256-VS2QkRlkq2/G7TBVpsY9Meobizqbvv5CPzCt9KNc2GE=",
+        "lastModified": 1778051987,
+        "narHash": "sha256-KYeV3E5Na2g2SnXy+wRZEUaJePWD9MG19XHmXxMJNyc=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "26bdd4ef135d6aaa3af536586c7b54781a318126",
+        "rev": "b7e1d872b212d91ed5cbf1d5f32a8ead6c350d8c",
         "type": "github"
       },
       "original": {
@@ -215,11 +215,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778009629,
-        "narHash": "sha256-nUoQtf4Zq7DRYJrfv904hjrxjAlWVP6a1pNNFKx3FCg=",
+        "lastModified": 1778110974,
+        "narHash": "sha256-7V7bW5uZSdKPRmemMQUulXRffnlnjRj5N/HGHOsOda8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "00ed86e58bb6979a7921859fd1615d19382eac5c",
+        "rev": "75fac363324f18d2b83a30fd916e509d2a02fb0e",
         "type": "github"
       },
       "original": {
