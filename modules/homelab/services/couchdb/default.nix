@@ -30,6 +30,12 @@ in
       type = lib.types.str;
      default = "couchdb.${hl.baseDomain}";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "podman-couchdb-for-ols"
+      ];
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "CouchDB";
