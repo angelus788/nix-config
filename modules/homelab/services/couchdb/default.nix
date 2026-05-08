@@ -5,12 +5,12 @@
 }:
 let
   service = "couchdb";
-  cfg = config.homelab.services.${service};
+  cfg = config.homelab.services.couchdb;
   hl = config.homelab;
   containerName = "couchdb-for-ols";
 in
 {
-  options.homelab.services.${service} = {
+  options.homelab.services.couchdb = {
     enable = lib.mkEnableOption {
       description = "Enable CouchDB for Livesync";
     };
@@ -22,9 +22,13 @@ in
       type = lib.types.str;
       default = "/persist/opt/services/couchdb/etc";
     };
+    couchdbUrl = lib.mkOption {
+      type = lib.types.str;
+      example = "couchdb.foo.bar";
+    };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "couchdb.${hl.baseDomain}";
+     default = "couchdb.${hl.baseDomain}";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -40,11 +44,10 @@ in
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Databases";
+      default = "Services";
     };
     admin.passwordFile = lib.mkOption {
       type = lib.types.str;
-      # Point this to "/run/agenix/couchdb-password" in your host config
       description = "Path to agenix secret containing COUCHDB_PASSWORD=value";
     };
   };

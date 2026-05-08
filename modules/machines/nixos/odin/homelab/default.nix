@@ -170,8 +170,8 @@ in
         enable = true;
         environmentFile = config.age.secrets.navidromeEnv.path;
       };
-      #audiobookshelf.enable = true;
-      #deluge.enable = true;
+      audiobookshelf.enable = true;
+      deluge.enable = true;
       wireguard-netns = {
         enable = true;
         configFile = config.age.secrets.wireguardCredentials.path;

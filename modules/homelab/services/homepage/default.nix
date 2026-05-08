@@ -134,11 +134,11 @@ in
               lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (homepageServices "${cat}"))
                 (x:
                   let
-                    # Define the URL once so you don't repeat the 'if' logic
-                    serviceUrl =
-                      if x == "forgejo"
-                      then "https://git.avgtechguy.com"
-                      else "https://${hl.${x}.url}";
+                    customUrls = {
+                      forgejo = "https://git.avgtechguy.com";
+                      couchdb = "https://couchdb.avgtechguy.com/_utils";
+                    };
+                    serviceUrl = customUrls.${x} or "https://${hl.${x}.url}";
                   in
                   {
                     "${hl.${x}.homepage.name}" = {
@@ -195,7 +195,7 @@ in
                     widget = {
                       type = "glances";
                       url = "http://localhost:${port}";
-                      metric = "network:enp2s0";
+                      metric = "network:enp1s0";
                       chart = false;
                       version = 4;
                     };

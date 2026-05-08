@@ -44,15 +44,17 @@
       miniflux.role = "server";
       microbin.role = "server";
       vaultwarden.role = "server";
+      forgejo.enable = true;
       forgejo-runner = {
         enable = true;
         forgejoUrl = config.homelab.services.forgejo.url;
         tokenFile = config.age.secrets.forgejoRunnerTokenHeimdall.path;
         atticTokenFile = config.age.secrets.atticTokenHeimdall.path;
       };
-      forgejo.enable = true;
+     
       couchdb = {
         enable = true;
+        couchdbUrl = config.homelab.services.couchdb.url;
         admin.passwordFile = config.age.secrets.couchdb-password.path;
       };
       matrix = {
