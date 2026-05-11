@@ -40,7 +40,7 @@ jobs:
            fi
 
   update-flake-forgejo:
-    if: contains(github.server_url, 'avgtechguy.com')
+    if: github.server_url == 'https://git.avgtechguy.com'
     runs-on: debian-latest
     environment: production
     # Theme variables defined here
