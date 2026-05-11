@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   service = "invoiceplane";
@@ -48,17 +49,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    nixpkgs.overlays = [
-      (final: prev: {
-        invoiceplane-beta = prev.invoiceplane-beta.overrideAttrs (old: {
-          # We use recursiveUpdate or just override the specific vendor derivation
-          composerRepository = old.composerRepository.overrideAttrs (_: {
-            outputHash = "sha256-F9ip+1s2Vh76kYJLELeJBKOXKP6IDTKErKyPPD7WJiA=";
-          });
-        });
-      })
-    ];
-    services.invoiceplane-beta = {
+    services.invoiceplane = {
       sites.${cfg.url} = {
         invoiceTemplates =
           let
@@ -66,8 +57,8 @@ in
           in
           [ notthebee ];
         settings = {
-          DISABLE_SETUP = false;
-          SETUP_COMPLETED = false;
+          DISABLE_SETUP = true;
+          SETUP_COMPLETED = true;
           IP_URL = "https://${cfg.url}";
           DISABLE_READ_ONLY = true;
           ENABLE_INVOICE_DELETION = true;
