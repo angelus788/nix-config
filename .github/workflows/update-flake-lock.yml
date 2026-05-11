@@ -41,39 +41,37 @@ jobs:
 
   update-flake-forgejo:
     if: github.server_url == 'https://git.avgtechguy.com'
-    runs-on: debian-latest
+    runs-on: nix
     environment: production
     # Theme variables defined here
-    env:
-      FORGEJO_HOST: git.avgtechguy.com
-      ATTIC_HOST: cache.avgtechguy.com
+env:
+  FORGEJO_HOST: git.avgtechguy.com
+  ATTIC_HOST: cache.avgtechguy.com
+
+jobs:
+  update-flake-lock:
+    runs-on: nix
+    environment: production
     steps:
       - uses: actions/checkout@v4
-      
       - name: Set up SSH
-        # We must hardcode the URL in 'uses', but we use the variables in 'with'
-        uses: avgtechguy/actions/set-up-ssh@main
+        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
         with:
           git-host: ${{ env.FORGEJO_HOST }}
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
-          
-      - name: Setup Attic
-        uses: avgtechguy/actions/set-up-ssh@main
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
-          
       - name: "Update nix flake"
-        run: nix flake update
-        
-      - name: "Commit and push"
+        run: |
+          nix flake update
+      - name: "Commit and push the new flake.lock"
         run: |
           git config user.name forgejo-actions
-          git config user.email forgejo@${{ env.FORGEJO_HOST }}
+          git config user.email forgejo@git.avgtechguy.com
           git add flake.lock
           git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
           git push origin main
-          
-      - name: Cache to Attic
-        uses: https://git.avgtechguy.com/avgtechguy/actions/cache-to-attic@main
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
