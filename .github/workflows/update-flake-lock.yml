@@ -10,7 +10,7 @@ permissions:
 jobs:
   update-flake-github:
     if: github.server_url == 'https://github.com'
-    runs-on: ubuntu-latest
+    runs-on: debian-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install Lix
@@ -41,7 +41,7 @@ jobs:
 
   update-flake-forgejo:
     if: contains(github.server_url, 'avgtechguy.com')
-    runs-on: nix
+    runs-on: debian-latest
     environment: production
     # Theme variables defined here
     env:
