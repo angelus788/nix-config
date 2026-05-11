@@ -52,7 +52,7 @@ jobs:
       
       - name: Set up SSH
         # We must hardcode the URL in 'uses', but we use the variables in 'with'
-        uses: https://git.avgtechguy.com/avgtechguy/actions/set-up-ssh@main
+        uses: https://git.avgtechguy.com/avgtechguy/nix-config/actions/set-up-ssh@main
         with:
           git-host: ${{ env.FORGEJO_HOST }}
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
@@ -76,4 +76,4 @@ jobs:
           git push origin main
           
       - name: Cache to Attic
-        uses: https://git.avgtechguy.com/avgtechguy/actions/cache-to-attic@main
+        uses: https://git.avgtechguy.com/avgtechguy/nix-config/actions/cache-to-attic@main
