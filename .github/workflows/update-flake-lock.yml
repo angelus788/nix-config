@@ -59,7 +59,7 @@ jobs:
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
           
       - name: Setup Attic
-        uses: https://git.avgtechguy.com/avgtechguy/actions/setup-attic-cache@main
+        uses: avgtechguy/actions/set-up-ssh@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
