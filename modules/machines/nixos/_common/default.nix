@@ -142,7 +142,6 @@
   homelab.motd.enable = true;
 
   environment.systemPackages = with pkgs; [
-    tmux
     wget
     iperf3
     eza
@@ -171,6 +170,7 @@
 
       # 2. Force the top-level 'beets' to point to the one in unstable
       # This effectively "upgrades" beets for the whole system
+      # This was done, beets was giving CVE error. 
       beets = final.unstable.beets;
     })
   ];
