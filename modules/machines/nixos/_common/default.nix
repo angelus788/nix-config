@@ -163,19 +163,23 @@
 
   nixpkgs.overlays = [
     (final: prev: {
+      # 1. Keep your existing 'unstable' attribute for general use
       unstable = import inputs.nixpkgs-unstable {
         system = prev.system;
-        # Carry over your config (like allowUnfree) to the unstable set
         config = config.nixpkgs.config;
       };
+
+      # 2. Force the top-level 'beets' to point to the one in unstable
+      # This effectively "upgrades" beets for the whole system
+      beets = final.unstable.beets;
     })
   ];
 
   #COMEBACKTOTHIS
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "python3.13-beets-2.5.1"
-  ];
+  #nixpkgs.config.permittedInsecurePackages = [
+  #  "python3.13-beets-2.5.1"
+  #];
 
 
 
