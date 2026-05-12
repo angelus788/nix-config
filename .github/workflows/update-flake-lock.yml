@@ -1,4 +1,5 @@
 name: Update flake.lock
+
 on:
   workflow_dispatch:
   schedule:
@@ -7,71 +8,73 @@ on:
 permissions:
   contents: write
 
-jobs:
-  update-flake-github:
-    if: github.server_url == 'https://github.com'
-    runs-on: debian-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Lix
-        run: curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
-      - name: Setup SSH Key
-        run: |
-           mkdir -p ~/.ssh
-           echo "${{ secrets.GHA_DEPLOY_PRIVATE }}" > ~/.ssh/id_ed25519
-           chmod 600 ~/.ssh/id_ed25519
-           ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - name: Enable flakes
-        run: |
-          mkdir -p ~/.config/nix
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.config
-
-      - name: Update flake.lock
-        run: nix flake update
-      - name: Update and Commit
-        run: |
-           nix flake update
-           if ! git diff --quiet; then
-             git config user.name "github-actions[bot]"
-             git config user.email "github-actions[bot]@users.noreply.github.com"
-             git add flake.lock
-             git commit -m "chore: update flake.lock"
-             git push
-           fi
-
-  update-flake-forgejo:
-    if: github.server_url == 'https://git.avgtechguy.com'
-    runs-on: nix
-    environment: production
-    # Theme variables defined here
 env:
   FORGEJO_HOST: git.avgtechguy.com
   ATTIC_HOST: cache.avgtechguy.com
 
 jobs:
-  update-flake-lock:
-    runs-on: nix
-    environment: production
+  update-flake-github:
+    if: github.server_url == 'https://github.com'
+    runs-on: debian-latest
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Lix
+        run: curl -sSfL https://install.lix.systems/lix | sh -s -- install --no-confirm
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GHA_DEPLOY_PRIVATE }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Enable flakes
+        run: |
+          mkdir -p ~/.config/nix
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.config
+
+      - name: Update and Commit
+        run: |
+          nix flake update
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add flake.lock
+            git commit -m "chore: update flake.lock"
+            git push
+          fi
+
+  update-flake-forgejo:
+    if: github.server_url == 'https://git.avgtechguy.com'
+    runs-on: nix
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Set up SSH
         uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
         with:
           git-host: ${{ env.FORGEJO_HOST }}
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
+
       - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
-      - name: "Update nix flake"
-        run: |
-          nix flake update
-      - name: "Commit and push the new flake.lock"
+
+      - name: Update nix flake
+        run: nix flake update
+
+      - name: Commit and push the new flake.lock
         run: |
           git config user.name forgejo-actions
           git config user.email forgejo@git.avgtechguy.com
           git add flake.lock
           git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
           git push origin main
+
       - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
