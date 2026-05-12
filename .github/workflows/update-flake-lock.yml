@@ -8,15 +8,10 @@ on:
 permissions:
   contents: write
 
-env:
-  FORGEJO_HOST: git.avgtechguy.com
-  ATTIC_HOST: cache.avgtechguy.com
-
 jobs:
   update-flake-github:
     if: github.server_url == 'https://github.com'
     runs-on: debian-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -47,24 +42,26 @@ jobs:
           fi
 
   update-flake-forgejo:
+    # Use a hardcoded string or the contains logic to ensure it runs on your instance
     if: github.server_url == 'https://git.avgtechguy.com'
     runs-on: nix
     environment: production
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up SSH
-        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
+        # NOTE: Hardcode the URL here; variables are not supported in 'uses'
+        uses: https://git.avgtechguy.com/avgtechguy/actions/set-up-ssh@main
         with:
-          git-host: ${{ env.FORGEJO_HOST }}
+          git-host: git.avgtechguy.com
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
 
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
+      - name: Setup Attic
+        uses: https://git.avgtechguy.com/avgtechguy/actions/setup-attic-cache@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
-          attic-url: https://${{ env.ATTIC_HOST }}
+          attic-url: https://cache.avgtechguy.com
 
       - name: Update nix flake
         run: nix flake update
@@ -77,4 +74,5 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
           git push origin main
 
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
+      - name: Cache to Attic
+        uses: https://git.avgtechguy.com/avgtechguy/actions/cache-to-attic@main
