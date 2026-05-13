@@ -575,11 +575,11 @@
         "rev": "92027668971f164ae51566483a1628d257229038",
         "revCount": 211,
         "type": "git",
-        "url": "ssh://git@github.com/angelus788/nix-private.git"
+        "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
       "original": {
         "type": "git",
-        "url": "ssh://git@github.com/angelus788/nix-private.git"
+        "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       }
     },
     "systems": {
