@@ -50,7 +50,7 @@
     };
 
     secrets = {
-      url = "git+ssh://git@github.com/angelus788/nix-private.git";
+      url = "git+ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git";
       flake = false;
     };
 
