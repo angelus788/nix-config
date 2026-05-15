@@ -1,59 +1,37 @@
-name: "Set up SSH for connecting to a private repo"
-description: "Configures SSH for Alpine-based Nix runners and updates the flake"
-inputs:
-  ssh-key:
-    description: "The raw private key content"
-    required: true
-  git-host:
-    description: "Git host (e.g., git.avgtechguy.com)"
-    required: true
-  git-hostkey:
-    description: "Host key fingerprint from ssh-keyscan"
-    required: true
-runs:
-  using: composite
-  steps:
-    - name: "Setup SSH Files"
-      shell: sh
-      run: |
-        mkdir -p /tmp/.ssh
-        chmod 700 /tmp/.ssh
+name: Update flake.lock
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
 
-        # Read the raw input variable cleanly via an environment variable
-        # This completely avoids shell expansion or indentation issues
-        cat << 'EOF' > /tmp/.ssh/id_ed25519
-        ${{ inputs.ssh-key }}
-        EOF
-        
-        # Strip any leading whitespace inline using sed cleanly
-        sed -i 's/^[[:space:]]*//' /tmp/.ssh/id_ed25519
-        chmod 600 /tmp/.ssh/id_ed25519
+env:
+  FORGEJO_HOST: git.avgtechguy.com
+  ATTIC_HOST: cache.avgtechguy.com
 
-        # Safely write known_hosts
-        cat << 'EOF' > /tmp/.ssh/known_hosts
-        ${{ inputs.git-hostkey }}
-        EOF
-        sed -i 's/^[[:space:]]*//' /tmp/.ssh/known_hosts
-        chmod 644 /tmp/.ssh/known_hosts
-
-        # Generate config pointing explicitly to the temporary assets
-        cat << EOF > /tmp/.ssh/config
-        Host ${{ inputs.git-host }}
-          HostName ${{ inputs.git-host }}
-          User forgejo
-          IdentityFile /tmp/.ssh/id_ed25519
-          IdentitiesOnly yes
-          Port 69
-          UserKnownHostsFile /tmp/.ssh/known_hosts
-          StrictHostKeyChecking yes
-        EOF
-        chmod 644 /tmp/.ssh/config
-
-    - name: "Update Nix Flake"
-      shell: sh
-      run: |
-        # Force the isolated Nix builder environment to respect our custom SSH configuration
-        export NIX_SSHOPTS="-F /tmp/.ssh/config"
-        export GIT_SSH_COMMAND="ssh -F /tmp/.ssh/config"
-        
-        nix flake update --commit-lock-file
+jobs:
+  update-flake-lock:
+    runs-on: nix
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up SSH
+        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
+        with:
+          git-host: ${{ env.FORGEJO_HOST }}
+          ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
+          git-hostkey: ${{ secrets.GIT_HOSTKEY }}
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
+        with:
+          attic-token: ${{ secrets.ATTIC_TOKEN }}
+          attic-url: https://${{ env.ATTIC_HOST }}
+      - name: "Update nix flake"
+        run: |
+          nix flake update
+      - name: "Commit and push the new flake.lock"
+        run: |
+          git config user.name forgejo-actions
+          git config user.email forgejo@git.avgtechguy.com
+          git add flake.lock
+          git diff-index --quiet HEAD || git commit -m "chore: Update flake.lock"
+          git push origin main
+      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/cache-to-attic@main
