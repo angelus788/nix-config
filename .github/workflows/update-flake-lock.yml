@@ -1,5 +1,5 @@
 name: "Set up SSH for connecting to a private repo"
-description: "Configures SSH for Alpine-based Nix runners using clean injection"
+description: "Configures SSH for Alpine-based Nix runners and updates the flake"
 inputs:
   ssh-key:
     description: "The raw private key content"
@@ -48,3 +48,12 @@ runs:
           StrictHostKeyChecking yes
         EOF
         chmod 644 /tmp/.ssh/config
+
+    - name: "Update Nix Flake"
+      shell: sh
+      run: |
+        # Force the isolated Nix builder environment to respect our custom SSH configuration
+        export NIX_SSHOPTS="-F /tmp/.ssh/config"
+        export GIT_SSH_COMMAND="ssh -F /tmp/.ssh/config"
+        
+        nix flake update --commit-lock-file
