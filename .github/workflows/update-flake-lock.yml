@@ -24,9 +24,16 @@ jobs:
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
-      - name: "Update nix flake"
+          
+      # YOUR NEW STEP GOES HERE (REPLACING THE OLD ONE):
+      - name: Update nix flake
         run: |
-          nix flake update
+          export NIX_SSHOPTS="-F /tmp/.ssh/config"
+          export GIT_SSH_COMMAND="ssh -F /tmp/.ssh/config"
+          
+          nix flake update --commit-lock-file
+        shell: sh
+
       - name: "Commit and push the new flake.lock"
         run: |
           git config user.name forgejo-actions
