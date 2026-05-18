@@ -1,13 +1,15 @@
 { pkgs, ... }:
 {
-  programs.vscodium = {
+  programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
+
     profiles.default = {
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
         arcticicestudio.nord-visual-studio-code
       ];
+
       userSettings = {
         # Use nixd as the LSP
         "nix.enableLanguageServer" = true;
@@ -34,9 +36,8 @@
         "update.mode" = "none";
       };
     };
-  }; # <--- This brace closes programs.vscode
+  };
 
-  # This now lives at the top level of the module, where it belongs
   home.packages = with pkgs; [
     nixd
     nixpkgs-fmt
