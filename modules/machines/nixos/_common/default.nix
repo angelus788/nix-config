@@ -164,7 +164,7 @@
     (final: prev: {
       # 1. Keep your existing 'unstable' attribute for general use
       unstable = import inputs.nixpkgs-unstable {
-        system = prev.system;
+        system = prev.stdenv.hostPlatform.system;
         config = config.nixpkgs.config;
       };
 

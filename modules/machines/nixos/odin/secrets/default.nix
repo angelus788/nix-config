@@ -10,6 +10,24 @@
     #borgBackupSSHKey.file = "${inputs.secrets}/borgBackupSSHKey.age";
     duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
+
+    forgejoRunnerTokenOdin = {
+      owner = "gitea-runner";
+      group = "gitea-runner";
+      file = "${inputs.secrets}/forgejoRunnerTokenOdin.age";
+    };
+
+    forgejoRunnerTokenHeimdall = {
+      owner = "gitea-runner";
+      group = "gitea-runner";
+      file = "${inputs.secrets}/forgejoRunnerTokenHeimdall.age";
+    };
+    atticTokenHeimdall = {
+      owner = "atticd";
+      group = "atticd";
+      file = "${inputs.secrets}/atticTokenFile.age";
+    };
+
     keycloakDbPasswordFile.file = "${inputs.secrets}/keycloakDbPasswordFile.age";
     keycloakCloudflared.file = "${inputs.secrets}/keycloakCloudflared.age";
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";
