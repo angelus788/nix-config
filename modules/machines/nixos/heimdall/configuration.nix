@@ -1,4 +1,9 @@
-{ config, pkgs, lib, modulesPath, ... }:
+{
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}:
 
 {
   # 1. Enable GRUB
@@ -43,7 +48,10 @@
     firewall = {
       enable = true;
       allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 80 443 ];
+      allowedTCPPorts = [
+        80
+        443
+      ];
     };
   };
   services.openssh = {
@@ -73,16 +81,15 @@
     SystemMaxUse=500M
   '';
 
-  imports =
-    [
-      ../../../misc/avgtechguy.com
-      ../../../misc/agenix
-      ./homelab.nix
-      (modulesPath + "/profiles/qemu-guest.nix")
-      ./disko.nix
-      ./digitalocean.nix
-      ./secrets
-      #./wireguard.nix
-      ../_common/apps/tailscale
-    ];
+  imports = [
+    ../../../misc/avgtechguy.com
+    ../../../misc/agenix
+    ./homelab.nix
+    (modulesPath + "/profiles/qemu-guest.nix")
+    ./disko.nix
+    ./digitalocean.nix
+    ./secrets
+    #./wireguard.nix
+    ../_common/apps/tailscale
+  ];
 }

@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   hl = config.homelab;
@@ -20,12 +21,10 @@ in
       description = "Samba shares for the homelab";
     };
     example = lib.mkOption {
-      default = lib.attrsets.mapAttrs
-        (
-          _name: value: _name:
-            value.settings
-        )
-        cfg.shares;
+      default = lib.attrsets.mapAttrs (
+        _name: value: _name:
+        value.settings
+      ) cfg.shares;
     };
     passwordFile = lib.mkOption {
       type = lib.types.path;

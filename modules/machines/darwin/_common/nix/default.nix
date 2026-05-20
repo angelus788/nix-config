@@ -13,7 +13,11 @@
       "flakes"
     ];
 
-    settings.trusted-users = [ "root" "angelus" "@wheel" ];
+    settings.trusted-users = [
+      "root"
+      "angelus"
+      "@wheel"
+    ];
   };
 
   nixpkgs = {

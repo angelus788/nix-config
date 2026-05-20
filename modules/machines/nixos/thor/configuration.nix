@@ -2,17 +2,16 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  imports =
-    [
-      # Include the results of the hardware scan.
-      ../../../misc/avgtechguy.com
-      ./hardware-configuration.nix
-      ../_common/apps/tailscale
-      ./secrets
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ../../../misc/avgtechguy.com
+    ./hardware-configuration.nix
+    ../_common/apps/tailscale
+    ./secrets
+  ];
 
   # Bootloader.
   boot.loader.grub.enable = true;
@@ -27,7 +26,6 @@
     layout = "us";
     variant = "";
   };
-
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

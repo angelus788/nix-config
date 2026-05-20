@@ -1,8 +1,12 @@
-{ pkgs
-, ...
+{
+  pkgs,
+  ...
 }:
 {
-  nix.settings.trusted-users = [ "angelus" "root" ];
+  nix.settings.trusted-users = [
+    "angelus"
+    "root"
+  ];
 
   users = {
     # 1. DEFINE THE USERS

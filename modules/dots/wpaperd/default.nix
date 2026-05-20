@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
@@ -40,5 +45,3 @@ in
     };
   };
 }
-
-

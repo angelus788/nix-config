@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   cfg = config.homelab;
@@ -34,10 +35,9 @@ in
       80
       443
     ]
-    ++ (lib.optionals
-      (
-        config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
-      ) [ 7000 ]);
+    ++ (lib.optionals (
+      config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
+    ) [ 7000 ]);
     systemd.services.frp.serviceConfig.LoadCredential =
       lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
     services.frp = lib.mkIf config.homelab.frp.enable {

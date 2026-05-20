@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, lib, ... }:
 let
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
 in

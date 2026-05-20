@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   nixpkgs = {
     config = {
@@ -34,11 +34,10 @@
 
   imports = [ ./nix ];
 
-  environment.systemPackages = with pkgs;
-    [
-      nixd # The Language Server
-      nixpkgs-fmt # Optional: For auto-formatting
-      tmux
-    ];
+  environment.systemPackages = with pkgs; [
+    nixd # The Language Server
+    nixpkgs-fmt # Optional: For auto-formatting
+    tmux
+  ];
 
 }

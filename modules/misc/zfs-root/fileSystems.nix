@@ -65,7 +65,11 @@ in
         "${mountpoint}" = {
           device = "${bindsrc}";
           fsType = "none";
-          options = [ "bind" "X-mount.mkdir" "noatime" ];
+          options = [
+            "bind"
+            "X-mount.mkdir"
+            "noatime"
+          ];
         };
       }) cfg.bindmounts)
       ++ (optional cfg.enableDockerZvol {

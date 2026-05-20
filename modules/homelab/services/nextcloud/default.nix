@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   service = "nextcloud";
@@ -121,7 +122,7 @@ in
             overwriteprotocol = "https";
             default_phone_region = "US";
             trusted_domains = [ "${cfg.url}" ];
-            trusted_proxies = [ "127.0.0.1" ]; 
+            trusted_proxies = [ "127.0.0.1" ];
           };
           config = {
             dbtype = "pgsql";

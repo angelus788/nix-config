@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   hl = config.homelab;
@@ -29,7 +30,11 @@ in
   fileSystems.${hl.mounts.fast} = lib.mkForce {
     device = "/dev/disk/by-label/cache";
     fsType = "btrfs";
-    options = [ "subvol=cache" "noatime" "compress=zstd" ];
+    options = [
+      "subvol=cache"
+      "noatime"
+      "compress=zstd"
+    ];
   };
 
   fileSystems."/" = lib.mkForce {
@@ -66,10 +71,12 @@ in
   fileSystems."/boot" = lib.mkForce {
     device = "/dev/disk/by-label/BOOT";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
     neededForBoot = true;
   };
-
 
   fileSystems."/home" = lib.mkForce {
     device = "/dev/disk/by-label/odin-root";

@@ -1,6 +1,7 @@
-{ inputs
-, pkgs
-, ...
+{
+  inputs,
+  pkgs,
+  ...
 }:
 {
   system.primaryUser = "angelus";
@@ -72,16 +73,16 @@
   };
 
   environment.systemPackages = with pkgs; [
-     (python312.withPackages (
-       ps: with ps; [
-         pip
-         jmespath
-         requests
-         setuptools
-         pyyaml
-         pyopenssl
-       ]
-     ))
+    (python312.withPackages (
+      ps: with ps; [
+        pip
+        jmespath
+        requests
+        setuptools
+        pyyaml
+        pyopenssl
+      ]
+    ))
     #_1password-gui
     _1password-cli
     # alacritty
@@ -116,7 +117,6 @@
     wget
     #zed-editor
   ];
-
 
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono

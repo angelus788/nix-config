@@ -42,8 +42,8 @@
       #  aws = {
       #    disabled = true;
       #  };
-       
-      };
+
+    };
     zoxide = {
       enable = true;
       enableZshIntegration = true;

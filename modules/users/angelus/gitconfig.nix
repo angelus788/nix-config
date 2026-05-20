@@ -1,14 +1,11 @@
 {
-  inputs,
-  lib,
-  config,
   ...
 }:
 {
- # age.secrets.gitIncludes = {
- #   file = "${inputs.secrets}/gitIncludes.age";
- #   path = "$HOME/.config/git/includes";
- # };
+  # age.secrets.gitIncludes = {
+  #   file = "${inputs.secrets}/gitIncludes.age";
+  #   path = "$HOME/.config/git/includes";
+  # };
 
   programs.git = {
     enable = true;

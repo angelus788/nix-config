@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   wg = config.homelab.networks.local.wireguard-ext;
@@ -72,7 +73,7 @@ in
     services = {
       enable = true;
       slskd = {
-        enable = false; #need to address WG0
+        enable = false; # need to address WG0
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;
       };
 

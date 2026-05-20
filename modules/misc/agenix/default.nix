@@ -1,5 +1,6 @@
-{ inputs
-, ...
+{
+  inputs,
+  ...
 }:
 {
   age = {
@@ -11,7 +12,7 @@
       tgNotifyCredentials.file = "${inputs.secrets}/tgNotifyCredentials.age";
       gitIncludes.file = "${inputs.secrets}/gitIncludes.age";
       frpToken.file = "${inputs.secrets}/frpToken.age";
-      
+
       #ssh = {
       #file = "${inputs.secrets}/ssh.nix";
       #path = "/home/angelus/.ssh/angelus";

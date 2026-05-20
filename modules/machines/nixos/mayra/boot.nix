@@ -22,7 +22,15 @@
     initrd = {
       verbose = false;
       kernelModules = [ "amd" ];
-      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "sd_mod" "usbhid" "evdev" ];
+      availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "usb_storage"
+        "sd_mod"
+        "usbhid"
+        "evdev"
+      ];
     };
     kernelParams = [
       "quiet"

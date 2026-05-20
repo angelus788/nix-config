@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   nordHighlight = builtins.toFile "nord.css" (builtins.readFile ./nord.css);

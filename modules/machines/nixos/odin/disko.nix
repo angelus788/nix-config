@@ -15,7 +15,10 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                extraArgs = [ "-n" "BOOT" ];
+                extraArgs = [
+                  "-n"
+                  "BOOT"
+                ];
                 mountOptions = [ "umask=0077" ];
               };
             };
@@ -23,13 +26,47 @@
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "odin-root" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "odin-root"
+                  "-f"
+                ];
                 subvolumes = {
-                  "/root" = { mountpoint = "/"; mountOptions = [ "compress=zstd" "noatime" ]; };
-                  "/home" = { mountpoint = "/home"; mountOptions = [ "compress=zstd" "noatime" ]; };
-                  "/nix" = { mountpoint = "/nix"; mountOptions = [ "compress=zstd" "noatime" ]; };
-                  "/persist" = { mountpoint = "/persist"; mountOptions = [ "compress=zstd" "noatime" ]; };
-                  "/var_log" = { mountpoint = "/var/log"; mountOptions = [ "compress=zstd" "noatime" ]; };
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/var_log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
                 };
               };
             };
@@ -48,13 +85,20 @@
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "cache" "-f" ];
-                # Mapping as a top-level subvolume for simplicity, 
+                extraArgs = [
+                  "-L"
+                  "cache"
+                  "-f"
+                ];
+                # Mapping as a top-level subvolume for simplicity,
                 # or just mount the root of the drive.
                 subvolumes = {
                   "/cache" = {
                     mountpoint = "/cache";
-                    mountOptions = [ "compress=zstd" "noatime" ];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                 };
               };
@@ -76,7 +120,11 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/Data1";
-                extraArgs = [ "-L" "data1" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "data1"
+                  "-f"
+                ];
                 mountOptions = [ "nofail" ];
               };
             };
@@ -96,7 +144,11 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/Data2";
-                extraArgs = [ "-L" "data2" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "data2"
+                  "-f"
+                ];
                 mountOptions = [ "nofail" ];
               };
             };
@@ -116,7 +168,11 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/Data3";
-                extraArgs = [ "-L" "data3" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "data3"
+                  "-f"
+                ];
                 mountOptions = [ "nofail" ];
               };
             };
@@ -136,7 +192,11 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/Data4";
-                extraArgs = [ "-L" "data4" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "data4"
+                  "-f"
+                ];
                 mountOptions = [ "nofail" ];
               };
             };
@@ -157,7 +217,11 @@
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/Parity1";
-                extraArgs = [ "-L" "parity1" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "parity1"
+                  "-f"
+                ];
                 mountOptions = [ "nofail" ];
               };
             };

@@ -1,12 +1,11 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   hl = config.homelab;
-  lan = hl.networks.local.lan;
-  odinIPAddress = lan.reservations.odin.Address;
   hardDrives = [
     "/dev/disk/by-label/data1"
     "/dev/disk/by-label/data2"
@@ -29,8 +28,6 @@ in
   networking.hosts = {
     "127.0.0.1" = [ "login.internalnetwork.party" ];
   };
-
-
 
   #services.prometheus.exporters = {
   #  shellyplug = {
@@ -76,8 +73,22 @@ in
   };
 
   boot.kernelModules = [ "nct6775" ];
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "xhci_pci" "ahci" "usbhid" "sr_mod" ];
-  boot.supportedFilesystems = lib.mkForce [ "btrfs" "xfs" "vfat" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usb_storage"
+    "sd_mod"
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "sr_mod"
+  ];
+  boot.supportedFilesystems = lib.mkForce [
+    "btrfs"
+    "xfs"
+    "vfat"
+  ];
   boot.initrd.kernelModules = [ "btrfs" ];
 
   networking = {
@@ -142,8 +153,6 @@ in
   virtualisation.docker.storageDriver = "overlay2";
 
   system.autoUpgrade.enable = true;
-
-
 
   #services.withings2intervals = {
   #  enable = true;

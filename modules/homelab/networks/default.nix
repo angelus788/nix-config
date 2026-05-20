@@ -1,7 +1,4 @@
-{ lib, config, inputs, ... }:
-let
-  cfg = config.homelab.networks;
-in
+{ lib, config, ... }:
 {
   options.homelab.networks = {
     external = lib.mkOption {
@@ -19,37 +16,36 @@ in
           interface = "enp1s0";
         };
       '';
-      type = lib.types.attrsOf
-        (
-          lib.types.submodule {
-            options = {
-              v4 = {
-                address = lib.mkOption {
-                  example = "192.168.1.1/24";
-                  type = lib.types.str;
-                };
-                gateway = lib.mkOption {
-                  example = "192.168.1.1";
-                  type = lib.types.str;
-                };
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options = {
+            v4 = {
+              address = lib.mkOption {
+                example = "192.168.1.1/24";
+                type = lib.types.str;
               };
-              v6 = {
-                address = lib.mkOption {
-                  example = "fd80:dead:beef::1/48";
-                  type = lib.types.str;
-                };
-                gateway = lib.mkOption {
-                  example = "fd80:dead::1";
-                  type = lib.types.str;
-                };
-              };
-              interface = lib.mkOption {
-                example = "enp4s0";
+              gateway = lib.mkOption {
+                example = "192.168.1.1";
                 type = lib.types.str;
               };
             };
-          }
-        );
+            v6 = {
+              address = lib.mkOption {
+                example = "fd80:dead:beef::1/48";
+                type = lib.types.str;
+              };
+              gateway = lib.mkOption {
+                example = "fd80:dead::1";
+                type = lib.types.str;
+              };
+            };
+            interface = lib.mkOption {
+              example = "enp4s0";
+              type = lib.types.str;
+            };
+          };
+        }
+      );
     };
     local = lib.mkOption {
       default = { };

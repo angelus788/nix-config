@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   service = "miniflux";
@@ -19,17 +20,32 @@ in
       default = "news.internalnetwork.party";
     };
     homepage = {
-      name = lib.mkOption { type = lib.types.str; default = "Miniflux"; };
-      description = lib.mkOption { type = lib.types.str; default = "Minimalist feed reader"; };
-      icon = lib.mkOption { type = lib.types.str; default = "miniflux-light.svg"; };
-      category = lib.mkOption { type = lib.types.str; default = "Services"; };
+      name = lib.mkOption {
+        type = lib.types.str;
+        default = "Miniflux";
+      };
+      description = lib.mkOption {
+        type = lib.types.str;
+        default = "Minimalist feed reader";
+      };
+      icon = lib.mkOption {
+        type = lib.types.str;
+        default = "miniflux-light.svg";
+      };
+      category = lib.mkOption {
+        type = lib.types.str;
+        default = "Services";
+      };
     };
     adminCredentialsFile = lib.mkOption {
       description = "File with admin credentials";
       type = lib.types.path;
     };
     role = lib.mkOption {
-      type = lib.types.enum [ "client" "server" ];
+      type = lib.types.enum [
+        "client"
+        "server"
+      ];
       default = "client";
     };
   };
@@ -47,7 +63,6 @@ in
           OAUTH2_CLIENT_ID = "miniflux";
           OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
 
-
           # SERVER-FACING: Use the local loopback for the background heavy lifting
           #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://127.0.0.1:8821/realms/master";
           OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master";
@@ -62,13 +77,15 @@ in
         };
       };
 
-      services.frp.settings.proxies = [{
-        name = service;
-        type = "tcp";
-        localIP = "127.0.0.1";
-        localPort = 8067;
-        remotePort = 8067;
-      }];
+      services.frp.settings.proxies = [
+        {
+          name = service;
+          type = "tcp";
+          localIP = "127.0.0.1";
+          localPort = 8067;
+          remotePort = 8067;
+        }
+      ];
     })
 
     # --- SERVER ROLE: Caddy Reverse Proxy ---

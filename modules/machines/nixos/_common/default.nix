@@ -1,8 +1,9 @@
-{ inputs
-, config
-, pkgs
-, lib
-, ...
+{
+  inputs,
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 
 {
@@ -159,7 +160,6 @@
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
   ];
 
-
   nixpkgs.overlays = [
     (final: prev: {
       # 1. Keep your existing 'unstable' attribute for general use
@@ -177,7 +177,5 @@
   #nixpkgs.config.permittedInsecurePackages = [
   #  "python3.13-beets-2.5.1"
   #];
-
-
 
 }

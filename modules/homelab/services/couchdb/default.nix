@@ -1,10 +1,10 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
-  service = "couchdb";
   cfg = config.homelab.services.couchdb;
   hl = config.homelab;
   containerName = "couchdb-for-ols";
@@ -28,7 +28,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-     default = "couchdb.${hl.baseDomain}";
+      default = "couchdb.${hl.baseDomain}";
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;

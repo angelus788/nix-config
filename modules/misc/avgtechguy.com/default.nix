@@ -1,10 +1,13 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   domain = "avgtechguy.com";
 in
 {
   # 1. Firewall
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   # 2. Permissions & Directories
   systemd.tmpfiles.rules = [
@@ -27,7 +30,7 @@ in
                 root * ${(pkgs.writeTextDir "index.html" "<h1>Coming Soon!</h1>")}
 
                 file_server
-        
+
                 # Keep security active even during tests
                 @hidden path */.*
                 respond @hidden 403
@@ -45,7 +48,11 @@ in
         isNormalUser = true;
         uid = 1001;
         group = "deploy";
-        extraGroups = [ "caddy" "acme" "wheel" ];
+        extraGroups = [
+          "caddy"
+          "acme"
+          "wheel"
+        ];
         shell = pkgs.zsh;
         home = "/var/www/${domain}";
         openssh.authorizedKeys.keys = [
@@ -71,4 +78,3 @@ in
   };
 
 }
-

@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
   imports = [
-     "${inputs.secrets}/ssh.nix"
+    "${inputs.secrets}/ssh.nix"
   ];
 }

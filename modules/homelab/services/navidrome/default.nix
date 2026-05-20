@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   service = "navidrome";
@@ -71,11 +72,9 @@ in
         systemd.tmpfiles.rules = [
           "d ${cfg.musicDir} 0775 ${hl.user} ${hl.group} - -"
         ];
-        systemd.services.navidrome.serviceConfig.EnvironmentFile = lib.mkIf
-          (
-            cfg.environmentFile != null
-          )
-          cfg.environmentFile;
+        systemd.services.navidrome.serviceConfig.EnvironmentFile = lib.mkIf (
+          cfg.environmentFile != null
+        ) cfg.environmentFile;
         services.${service} = {
           enable = true;
           user = hl.user;

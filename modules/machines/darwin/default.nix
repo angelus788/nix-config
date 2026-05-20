@@ -45,8 +45,7 @@ in
             (./. + "/_common/default.nix")
             (./. + "/${name}/configuration.nix")
             (self.inputs.nixpkgs.lib.attrsets.recursiveUpdate (homeManagerCfg true) {
-              home-manager.users.angelus.home.homeDirectory =
-                self.inputs.nixpkgs.lib.mkForce "/Users/angelus";
+              home-manager.users.angelus.home.homeDirectory = self.inputs.nixpkgs.lib.mkForce "/Users/angelus";
             })
           ];
         }

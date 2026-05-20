@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, ... }:
+{ pkgs, inputs, ... }:
 
 {
 
@@ -26,7 +26,6 @@
     variant = "";
   };
 
-
   services.printing.enable = true;
 
   services.pulseaudio.enable = false;
@@ -43,7 +42,10 @@
   programs.firefox.enable = true;
 
   nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   environment.systemPackages = with pkgs; [
     bitwarden-cli
@@ -107,13 +109,12 @@
 
   security.polkit.enable = true;
 
-  imports =
-    [
-      inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
-      ./secrets
-      ./hardware-configuration.nix
-      #../_common/apps/vscodium
-      ../_common/apps/tailscale
-    ];
+  imports = [
+    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
+    ./secrets
+    ./hardware-configuration.nix
+    #../_common/apps/vscodium
+    ../_common/apps/tailscale
+  ];
 
 }
