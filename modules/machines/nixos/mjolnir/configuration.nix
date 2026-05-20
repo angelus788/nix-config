@@ -58,6 +58,7 @@
     just
     nixos-rebuild-ng
     obsidian
+    proton-pass
     spotify
     stow
     thunderbird
@@ -66,6 +67,7 @@
     vscodium
     wget
     zed-editor
+    unstable.proton-pass-cli
   ];
 
   # 1Password

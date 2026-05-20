@@ -158,12 +158,6 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
-
-      #forgejo-runner = {
-      #  enable = true;
-      #  forgejoUrl = config.homelab.services.forgejo.url;
-      #  tokenFile = config.age.secrets.forgejoRunnerTokenOdin.path;
-      #};
       jellyseerr = {
         enable = true;
       };
