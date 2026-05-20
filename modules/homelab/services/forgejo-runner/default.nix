@@ -96,6 +96,7 @@ in
           "nix:docker://git.avgtechguy.com/avgtechguy/nix-ci-builder:latest"
           "debian-latest:docker://node:current-trixie"
           "buildah:docker://quay.io/containers/buildah:latest"
+          "host-${config.networking.hostName}"
         ];
       };
     };
