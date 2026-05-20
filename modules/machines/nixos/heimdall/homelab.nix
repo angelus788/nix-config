@@ -51,7 +51,7 @@
         tokenFile = config.age.secrets.forgejoRunnerTokenHeimdall.path;
         atticTokenFile = config.age.secrets.atticTokenHeimdall.path;
       };
-     
+
       couchdb = {
         enable = true;
         couchdbUrl = config.homelab.services.couchdb.url;
@@ -61,10 +61,10 @@
         registrationSecretFile = config.age.secrets.matrixRegistrationSecret.path;
         enable = true;
       };
-      plausible = {
-        enable = true;
-        secretKeybaseFile = config.age.secrets.plausibleSecretKeybaseFile.path;
-      };
+      #plausible = { # Deactivating Plausible
+      #  enable = true;
+      #  secretKeybaseFile = config.age.secrets.plausibleSecretKeybaseFile.path;
+      #};
     };
   };
 }
