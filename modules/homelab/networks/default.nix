@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, ... }:
 {
   options.homelab.networks = {
     external = lib.mkOption {
