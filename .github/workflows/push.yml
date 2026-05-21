@@ -12,25 +12,8 @@ env:
 jobs:
   generate-readme-services:
     runs-on: nix
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Generate README services file
-        run: |
-          nix-instantiate \
-            --eval \
-            --raw \
-            --extra-experimental-features "flakes" \
-            generateServicesTable.nix \
-            > README_services.md
-
-
-
-  generate-readme:
-    runs-on: nix
     environment: production
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up SSH
