@@ -2,7 +2,7 @@
 {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
+    #package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
 
     profiles.default = {
       extensions = with pkgs.vscode-extensions; [
