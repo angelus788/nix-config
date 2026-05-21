@@ -1,4 +1,4 @@
-name: push
+name: generate-services-readme
 on:
   workflow_dispatch:
   push:
@@ -8,24 +8,25 @@ env:
   FORGEJO_HOST: git.avgtechguy.com
   ATTIC_HOST: cache.avgtechguy.com
 
+
 jobs:
-  lint:
+  generate-readme-services:
     runs-on: nix
-    environment: production
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up SSH
-        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
-        with:
-          git-host: ${{ env.FORGEJO_HOST }}
-          ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
-          git-hostkey: ${{ secrets.GIT_HOSTKEY }}
-      - run: git config --global --add safe.directory "${PWD}"
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
-        with:
-          attic-token: ${{ secrets.ATTIC_TOKEN }}
-          attic-url: https://${{ env.ATTIC_HOST }}
-      - run: nix flake check --accept-flake-config
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate README services file
+        run: |
+          nix-instantiate \
+            --eval \
+            --raw \
+            --extra-experimental-features "flakes" \
+            generateServicesTable.nix \
+            > README_services.md
+
+
 
   generate-readme:
     runs-on: nix
@@ -53,7 +54,6 @@ jobs:
     runs-on: nix
     environment: production
     needs:
-      - lint
       - generate-readme
     steps:
       - uses: actions/checkout@v4
