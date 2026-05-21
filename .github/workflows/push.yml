@@ -1,4 +1,5 @@
 name: generate-services-readme
+
 on:
   workflow_dispatch:
   push:
@@ -8,7 +9,6 @@ env:
   FORGEJO_HOST: git.avgtechguy.com
   ATTIC_HOST: cache.avgtechguy.com
 
-
 jobs:
   generate-readme-services:
     runs-on: nix
@@ -16,32 +16,53 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up SSH
         uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/set-up-ssh@main
         with:
           git-host: ${{ env.FORGEJO_HOST }}
           ssh-key: ${{ secrets.SECRETS_REPOSITORY_PRIVATE_KEY }}
           git-hostkey: ${{ secrets.GIT_HOSTKEY }}
-      - run: mkdir newreadme
-      - uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
+
+      - name: Create output directory
+        run: mkdir -p newreadme
+
+      - name: Setup Attic Cache
+        uses: https://${{ env.FORGEJO_HOST }}/avgtechguy/actions/setup-attic-cache@main
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
-        run: |
-          # Ensure strings exist or allow grep to exit safely if they don't
-          set +e
-          grep -q "BEGIN SERVICE LIST" README.md || { echo "Error: BEGIN SERVICE LIST marker missing"; exit 1; }
-          grep -q "END SERVICE LIST" README.md || { echo "Error: END SERVICE LIST marker missing"; exit 1; }
-          set -e
 
-          # Build the file pieces cleanly
-          grep -B 99999 "BEGIN SERVICE LIST" README.md > newreadme/README.md
-          
-          # Run the nix eval and append
-          nix eval --offline --raw --file bin/generateServicesTable.nix >> newreadme/README.md
-          
-          # Append the tail end
-          grep -A 99999 "END SERVICE LIST" README.md | grep -v "END SERVICE LIST" >> newreadme/README.md
+      - name: Verify README markers
+        run: |
+          grep -q "BEGIN SERVICE LIST" README.md || {
+            echo "BEGIN SERVICE LIST marker missing"
+            exit 1
+          }
+
+          grep -q "END SERVICE LIST" README.md || {
+            echo "END SERVICE LIST marker missing"
+            exit 1
+          }
+
+      - name: Generate README
+        run: |
+          awk '
+          /BEGIN SERVICE LIST/ {
+            print
+            system("nix eval --offline --raw --file bin/generateServicesTable.nix")
+            skip=1
+            next
+          }
+
+          /END SERVICE LIST/ {
+            print
+            skip=0
+          }
+
+          !skip
+          ' README.md > newreadme/README.md
+
       - uses: actions/upload-artifact@v3
         with:
           name: new-readme
@@ -50,19 +71,29 @@ jobs:
   push-readme:
     runs-on: nix
     environment: production
+
     needs:
       - generate-readme-services
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v3
         with:
           name: new-readme
           path: newreadme
-      - run: mv newreadme/README.md README.md
+
+      - name: Replace README
+        run: mv newreadme/README.md README.md
+
       - name: Commit and push README
         run: |
           git config user.name forgejo-actions
           git config user.email forgejo@git.avgtechguy.com
+
           git add README.md
-          git diff-index --quiet HEAD || git commit -m "chore: Generate README.md"
+
+          git diff-index --quiet HEAD || \
+            git commit -m "chore: Generate README.md"
+
           git push
