@@ -35,29 +35,32 @@ jobs:
 
       - name: Verify README markers
         run: |
-          grep -q "BEGIN SERVICE LIST" README.md || {
-            echo "BEGIN SERVICE LIST marker missing"
+          if ! grep -iqE "BEGIN[[:space:]]+SERVICE[[:space:]]+LIST" README.md; then
+            echo "ERROR: 'BEGIN SERVICE LIST' marker missing or malformed in README.md"
             exit 1
-          }
+          fi
 
-          grep -q "END SERVICE LIST" README.md || {
-            echo "END SERVICE LIST marker missing"
+          if ! grep -iqE "END[[:space:]]+SERVICE[[:space:]]+LIST" README.md; then
+            echo "ERROR: 'END SERVICE LIST' marker missing or malformed in README.md"
             exit 1
-          }
+          fi
 
       - name: Generate README
         run: |
           awk '
-          /BEGIN SERVICE LIST/ {
+          BEGIN { IGNORECASE = 1 }
+          
+          /BEGIN[[:space:]]+SERVICE[[:space:]]+LIST/ {
             print
             system("nix eval --offline --raw --file bin/generateServicesTable.nix")
             skip=1
             next
           }
 
-          /END SERVICE LIST/ {
+          /END[[:space:]]+SERVICE[[:space:]]+LIST/ {
             print
             skip=0
+            next
           }
 
           !skip
