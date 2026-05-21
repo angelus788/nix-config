@@ -27,7 +27,21 @@ jobs:
         with:
           attic-token: ${{ secrets.ATTIC_TOKEN }}
           attic-url: https://${{ env.ATTIC_HOST }}
-      - run: (grep -B 99999 "BEGIN SERVICE LIST" README.md && nix eval --offline --raw --file bin/generateServicesTable.nix && grep -A 99999 "END SERVICE LIST" README.md) > newreadme/README.md
+        run: |
+          # Ensure strings exist or allow grep to exit safely if they don't
+          set +e
+          grep -q "BEGIN SERVICE LIST" README.md || { echo "Error: BEGIN SERVICE LIST marker missing"; exit 1; }
+          grep -q "END SERVICE LIST" README.md || { echo "Error: END SERVICE LIST marker missing"; exit 1; }
+          set -e
+
+          # Build the file pieces cleanly
+          grep -B 99999 "BEGIN SERVICE LIST" README.md > newreadme/README.md
+          
+          # Run the nix eval and append
+          nix eval --offline --raw --file bin/generateServicesTable.nix >> newreadme/README.md
+          
+          # Append the tail end
+          grep -A 99999 "END SERVICE LIST" README.md | grep -v "END SERVICE LIST" >> newreadme/README.md
       - uses: actions/upload-artifact@v3
         with:
           name: new-readme
