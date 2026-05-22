@@ -109,6 +109,8 @@
 
   security.polkit.enable = true;
 
+  home-manager.users.angelus.myHomeDots.enableGui = true;
+
   imports = [
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     ./secrets

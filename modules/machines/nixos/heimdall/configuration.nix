@@ -60,26 +60,7 @@
 
   environment.systemPackages = [ pkgs.caddy ];
 
-  environment.etc."clickhouse-server/config.d/low-retention-logs.xml".text = ''
-    <clickhouse>
-        <system_log_list>
-            <trace_log>
-                <database>system</database>
-                <table>trace_log</table>
-                <ttl>event_date + INTERVAL 1 DAY</ttl>
-            </trace_log>
-            <text_log>
-                <database>system</database>
-                <table>text_log</table>
-                <ttl>event_date + INTERVAL 1 DAY</ttl>
-            </text_log>
-        </system_log_list>
-    </clickhouse>
-  '';
-
-  services.journald.extraConfig = ''
-    SystemMaxUse=500M
-  '';
+  home-manager.users.angelus.myHomeDots.enableGui = false;
 
   imports = [
     ../../../misc/avgtechguy.com

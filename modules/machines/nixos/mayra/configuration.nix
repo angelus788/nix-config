@@ -124,5 +124,5 @@ in
     capSysAdmin = true; # Necessary for KMS display capture
     openFirewall = true; # Opens the default ports: 47984-48010
   };
-
+  home-manager.users.angelus.myHomeDots.enableGui = true;
 }

@@ -43,4 +43,6 @@
     wget
   ];
 
+  home-manager.users.angelus.myHomeDots.enableGui = false;
+
 }
