@@ -16,6 +16,13 @@ This section is generated automatically from the Nix configuration using GitHub 
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/forgejo.svg' width=32 height=32>|Forgejo|A painless, self-hosted Git service|Services|
 
 
+### mimir
+|Icon|Name|Description|Category|
+|---|---|---|---|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg' width=32 height=32>|Grafana|Platform for data analytics and monitoring|Observability|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/uptime-kuma.svg' width=32 height=32>|Uptime Kuma|Service monitoring tool|Services|
+
+
 ### odin
 |Icon|Name|Description|Category|
 |---|---|---|---|
