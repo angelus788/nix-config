@@ -195,31 +195,7 @@ in
     powertop
     caddy
   ];
-
-  #services.gitea-actions-runner = {
-  #  package = pkgs.forgejo-runner;
-  #  instances = {
-  #    odin = {
-  #      enable = true;
-  #      name = "odin-01";
-  #      url = "https://git.avgtechguy.com";
-  #      tokenFile = config.age.secrets.forgejoRunnerTokenOdin.path;
-
-  #        labels = [
-  #          "heavy-nix:host"
-  #        ];
-  #      };
-  #    };
-  #  };
-
-  #  systemd.services.gitea-runner-odin = {
-  #    serviceConfig = {
-  #      DynamicUser = lib.mkForce true;
-  #      User = lib.mkForce "gitea-runner";
-  #      Group = lib.mkForce "gitea-runner";
-  #      BindReadOnlyPaths = [ "/run/agenix" ];
-  #    };
-  #  };
+home-manager.users.angelus.myHomeDots.enableGui = false;
 
   #tg-notify = {
   #  enable = true;

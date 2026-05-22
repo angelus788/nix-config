@@ -1,9 +1,10 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
+  isLinuxGui = isLinux && config.myHomeDots.enableGui;
 in
 {
-  config = lib.mkIf isLinux {
+  config = lib.mkIf isLinuxGui {
     # 1. Install dependencies if not Darwin Platform
     home.packages = with pkgs; [
       tailscale # The official client now includes 'tailscale systray'

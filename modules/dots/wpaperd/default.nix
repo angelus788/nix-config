@@ -7,10 +7,11 @@
 
 let
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
+  isLinuxGui = isLinux && config.myHomeDots.enableGui;
   wallpaperPath = "${config.home.homeDirectory}/Workspace/Projects/wallpaper";
 in
 {
-  config = lib.mkIf isLinux {
+  config = lib.mkIf isLinuxGui {
     home.packages = with pkgs; [ wpaperd ];
 
     # 1. Desktop Wallpaper Daemon (wpaperd)

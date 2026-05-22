@@ -1,4 +1,4 @@
-{ ... }:
+{  config, lib, ... }:
 let
   home = {
     username = "angelus";
@@ -8,29 +8,44 @@ let
 in
 {
 
-  nixpkgs = {
-    overlays = [ ];
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
+options.myHomeDots = {
+    enableGui = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable GUI-specific dotfiles like desktop apps and window utilities.";
+    };
+    enableCore = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable core/headless terminal dotfiles needed everywhere.";
+    };
+  };
+
+  imports = [
+    ./gitconfig.nix
+      ../../dots/neofetch/default.nix
+      ../../dots/ssh/default.nix
+      ../../dots/zsh/default.nix
+      ../../dots/bitwarden/default.nix
+      ../../dots/firefox/default.nix
+      ../../dots/ghostty/default.nix
+       ../../dots/librewolf/default.nix
+      ../../dots/tssystray/default.nix
+      ../../dots/vscodium/default.nix
+      ../../dots/wpaperd/default.nix
+      ../../dots/zed/default.nix
+  ];
+
+  config = {
+    nixpkgs = {
+      overlays = [ ];
+      config = {
+        allowUnfree = true;
+        allowUnfreePredicate = (_: true);
     };
   };
 
   home = home;
-
-  imports = [
-    ../../dots/ghostty/default.nix
-    ../../dots/bitwarden/default.nix
-    ../../dots/firefox/default.nix
-    ../../dots/zsh/default.nix
-    ../../dots/neofetch/default.nix
-    ../../dots/vscodium/default.nix
-    ../../dots/zed/default.nix
-    ../../dots/ssh/default.nix
-    ../../dots/tssystray/default.nix
-    ../../dots/wpaperd/default.nix
-    ./gitconfig.nix
-  ];
 
   programs.nix-index = {
     enable = true;
@@ -40,4 +55,5 @@ in
   programs.home-manager.enable = true;
 
   systemd.user.startServices = "sd-switch";
+  };
 }

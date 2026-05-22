@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
+  config = lib.mkIf config.myHomeDots.enableGui {
   programs.vscode = {
     enable = true;
     #package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
@@ -42,4 +43,5 @@
     nixd
     nixpkgs-fmt
   ];
+  };
 }

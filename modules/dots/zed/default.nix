@@ -1,12 +1,7 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-  # Ensure the background binaries are available
-  home.packages = with pkgs; [
-    nixd
-    nixpkgs-fmt
-  ];
-
+  config = lib.mkIf config.myHomeDots.enableGui {
   programs.zed-editor = {
     enable = true;
     extensions = [
@@ -157,5 +152,11 @@
       ui_font_size = 16;
       buffer_font_size = 16;
     };
+  };
+    # Ensure the background binaries are available
+  home.packages = with pkgs; [
+    nixd
+    nixpkgs-fmt
+  ];
   };
 }
