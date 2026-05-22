@@ -116,7 +116,6 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     ./secrets
     ./hardware-configuration.nix
-    #../_common/apps/vscodium
     ../_common/apps/tailscale
   ];
 
