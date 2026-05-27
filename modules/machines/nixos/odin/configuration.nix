@@ -197,10 +197,10 @@ in
   ];
 home-manager.users.angelus.myHomeDots.enableGui = false;
 
-  #tg-notify = {
-  #  enable = true;
-  #  credentialsFile = config.age.secrets.tgNotifyCredentials.path;
-  #};
+  tg-notify = {
+    enable = true;
+    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  };
 
   #services.adiosBot = {
   #  enable = true;

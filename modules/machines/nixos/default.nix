@@ -54,7 +54,7 @@ in
             modules = [
               ../../homelab
               ../../misc/email
-              #../../misc/tg-notify
+              ../../misc/tg-notify
               ../../misc/mover
               #../../misc/withings2intervals
               self.inputs.agenix.nixosModules.default

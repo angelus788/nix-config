@@ -9,6 +9,10 @@ let
   tg-notify = pkgs.writeShellScriptBin "tg-notify" ''
     #!/bin/bash
 
+    if [[ -f "${cfg.credentialsFile}" ]]; then
+      source "${cfg.credentialsFile}"
+    fi
+
     POSITIONAL_ARGS=()
 
     while [[ $# -gt 0 ]]; do
@@ -91,6 +95,10 @@ in
   config = lib.mkIf cfg.enable {
     systemd.services."tg-notify@" = {
       description = "Send a Telegram notification on service failure";
+
+      wants = [ "agenix.service" ];
+      after = [ "agenix.service" ];
+
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${lib.getExe tg-notify} -t %i.service";
