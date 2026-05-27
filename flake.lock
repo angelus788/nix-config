@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1779695173,
-        "narHash": "sha256-YZbo2063ero+sz+W2mnVM/vwZV/IYzPnmvULANjR/CE=",
+        "lastModified": 1779833211,
+        "narHash": "sha256-gciMwNjYudIVfuhQ8pOELkj6OFu7bPg3MV2GSk9ltMQ=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "ac97103044e45d1537e02edb750ed86c8a8147b3",
+        "rev": "82a969f81ef96b24e8be55d2095bf24363d13002",
         "type": "github"
       },
       "original": {
@@ -306,11 +306,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779525206,
-        "narHash": "sha256-5sr/1CIdf1qu6SCeM6qkiBCuD3s3P8TugUY4JKQ6kUI=",
+        "lastModified": 1779787240,
+        "narHash": "sha256-hqpzAmYzcKvo+i0XCDgDCAV9WzW1a7gzQWGjp8Dfcjg=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "4b81cbddc037e480c2f3c20dee1a6457c6bb99b8",
+        "rev": "976bb49bfc30f716c1e94cef55845e915631a4c6",
         "type": "github"
       },
       "original": {
@@ -384,11 +384,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1779258371,
-        "narHash": "sha256-j1iZsLy6oFApqR1oiDmHhvkwxXqcNi0aoSJj643LuwU=",
+        "lastModified": 1779826373,
+        "narHash": "sha256-3sRzgLX86qV5NlhWUAufLmHwkyP03tmL3VdZIM13dEo=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "c97bc4d15bd3473dd095e8e8ba57330ab1943a77",
+        "rev": "ef4efb84766a166c906bd55759574676bf91267c",
         "type": "github"
       },
       "original": {
@@ -569,11 +569,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1779306027,
-        "narHash": "sha256-PgsiduZpGk0KUNdHb/VNEnqRgDUNn4tyxDak/VYBAz4=",
+        "lastModified": 1779826978,
+        "narHash": "sha256-L35XuJYaLI/VlxwqVVl03+PQ9wpLXJ1mPWTG+keVlog=",
         "ref": "refs/heads/main",
-        "rev": "9a1fb03d3dd435564fcedaf4d2aa4f6bbf1bb3ac",
-        "revCount": 228,
+        "rev": "c72ec59f61351a754fd65c465a98a8566617e347",
+        "revCount": 237,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
@@ -694,11 +694,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778822459,
-        "narHash": "sha256-hJlFMK7Es783KU/mhLEGC+xim/EqBMVdbsWgthquo6Y=",
+        "lastModified": 1779773014,
+        "narHash": "sha256-4bQ5dL7zbP2vKu5kfsEJICxGG3ATsOW7sP2QvaXGkHM=",
         "owner": "youwen5",
         "repo": "zen-browser-flake",
-        "rev": "90d4d395e2be09b2d314816dadd34660528c4ee4",
+        "rev": "3ff570b75cf068b0f25d0c2b3a77a0e546a4067b",
         "type": "github"
       },
       "original": {
