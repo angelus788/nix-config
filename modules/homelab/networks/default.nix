@@ -39,6 +39,7 @@
                 type = lib.types.str;
               };
             };
+            
             interface = lib.mkOption {
               example = "enp4s0";
               type = lib.types.str;
@@ -65,6 +66,14 @@
               default = null;
               type = lib.types.nullOr lib.types.str;
             };
+
+            dns = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              example = "103.86.96.100";
+              description = "Optional custom upstream DNS server for this network slice.";
+            };
+            
             interface = lib.mkOption {
               example = "enp4s0";
               type = lib.types.str;
