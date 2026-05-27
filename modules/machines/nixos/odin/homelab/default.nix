@@ -188,8 +188,10 @@ in
       wireguard-netns = {
         enable = true;
         configFile = config.age.secrets.wireguardCredentials.path;
-        privateIP = "${wgBase}.2";
-        dnsIP = wg.cidr.v4;
+        #privateIP = "${wgBase}.2";
+        #dnsIP = wg.cidr.v4;
+        privateIP = "10.5.0.2/32"; 
+        dnsIP = "103.86.96.100";
       };
     };
   };
