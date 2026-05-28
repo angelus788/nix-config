@@ -42,6 +42,7 @@ This section is generated automatically from the Nix configuration using GitHub 
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radarr.svg' width=32 height=32>|Radarr|Movie collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/radicale.svg' width=32 height=32>|Radicale|Free and Open-Source CalDAV and CardDAV Server|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sabnzbd.svg' width=32 height=32>|SABnzbd|The free and easy binary newsreader|Downloads|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/slskd.svg' width=32 height=32>|slskd|Web-based Soulseek client|Downloads|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/sonarr.svg' width=32 height=32>|Sonarr|TV show collection manager|Arr|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bitwarden.svg' width=32 height=32>|Vaultwarden|Password manager|Services|
 
