@@ -3,20 +3,21 @@
   services.snapraid = {
     enable = true;
     parityFiles = [
-      "/mnt/parity1/snapraid.parity"
+      "/Parity1/snapraid.parity"
     ];
     contentFiles = [
       "/var/lib/snapraid.content"
-      "/mnt/data1/snapraid.content"
-      "/mnt/data2/snapraid.content"
-      "/mnt/data3/snapraid.content"
-      "/mnt/data4/snapraid.content"
+      "/Data1/snapraid.content"
+      "/Data2/snapraid.content"
+      "/Data3/snapraid.content"
+      "/Data4/snapraid.content"
     ];
     dataDisks = {
-      d1 = "/mnt/data1";
-      d2 = "/mnt/data2";
-      d3 = "/mnt/data3";
-      d4 = "/mnt/data4";
+      d1 = "/Data1";
+      d2 = "/Data2";
+      d3 = "/Data3";
+      d4 = "/Data4";
     };
   };
 }
+ 

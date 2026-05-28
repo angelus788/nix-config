@@ -73,7 +73,7 @@ in
     services = {
       enable = true;
       slskd = {
-        enable = false; # need to address WG0
+        enable = true; # need to address WG0
         environmentFile = config.age.secrets.slskdEnvironmentFile.path;
       };
 
@@ -82,11 +82,6 @@ in
         forgejoUrl = "git.avgtechguy.com";
         tokenFile = config.age.secrets.forgejoRunnerTokenOdin.path;
         atticTokenFile = config.age.secrets.atticTokenHeimdall.path;
-        #labels = [
-        #  "heavy-nix:docker://git.avgtechguy.com/avgtechguy/nix-ci-builder:latest"
-        #  "debian-latest:docker://node:current-trixie"
-        #  "buildah:docker://quay.io/containers/buildah:latest"
-        #];
       };
       #backup = {
       #  enable = false;
