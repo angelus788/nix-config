@@ -70,6 +70,7 @@
     vscodium
     wget
     zed-editor
+    zola
     unstable.proton-pass-cli
   ];
 

@@ -63,6 +63,7 @@
     vscodium
     wget
     zed-editor
+    zola
   ];
 
   # 1Password
