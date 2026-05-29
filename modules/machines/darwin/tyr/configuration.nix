@@ -115,6 +115,7 @@
     vscodium
     #vscode-extensions.jnoortheen.nix-ide
     wget
+    zola
     #zed-editor
   ];
 

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   domain = "avgtechguy.com";
 in
@@ -25,15 +25,8 @@ in
     virtualHosts."${domain}" = {
       # Use a dedicated sub-folder like 'public' to keep SSH/config files hidden
       extraConfig = ''
-        # Switch between these two lines for testing vs production:
-                # root * /var/www/${domain}/public
-                root * ${(pkgs.writeTextDir "index.html" "<h1>Coming Soon!</h1>")}
-
-                file_server
-
-                # Keep security active even during tests
-                @hidden path */.*
-                respond @hidden 403
+        file_server
+        root ${config.users.users.deploy.home}
       '';
     };
   };
@@ -53,10 +46,9 @@ in
           "acme"
           "wheel"
         ];
-        shell = pkgs.zsh;
         home = "/var/www/${domain}";
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE1GM1paGkhF53Yfs1OhbRJeUE2GJQv7OHMwl4SF3r+s"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw"
         ];
       };
       acme = {
