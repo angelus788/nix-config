@@ -70,7 +70,7 @@
     ./disko.nix
     ./digitalocean.nix
     ./secrets
-    #./wireguard.nix
+    ./wireguard.nix
     ../_common/apps/tailscale
   ];
 }
