@@ -72,7 +72,7 @@ in
               IP_HEADER = "CF-Connecting-IP";
             };
           };
-          frp.settings.proxies = [
+          frp.instances.homelab.settings.proxies = [
             {
               name = service;
               type = "tcp";

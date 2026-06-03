@@ -114,7 +114,7 @@ in
           // lib.attrsets.optionalAttrs (cfg.passwordFile != "") {
             passwordFile = cfg.passwordFile;
           };
-          frp.settings.proxies = [
+          frp.instances.homelab.settings.proxies = [
             {
               name = service;
               type = "tcp";

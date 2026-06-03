@@ -4,6 +4,11 @@
   ...
 }:
 {
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = (_: true);
+  };
+
   home.packages = with pkgs; [
     figlet
     nodejs
@@ -264,7 +269,10 @@
         };
       };
       barbar = {
-        enable = true;
+        enable = false; #removing issue with free
+      };
+      bufferline = {
+        enable = true; #replacing barbar
       };
       gitgutter = {
         enable = true;

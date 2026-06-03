@@ -99,7 +99,7 @@ in
         services.nextcloud = {
           enable = true;
           hostName = "nix-nextcloud";
-          package = pkgs.nextcloud32;
+          package = pkgs.nextcloud33;
           database.createLocally = true;
           configureRedis = true;
           maxUploadSize = "16G";
@@ -130,7 +130,7 @@ in
             adminpassFile = cfg.admin.passwordFile;
           };
         };
-        services.frp.settings.proxies = [
+        services.frp.instances.homelab.settings.proxies = [
           {
             name = service;
             type = "tcp";

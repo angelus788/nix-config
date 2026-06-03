@@ -1,12 +1,18 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-25.11";
+      url = "github:nixos/nixpkgs/nixos-26.05";
     };
 
     nixpkgs-d351 = {
       url = "github:nixos/nixpkgs/d351d0653aeb7877273920cd3e823994e7579b0b";
     };
+
+    nixpkgs-595e = {
+      url = "github:nixOS/nixpkgs/595ee2b1a31a50efcb8db3824999abb98ec1d0c9";
+    };
+
+
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
@@ -15,7 +21,7 @@
     };
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
+      url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -25,7 +31,7 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -40,8 +46,8 @@
     };
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-d351";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-595e";
     };
 
     nix-index-database = {

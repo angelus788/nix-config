@@ -25,7 +25,7 @@
       cleanup = "uninstall";
       upgrade = true;
     };
-    brewPrefix = "/opt/homebrew/bin";
+    prefix = "/opt/homebrew";
     caskArgs = {
       no_quarantine = true;
     };
@@ -84,7 +84,7 @@
     ansible
     ansible-lint
     bitwarden-cli
-    bitwarden-desktop
+    #bitwarden-desktop #was not building under 26.05 (try later)
     brave
     ddev
     deploy-rs
@@ -100,10 +100,9 @@
     gnupg
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     just
-    karabiner-elements
     kubectl
     kustomize
-    librewolf
+    #librewolf #was not building under 26.05 (try later)
     mkalias
     nil
     nss

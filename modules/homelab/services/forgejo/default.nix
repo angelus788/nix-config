@@ -37,7 +37,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    services.openssh.settings.AcceptEnv = "GIT_PROTOCOL";
+    services.openssh.settings.AcceptEnv = [ "GIT_PROTOCOL" ];
     services.forgejo = {
       package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.forgejo;
       enable = true;

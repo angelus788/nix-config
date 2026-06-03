@@ -84,7 +84,7 @@ in
             DefaultDownsamplingFormat = "aac";
           };
         };
-        services.frp.settings.proxies = [
+        services.frp.instances.homelab.settings.proxies = [
           {
             name = service;
             type = "tcp";
