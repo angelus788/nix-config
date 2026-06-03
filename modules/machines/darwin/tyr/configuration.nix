@@ -32,8 +32,6 @@
     brews = [
       "mas"
       "pulumi"
-      #"packer"
-
     ];
     casks = [
       "1password"
@@ -83,39 +81,48 @@
         pyopenssl
       ]
     ))
-    #_1password-gui
-    _1password-cli
-    # alacritty
     ansible
+    ansible-lint
     bitwarden-cli
     bitwarden-desktop
     brave
+    ddev
     deploy-rs
+    devenv
+    docker
+    docker-buildx
+    docker-compose
     eza
     fastfetch
     git
+    git-crypt
+    git-lfs
+    gnupg
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     just
     karabiner-elements
+    kubectl
+    kustomize
     librewolf
     mkalias
+    nil
+    nss
+    nss.tools
+    nixfmt
     nixos-rebuild
     nixos-rebuild-ng
-    nixfmt
+    nixpkgs-fmt
     obsidian
-    #proton-pass
-    #pkgs.ghostty
+    packer
+    ripgrep
     rsync
-    #spotify
     stow
     tmux
     vim
     vscode
     vscodium
-    #vscode-extensions.jnoortheen.nix-ide
     wget
     zola
-    #zed-editor
   ];
 
   fonts.packages = [
