@@ -42,6 +42,10 @@ options.myHomeDots = {
       config = {
         allowUnfree = true;
         allowUnfreePredicate = (_: true);
+        permittedInsecurePackages = [ ##COMEBACKTOTHIS##
+                "electron-39.8.10"
+        ];
+        
     };
   };
 

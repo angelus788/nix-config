@@ -165,7 +165,9 @@
       # 1. Keep your existing 'unstable' attribute for general use
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
-        config = config.nixpkgs.config;
+        config = prev.config // {
+        permittedInsecurePackages = [ "electron-39.8.10" ];
+      };
       };
 
       beets = final.unstable.beets;

@@ -10,11 +10,13 @@
   fonts.packages = [ pkgs.meslo-lgs-nf ];
   services.kmscon = {
     enable = true;
-    hwRender = true;
-    extraConfig = ''
-      font-name=MesloLGS NF
-      font-size=20
-    '';
+    #hwRender = true;
+    config = {
+      hwaccel = true; #= ''
+      #font-name=MesloLGS NF
+      #font-size=20
+    #'';
+    };
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
