@@ -276,7 +276,7 @@
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-595e"
+          "nixpkgs"
         ]
       },
       "locked": {
