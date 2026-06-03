@@ -86,12 +86,13 @@
     #_1password-gui
     _1password-cli
     # alacritty
-    # ansible
+    ansible
     bitwarden-cli
     bitwarden-desktop
     brave
     deploy-rs
     eza
+    fastfetch
     git
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     just
@@ -101,8 +102,7 @@
     nixos-rebuild
     nixos-rebuild-ng
     nixpkgs-fmt
-    nixfmt-rfc-style
-    neofetch
+    nixfmt
     obsidian
     #proton-pass
     #pkgs.ghostty
