@@ -101,7 +101,6 @@
     mkalias
     nixos-rebuild
     nixos-rebuild-ng
-    nixpkgs-fmt
     nixfmt
     obsidian
     #proton-pass
