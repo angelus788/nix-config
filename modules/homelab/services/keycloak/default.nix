@@ -83,6 +83,7 @@ in
           enable = true;
           keyFile = cfg.oauth2ProxyEnvFile;
           reverseProxy = true;
+          trustedProxyIP = [ "127.0.0.1/32" "::1/128" ];
           provider = "keycloak-oidc";
           oidcIssuerUrl = "https://${cfg.url}/realms/master";
 
