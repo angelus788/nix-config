@@ -42,6 +42,8 @@
 
   system.stateVersion = "25.11";
 
+  services.ntp.enable = true;
+
   systemd.services.nixos-upgrade.preStart = ''
     cd /etc/nixos
     chown -R root:root .
