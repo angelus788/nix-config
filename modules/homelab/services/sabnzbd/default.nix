@@ -13,6 +13,11 @@ in
       type = lib.types.str;
       default = "/var/lib/${service}";
     };
+    # Added a port option so it's not hardcoded down below
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8085; # Moved from 8080 to avoid atticd conflict
+    };
     url = lib.mkOption {
       type = lib.types.str;
       default = "sabnzbd.${homelab.baseDomain}";
@@ -34,33 +39,31 @@ in
       default = "Downloads";
     };
   };
+
   config = lib.mkIf cfg.enable {
     services.${service} = {
       enable = true;
       user = homelab.user;
       group = homelab.group;
 
-      # 1. Explicitly nullify the deprecated option to suppress the warning
       configFile = null;
-
-      # 2. OPTIONAL: Set this to true if you want to allow mutating settings in the GUI.
-      # If false (default), Nix renders the config file as immutable.
       allowConfigWrite = true;
 
-      # 3. Supply your base structure here. Even an empty attrset satisfies the module 
-      # and lets SABnzbd initialize gracefully using your configured state directory.
+      # 1. Un-comment and pass the port dynamically via the module options
       settings = {
-        # misc = {
-        #   port = 8080;
-        # };
+        misc = {
+          port = cfg.port;
+          host_whitelist = "${cfg.url}";
+        };
       };
     };
+
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
+      # 2. Update the reverse proxy to target the new port variable
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:8080
+        reverse_proxy http://127.0.0.1:${toString cfg.port}
       '';
     };
   };
-
 }
