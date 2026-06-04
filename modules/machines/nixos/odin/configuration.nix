@@ -137,17 +137,38 @@ in
     };
   };
 
-  services.hddfancontrol = {
+services.hddfancontrol = {
     enable = true;
     settings = {
       harddrives = {
         disks = hardDrives;
-        pwmPaths = [ "/sys/class/hwmon/hwmon1/pwm2:50:50" ];
+        pwmPaths = [ "/run/hddfancontrol-harddrives/pwm2:50:50" ];
         extraArgs = [
           "-i 30sec"
         ];
       };
     };
+  };
+
+  systemd.services.hddfancontrol-harddrives = {
+    # preStart runs as a shell script right before ExecStart
+    preStart = ''
+      mkdir -p /run/hddfancontrol-harddrives
+      rm -f /run/hddfancontrol-harddrives/pwm2
+
+      for dev in /sys/class/hwmon/hwmon*; do
+        if [ "$(cat "$dev/name")" = "nct6798" ]; then
+          ln -s "$dev/pwm2" /run/hddfancontrol-harddrives/pwm2
+          exit 0
+        fi
+      done
+
+      echo "Error: nct6798 hardware monitor not found!" >&2
+      exit 1
+    '';
+    
+    # Ensure systemd sets up the runtime directory permissions safely
+    serviceConfig.RuntimeDirectory = "hddfancontrol-harddrives";
   };
 
   virtualisation.docker.storageDriver = "overlay2";
