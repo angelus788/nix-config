@@ -47,7 +47,9 @@ in
     services.glances.enable = true;
     services.${service} = {
       enable = true;
-      environmentFile = builtins.toFile "homepage.env" "HOMEPAGE_ALLOWED_HOSTS=root.${homelab.baseDomain},${homelab.baseDomain},100.94.78.77,odin,localhost,127.0.0.1,odin.tailcaed2.ts.net";
+      environmentFiles = [
+        (builtins.toFile "homepage.env" "HOMEPAGE_ALLOWED_HOSTS=root.${homelab.baseDomain},${homelab.baseDomain},100.94.78.77,odin,localhost,127.0.0.1,odin.tailcaed2.ts.net")
+      ];
       customCSS = ''
         body, html {
           font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;

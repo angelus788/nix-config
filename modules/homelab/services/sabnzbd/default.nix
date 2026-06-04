@@ -39,6 +39,21 @@ in
       enable = true;
       user = homelab.user;
       group = homelab.group;
+
+      # 1. Explicitly nullify the deprecated option to suppress the warning
+      configFile = null;
+
+      # 2. OPTIONAL: Set this to true if you want to allow mutating settings in the GUI.
+      # If false (default), Nix renders the config file as immutable.
+      allowConfigWrite = true;
+
+      # 3. Supply your base structure here. Even an empty attrset satisfies the module 
+      # and lets SABnzbd initialize gracefully using your configured state directory.
+      settings = {
+        # misc = {
+        #   port = 8080;
+        # };
+      };
     };
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
