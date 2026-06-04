@@ -56,6 +56,11 @@ in
 
   };
   config = lib.mkIf cfg.enable {
+    systemd.tmpfiles.rules = [
+      "d ${cfg.mediaDir} 0755 ${homelab.user} share - -"
+      "d ${cfg.consumptionDir} 0755 ${homelab.user} share - -"
+    ];
+
     systemd.services.paperless-scheduler.serviceConfig.ReadWritePaths = [
       "${homelab.mounts.fast}/Documents/Paperless"
     ];

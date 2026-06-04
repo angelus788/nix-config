@@ -22,6 +22,7 @@
           "podman"
           "input"
           "networkmanager"
+          "share"
         ];
         group = "angelus";
         openssh.authorizedKeys.keys = [
