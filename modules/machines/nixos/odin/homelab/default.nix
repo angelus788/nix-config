@@ -154,7 +154,7 @@ in
       radarr.enable = true;
       bazarr.enable = true;
       prowlarr.enable = true;
-      jellyseerr = {
+      seerr = {
         enable = true;
       };
       nextcloud = {

@@ -5,7 +5,7 @@
   ...
 }:
 let
-  service = "jellyseerr";
+  service = "seerr";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
 in
@@ -22,10 +22,10 @@ in
       type = lib.types.port;
       default = 5055;
     };
-    package = lib.mkPackageOption pkgs "jellyseerr" { };
+    package = lib.mkPackageOption pkgs "seerr" { };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "Jellyseerr";
+      default = "Seerr";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
@@ -33,7 +33,7 @@ in
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "jellyseerr.svg";
+      default = "seerr.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
@@ -41,6 +41,7 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+     #services.seerr = {
     services.${service} = {
       enable = true;
       port = cfg.port;
