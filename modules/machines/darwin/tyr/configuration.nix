@@ -62,6 +62,7 @@
     ];
     masApps = {
       "Amphetamine" = 937984704;
+      "Bitwarden" = 1352778147;
       "Signal Shifter" = 6446061552;
       #"Yoink" = 457622435;
     };
