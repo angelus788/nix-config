@@ -149,6 +149,7 @@ in
     ./nextcloud
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
+    ./protonmail-bridge
     ./paperless-ngx
     ./radicale
     ./sabnzbd

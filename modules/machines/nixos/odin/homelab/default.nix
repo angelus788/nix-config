@@ -107,6 +107,9 @@ in
       invoiceplane = {
         enable = false;
       };
+      protonmail-bridge = {
+        enable = true;
+      };
       homepage = {
         enable = true;
         misc = [
