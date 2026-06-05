@@ -24,11 +24,16 @@
       autoUpdate = true;
       cleanup = "uninstall";
       upgrade = true;
+      
+      # Forcibly appends --force to the final brew bundle shell command
+      extraFlags = [ "--force" ]; 
     };
+
     prefix = "/opt/homebrew";
     caskArgs = {
       no_quarantine = true;
     };
+
     brews = [
       "mas"
       "pulumi"
