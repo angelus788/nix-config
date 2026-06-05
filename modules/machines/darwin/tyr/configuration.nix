@@ -24,8 +24,6 @@
       autoUpdate = true;
       cleanup = "uninstall";
       upgrade = true;
-      
-      # Forcibly appends --force to the final brew bundle shell command
       extraFlags = [ "--force" ]; 
     };
 
