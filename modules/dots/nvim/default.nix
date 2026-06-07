@@ -79,7 +79,7 @@
       }
       // lib.attrsets.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
         ansiblels = {
-          enable = true;
+          enable = false; #COMEBACKTOTHIS
           package = pkgs.callPackage ./ansible-language-server/package.nix { };
           config = {
             settings.ansible = {
