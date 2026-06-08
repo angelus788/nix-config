@@ -58,11 +58,17 @@ in
           mayra = { 
             id = "4FX3SR7-M2EMNVD-AHV5BO4-FQ4U3XU-EYGY6CX-34ENPKL-ZYTMFAD-JOLHZAT"; 
           };
+          mjolnir = {
+            id = "BGC2RDL-CNAFJHL-SKWNQXE-VBRC476-4PO2SGZ-CQIGYS7-WQ2TBV2-5X72JQV";
+          };
           odin = {
             id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";
           };
           steamdeck = {
             id = "4WSHAWU-ASYVCBZ-F5SCZJN-P7VFTE2-TXF2524-H4T3RL4-ZACBLBB-LIGZSAN";
+          };
+          stormbreaker = {
+            id = "REPLACE";
           };
         };
 
@@ -93,7 +99,8 @@ in
             devices = [
               "mayra"
               "odin"
-              "steamdeck"
+              "mjolnir"
+              "stormbreaker"
             ];
             versioning = {
               type = "staggered";
@@ -109,8 +116,9 @@ in
             path = cfg.folders.Homework.path;
             devices = [
               "mayra"
+              "mjolnir"
               "odin"
-              "steamdeck"
+              "stormbreaker"
             ];
             versioning = {
               type = "staggered";
@@ -127,8 +135,9 @@ in
             path = cfg.folders.remarkable_sync.path;
             devices = [
               "mayra"
+              "mjolnir"
               "odin"
-              "steamdeck"
+              "stormbreaker"
             ];
             versioning = {
               type = "staggered";
@@ -144,8 +153,9 @@ in
             path = cfg.folders.pdf2remarkable.path;
             devices = [
               "mayra"
+              "mjolnir"
               "odin"
-              "steamdeck"
+              "stormbreaker"
             ];
           };
         }; # This closes settings.folders cleanly

@@ -113,11 +113,22 @@
 
   home-manager.users.angelus.myHomeDots.enableGui = true;
 
+  syncthingSettings = {
+    guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
+    folders = {
+      Documents.path = "/home/angelus/Documents";
+      Homework.path = "/home/angelus/Homework";
+      remarkable_sync.path = "/home/angelus/remarkable_sync";
+      pdf2remarkable.path = "/home/angelus/pdf2remarkable";
+    };
+  };
+
   imports = [
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     ./secrets
     ./hardware-configuration.nix
     ../_common/apps/tailscale
+    ../../../misc/syncthing
   ];
 
 }
