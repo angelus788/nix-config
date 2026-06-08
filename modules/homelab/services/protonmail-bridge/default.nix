@@ -10,7 +10,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "127.0.0.1";
+      default = "100.94.78.77";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -22,7 +22,7 @@ in
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "protonmail-bridge.svg"; 
+      default = "proton-mail-bridge.svg"; 
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
@@ -99,25 +99,27 @@ in
           };
         };
 
-        # Socat proxy for IMAP (Listens on all interfaces, forwards to localhost)
+      # Socat proxy for IMAP (Listens ONLY on Tailscale IP, forwards to localhost)
         systemd.user.services."${service}-proxy-imap" = {
           description = "ProtonMail Bridge IMAP Tailscale Proxy";
           wantedBy = [ "default.target" ];
           after = [ "${service}.service" ];
           serviceConfig = {
             Restart = "always";
-            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1143,fork,reuseaddr TCP4:localhost:1143";
+            # Changed TCP4-LISTEN:1143 to TCP4-LISTEN:1143,bind=100.94.78.77
+            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1143,bind=100.94.78.77,fork,reuseaddr TCP4:127.0.0.1:1143";
           };
         };
 
-        # Socat proxy for SMTP (Listens on all interfaces, forwards to localhost)
+        # Socat proxy for SMTP (Listens ONLY on Tailscale IP, forwards to localhost)
         systemd.user.services."${service}-proxy-smtp" = {
           description = "ProtonMail Bridge SMTP Tailscale Proxy";
           wantedBy = [ "default.target" ];
           after = [ "${service}.service" ];
           serviceConfig = {
             Restart = "always";
-            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1025,fork,reuseaddr TCP4:localhost:1025";
+            # Changed TCP4-LISTEN:1025 to TCP4-LISTEN:1025,bind=100.94.78.77
+            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1025,bind=100.94.78.77,fork,reuseaddr TCP4:127.0.0.1:1025";
           };
         };
       })
