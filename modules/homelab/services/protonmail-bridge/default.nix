@@ -22,7 +22,7 @@ in
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
-      default = "proton-mail-bridge.svg"; 
+      default = "proton-mail-bridge.png"; 
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
