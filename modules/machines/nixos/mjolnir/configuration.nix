@@ -51,6 +51,7 @@
   environment.systemPackages = with pkgs; [
     bitwarden-cli
     bitwarden-desktop
+    claude-code
     google-chrome
     brave
     #cosmic-polkit
@@ -63,6 +64,7 @@
     obsidian
     proton-pass
     spotify
+    #rquickshare
     stow
     thunderbird
     #unstable.tailscale-gui #try again at a later date
@@ -128,6 +130,7 @@
     ./secrets
     ./hardware-configuration.nix
     ../_common/apps/tailscale
+    #../../../misc/papery
     ../../../misc/syncthing
   ];
 
