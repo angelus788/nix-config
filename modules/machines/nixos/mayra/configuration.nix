@@ -26,7 +26,7 @@ in
     ../../../misc/ryzen-undervolting
     ../../../misc/samsung-tv
     ../../../misc/syncthing
-    ../_common/apps/tailscale
+    ../../../apps/tailscale
     #../../../misc/lgtv
     inputs.jovian.nixosModules.default
     #./lact.nix

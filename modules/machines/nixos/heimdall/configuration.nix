@@ -71,6 +71,6 @@
     ./digitalocean.nix
     ./secrets
     ./wireguard.nix
-    ../_common/apps/tailscale
+    ../../../apps/tailscale
   ];
 }

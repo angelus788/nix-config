@@ -1,0 +1,13 @@
+{ pkgs, ... }:
+
+{
+  environment.systemPackages = [
+    (pkgs.vscode-with-extensions.override {
+      vscode = pkgs.vscodium;
+      vscodeExtensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        arcticicestudio.nord-visual-studio-code
+      ];
+    })
+  ];
+}

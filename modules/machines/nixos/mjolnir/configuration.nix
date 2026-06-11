@@ -129,7 +129,7 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     ./secrets
     ./hardware-configuration.nix
-    ../_common/apps/tailscale
+    ../../../apps/tailscale
     #../../../misc/papery
     ../../../misc/syncthing
   ];
