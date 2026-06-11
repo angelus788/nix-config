@@ -8,15 +8,6 @@
 
   networking.networkmanager.enable = true;
 
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  #services.displayManager.gdm.enable = true;
-  #services.desktopManager.gnome.enable = true;
-
-  # Enable Cosmic
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
   services.flatpak.enable = true;
 
   # Configure keymap in X11
@@ -40,11 +31,6 @@
 
   programs.firefox.enable = true;
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
 
   environment.systemPackages = with pkgs; [
     bitwarden-cli
@@ -117,6 +103,9 @@
     #inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     ./secrets
     ./hardware-configuration.nix
+    ../../../apps/DE/cosmic
+    #../../../apps/DE/gnome
+    #../../../apps/DE/plasma
     #../../../apps/vscodium
     ../../../apps/tailscale
     ../../../misc/syncthing

@@ -9,16 +9,7 @@
     networkmanager.enable = true;
     hostName = "mjolnir";
   };
-
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  #services.displayManager.gdm.enable = true;
-  #services.desktopManager.gnome.enable = true;
-
-  # Enable Cosmic
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
+  
   services.flatpak.enable = true;
 
   # Configure keymap in X11
@@ -130,6 +121,9 @@
     ./secrets
     ./hardware-configuration.nix
     ../../../apps/tailscale
+    ../../../apps/DE/cosmic
+    #../../../apps/DE/gnome
+    #../../../apps/DE/plasma
     #../../../misc/papery
     ../../../misc/syncthing
   ];
