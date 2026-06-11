@@ -115,7 +115,7 @@
     ];
     secrets = {
       hashedUserPassword.file = "${inputs.secrets}/hashedUserPassword.age";
-      #initialHashedPassword = "${inputs.secrets}/initialHashedPassword.age";
+      initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
       smtpPassword = {
         file = "${inputs.secrets}/smtpPassword.age";
         owner = "angelus";
