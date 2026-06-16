@@ -51,20 +51,19 @@
     git
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     just
-    nixos-rebuild-ng
     obsidian
     proton-pass
     spotify
     #rquickshare
     stow
     thunderbird
+    unstable.proton-pass-cli
     #unstable.tailscale-gui #try again at a later date
     # variety
     vscodium
     wget
     zed-editor
     zola
-    unstable.proton-pass-cli
   ];
 
   # 1Password
