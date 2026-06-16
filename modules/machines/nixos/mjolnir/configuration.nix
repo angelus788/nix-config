@@ -40,6 +40,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    pkgs.android-tools
     bitwarden-cli
     bitwarden-desktop
     claude-code
@@ -65,6 +66,7 @@
     zed-editor
     zola
   ];
+
 
   # 1Password
   programs = {
