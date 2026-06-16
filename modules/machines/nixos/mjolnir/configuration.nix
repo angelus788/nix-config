@@ -125,6 +125,7 @@
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
     #../../../misc/papery
+    ../../../apps/wpaperd
     ../../../misc/syncthing
   ];
 
