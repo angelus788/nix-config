@@ -206,6 +206,7 @@ services.hddfancontrol = {
   powerManagement.powertop.enable = true;
 
   environment.systemPackages = with pkgs; [
+    gnome-keyring
     pciutils
     glances
     hdparm
