@@ -119,6 +119,7 @@
 
   imports = [
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
+    inputs.lanzaboote.nixosModules.lanzaboote
     ./secrets
     ./hardware-configuration.nix
     ../../../apps/tailscale
