@@ -29,7 +29,7 @@ options.myHomeDots = {
       ../../dots/bitwarden/default.nix
       ../../dots/firefox/default.nix
       ../../dots/ghostty/default.nix
-       ../../dots/librewolf/default.nix
+      #../../dots/librewolf/default.nix
       ../../dots/tssystray/default.nix
       ../../dots/vscodium/default.nix
       ../../dots/wpaperd/default.nix
