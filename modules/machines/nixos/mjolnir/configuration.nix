@@ -12,11 +12,6 @@
   
   services.flatpak.enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
 
   services.printing.enable = true;
 
@@ -33,11 +28,6 @@
 
   programs.firefox.enable = true;
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
 
   environment.systemPackages = with pkgs; [
     pkgs.android-tools
@@ -60,7 +50,7 @@
     thunderbird
     unstable.proton-pass-cli
     #unstable.tailscale-gui #try again at a later date
-    # variety
+    variety
     vscodium
     wget
     zed-editor

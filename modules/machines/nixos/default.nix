@@ -7,7 +7,7 @@ let
   entries = builtins.attrNames (builtins.readDir ./.);
   configs = builtins.filter (dir: builtins.pathExists (./. + "/${dir}/configuration.nix")) entries;
   homeManagerCfg = userPackages: extraImports: {
-    home-manager.useGlobalPkgs = false;
+    home-manager.useGlobalPkgs = true; #COMEBACKTOTHIS
     home-manager.extraSpecialArgs = {
       inherit (self) inputs;
     };
@@ -43,7 +43,6 @@ in
         name:
         lib.nameValuePair name (
           (myNixosSystem name) {
-            #system = lib.attrsets.attrByPath [ name ] "x86_64-linux" systemArchMap;
             specialArgs = {
               inherit (self) inputs;
               self = {

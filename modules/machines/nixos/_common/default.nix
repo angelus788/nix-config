@@ -44,12 +44,18 @@
 
   services.ntp.enable = true;
 
-  systemd.services.nixos-upgrade.preStart = ''
-    cd /etc/nixos
-    chown -R root:root .
-    git reset --hard HEAD
-    git pull
-  '';
+  systemd.services.nixos-upgrade = {
+    path = [ pkgs.git pkgs.openssh ];
+    preStart = ''
+      cd /etc/nixos
+      # Permits root to safely run git operations if owned by another user
+      git config --global --add safe.directory /etc/nixos
+      # Fetch remote state and force local tree to mirror it completely
+      git fetch origin
+      git reset --hard origin/main
+    '';
+  };
+
   system.autoUpgrade = {
     enable = true;
     flake = "/etc/nixos#${config.networking.hostName}";
@@ -168,8 +174,9 @@
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
         config = prev.config // {
-        permittedInsecurePackages = [ "electron-39.8.10" ];
-      };
+          allowUnfree = true;
+          permittedInsecurePackages = [ "electron-39.8.10" ];
+        };
       };
 
       beets = final.unstable.beets;
