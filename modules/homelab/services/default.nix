@@ -31,6 +31,12 @@ in
   };
 
   config = lib.mkIf config.homelab.services.enable {
+# === INSERTED AGENIX / FRP CONFIGURATION HERE ===
+    homelab.frp = {
+      enable = true;
+      tokenFile = config.age.secrets.frpToken.path; 
+    };
+
     networking.firewall.allowedTCPPorts = [
       80
       443
@@ -38,37 +44,33 @@ in
     ++ (lib.optionals (
       config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
     ) [ 7000 ]);
-    
-    systemd.services.frp-homelab.serviceConfig.LoadCredential =
+    systemd.services."frp-${config.networking.hostName}".serviceConfig.LoadCredential =
       lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
-      
-    services.frp = lib.mkIf config.homelab.frp.enable {
-
-      instances.homelab = {
-        enable = true;
-        role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
-        settings =
-          let
-            common = {
-              auth.tokenSource.type = "file";
-              auth.tokenSource.file.path = "/run/credentials/frp-homelab.service/frpToken";
-            };
-          in
-          if (config.networking.hostName == cfg.frp.serverHostname) then
-            {
-              bindAddr = "0.0.0.0";
-              bindPort = 7000;
-            }
-            // common
-          else
-            {
-              serverAddr =
-                lib.removeSuffix "/24"
-                  config.homelab.networks.external.${cfg.frp.serverHostname}.v4.address;
-              serverPort = 7000;
-            }
-            // common;
-      };
+    services.frp.instances.${config.networking.hostName} = lib.mkIf config.homelab.frp.enable {
+      enable = true;
+      role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
+      settings =
+        let
+          common = {
+            auth.tokenSource.type = "file";
+            # Dynamic systemd credential directory resolution
+            auth.tokenSource.file.path = "{{ .Envs.CREDENTIALS_DIRECTORY }}/frpToken";
+          };
+        in
+        if (config.networking.hostName == cfg.frp.serverHostname) then
+          {
+            bindAddr = "0.0.0.0";
+            bindPort = 7000;
+          }
+          // common
+        else
+          {
+            serverAddr =
+              lib.removeSuffix "/24"
+                config.homelab.networks.external.${cfg.frp.serverHostname}.v4.address;
+            serverPort = 7000;
+          }
+          // common;
     };
     security.acme = {
       acceptTerms = true;

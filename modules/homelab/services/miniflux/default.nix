@@ -77,7 +77,7 @@ in
         };
       };
 
-      services.frp.instances.homelab.settings.proxies = [
+      services.frp.instances.${config.networking.hostName}.settings.proxies = [
         {
           name = service;
           type = "tcp";
