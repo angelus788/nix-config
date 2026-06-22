@@ -2,8 +2,8 @@
 
 {
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.systemd-boot.enable = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
 
   networking = {
     networkmanager.enable = true;
@@ -50,7 +50,7 @@
     thunderbird
     unstable.proton-pass-cli
     #unstable.tailscale-gui #try again at a later date
-    variety
+    #variety
     vscodium
     wget
     zed-editor
@@ -111,13 +111,15 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     inputs.lanzaboote.nixosModules.lanzaboote
     ./secrets
-    ./hardware-configuration.nix
+    ./boot.nix
+    ./disks.nix
+    #./hardware-configuration.nix
     ../../../apps/tailscale
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
     #../../../misc/papery
-    ../../../apps/wpaperd
+    #../../../apps/wpaperd
     ../../../misc/syncthing
   ];
 

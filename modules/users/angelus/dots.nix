@@ -20,8 +20,9 @@ in
       ../../dots/ghostty/default.nix
       #../../dots/librewolf/default.nix
       ../../dots/tssystray/default.nix
+      ../../dots/variety/default.nix
       ../../dots/vscodium/default.nix
-      ../../dots/wpaperd/default.nix
+      #g../../dots/wpaperd/default.nix
       ../../dots/zed/default.nix
   ];
 
