@@ -4,10 +4,6 @@
   ...
 }:
 {
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowUnfreePredicate = (_: true);
-  };
 
   home.packages = with pkgs; [
     figlet
@@ -24,6 +20,7 @@
 
   programs.nixvim = {
     enable = true;
+    nixpkgs.useGlobalPackages = true;
     colorschemes.nord = {
       enable = true;
       settings = {

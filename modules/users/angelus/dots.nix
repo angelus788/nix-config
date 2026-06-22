@@ -8,18 +8,7 @@ let
 in
 {
 
-options.myHomeDots = {
-    enableGui = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable GUI-specific dotfiles like desktop apps and window utilities.";
-    };
-    enableCore = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable core/headless terminal dotfiles needed everywhere.";
-    };
-  };
+
 
   imports = [
     ./gitconfig.nix
@@ -36,18 +25,31 @@ options.myHomeDots = {
       ../../dots/zed/default.nix
   ];
 
+    options.myHomeDots = {
+        enableGui = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Enable GUI-specific dotfiles like desktop apps and window utilities.";
+        };
+        enableCore = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable core/headless terminal dotfiles needed everywhere.";
+        };
+      };
+
   config = {
-    nixpkgs = {
-      overlays = [ ];
-      config = {
-        allowUnfree = true;
-        allowUnfreePredicate = (_: true);
-        permittedInsecurePackages = [ ##COMEBACKTOTHIS##
-                "electron-39.8.10"
-        ];
+  #  nixpkgs = {
+  #    overlays = [ ];
+  #    config = {
+  #      allowUnfree = true;
+  #      allowUnfreePredicate = (_: true);
+  #      permittedInsecurePackages = [ ##COMEBACKTOTHIS##
+  #              "electron-39.8.10"
+  #      ];
         
-    };
-  };
+  #  };
+  #};
 
   home = home;
 

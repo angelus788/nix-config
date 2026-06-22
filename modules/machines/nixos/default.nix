@@ -43,7 +43,7 @@ in
         name:
         lib.nameValuePair name (
           (myNixosSystem name) {
-            system = lib.attrsets.attrByPath [ name ] "x86_64-linux" systemArchMap;
+            #system = lib.attrsets.attrByPath [ name ] "x86_64-linux" systemArchMap;
             specialArgs = {
               inherit (self) inputs;
               self = {
@@ -52,6 +52,9 @@ in
             };
 
             modules = [
+              {
+                nixpkgs.hostPlatform = lib.attrsets.attrByPath [ name ] "x86_64-linux" systemArchMap;
+              }
               ../../homelab
               ../../misc/email
               ../../misc/tg-notify

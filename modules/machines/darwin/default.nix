@@ -7,7 +7,7 @@ let
   entries = builtins.attrNames (builtins.readDir ./.);
   configs = builtins.filter (dir: builtins.pathExists (./. + "/${dir}/configuration.nix")) entries;
   homeManagerCfg = userPackages: {
-    home-manager.useGlobalPkgs = false;
+    home-manager.useGlobalPkgs = true;
     home-manager.extraSpecialArgs = {
       inherit (self) inputs;
     };
@@ -31,7 +31,7 @@ in
       name:
       lib.nameValuePair name (
         self.inputs.nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
+          #system = "aarch64-darwin";
           specialArgs = {
             inherit (self) inputs;
             self = {
@@ -40,6 +40,12 @@ in
           };
 
           modules = [
+             	{ nixpkgs.hostPlatform = "aarch64-darwin"; }
+	            {
+	              nixpkgs.config = {
+	                allowUnfree = true;
+	              };
+	            }
             self.inputs.agenix.darwinModules.default
             self.inputs.home-manager.darwinModules.home-manager
             (./. + "/_common/default.nix")
