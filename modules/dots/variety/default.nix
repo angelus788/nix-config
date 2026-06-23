@@ -16,6 +16,8 @@ in
     change_enabled = True
     change_interval = 300
     safe_mode = False
+
+    icon = Dark
     
     # Copy/Favorites configuration
     copyto_enabled = False
