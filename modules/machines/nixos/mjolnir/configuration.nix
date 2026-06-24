@@ -46,6 +46,7 @@
     proton-pass
     spotify
     #rquickshare
+    seahorse
     stow
     thunderbird
     unstable.proton-pass-cli
@@ -117,7 +118,7 @@
     ../../../apps/tailscale
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
-    #../../../apps/DE/plasma
+    ../../../apps/DE/plasma
     #../../../misc/papery
     #../../../apps/wpaperd
     ../../../misc/syncthing
