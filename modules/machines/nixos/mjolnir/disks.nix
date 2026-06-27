@@ -41,10 +41,8 @@ in
         content = {
           type = "gpt";
       partitions = {
-            ESP = {
-              # Start at 1MiB to ensure proper alignment
-              start = "1MiB";
-              end = "513MiB"; # 512MiB size
+          ESP = {
+              size = "512M"; # Use 'size' instead of start/end when possible
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -53,9 +51,7 @@ in
               };
             };
             luks = {
-              # Start immediately after ESP
-              start = "513MiB";
-              end = "100%";
+              size = "100%"; # Takes the remaining space automatically
               content = {
                 type = "luks";
                 name = "${cryptroot}";
