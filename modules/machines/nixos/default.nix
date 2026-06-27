@@ -14,11 +14,11 @@ let
     home-manager.users.angelus.imports = [
       self.inputs.agenix.homeManagerModules.default
       self.inputs.nix-index-database.homeModules.nix-index
-      self.inputs.nixvim.homeModules.nixvim
+      #self.inputs.nixvim.homeModules.nixvim
       ../../users/angelus/dots.nix
       ../../users/angelus/age.nix
       ../../dots/tmux
-      ../../dots/nvim
+      #../../dots/nvim
     ]
     ++ extraImports;
     home-manager.backupFileExtension = "bak";
