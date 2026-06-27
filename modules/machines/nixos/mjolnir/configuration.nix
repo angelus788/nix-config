@@ -112,9 +112,9 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     inputs.lanzaboote.nixosModules.lanzaboote
     ./secrets
-    #./boot.nix
-    #./disks.nix
-    ./hardware-configuration.nix
+    ./boot.nix
+    ./disks.nix
+    #./hardware-configuration.nix
     ../../../apps/tailscale
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
