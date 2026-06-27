@@ -28,7 +28,7 @@ in
 
   # TODO: Remove this if/when machine is reinstalled.
   # This is a workaround for the legacy -> gpt tables disko format.
-  fileSystems."/boot".device = lib.mkForce "/dev/disk/by-partlabel/ESP";
+  #fileSystems."/boot".device = lib.mkForce "/dev/disk/by-partlabel/ESP";
 
   disko.devices = {
     disk = {
@@ -40,10 +40,11 @@ in
         type = "disk";
         content = {
           type = "gpt";
-          partitions = {
+      partitions = {
             ESP = {
-              start = "0%";
-              end = "512MiB";
+              # Start at 1MiB to ensure proper alignment
+              start = "1MiB";
+              end = "513MiB"; # 512MiB size
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -52,7 +53,8 @@ in
               };
             };
             luks = {
-              start = "512MiB";
+              # Start immediately after ESP
+              start = "513MiB";
               end = "100%";
               content = {
                 type = "luks";
