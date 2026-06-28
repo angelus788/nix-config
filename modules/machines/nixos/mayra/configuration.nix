@@ -118,6 +118,7 @@ in
     steamos = {
       useSteamOSConfig = true;
     };
+    decky-loader.enable = true;
   };
   services.sunshine = {
     enable = true;
