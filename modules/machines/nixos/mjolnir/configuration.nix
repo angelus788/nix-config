@@ -114,11 +114,11 @@
     ./secrets
     ./boot.nix
     ./disks.nix
-    #./hardware-configuration.nix
+    ./hardware-configuration.nix
     ../../../apps/tailscale
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
-    ../../../apps/DE/plasma
+    #../../../apps/DE/plasma
     #../../../misc/papery
     #../../../apps/wpaperd
     ../../../misc/syncthing
