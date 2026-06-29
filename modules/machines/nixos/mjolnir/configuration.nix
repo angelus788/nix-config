@@ -2,15 +2,6 @@
 
 {
 
-boot.loader.systemd-boot.enable = lib.mkForce false;
-boot.loader.efi.canTouchEfiVariables = true;
-
-# 2. Configure Lanzaboote to take over
-boot.lanzaboote = {
-  enable = true;
-  pkiBundle = "/var/lib/sbctl"; # Points to the modern path we verified earlier
-};
-
   networking = {
     networkmanager.enable = true;
     hostName = "mjolnir";

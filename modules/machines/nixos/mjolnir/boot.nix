@@ -4,6 +4,7 @@
     # Secure boot configuration
     bootspec.enable = true;
     loader.systemd-boot.enable = lib.mkForce false;
+    loader.efi.canTouchEfiVariables = true;
     lanzaboote = {
       enable = true;
       pkiBundle = "/var/lib/sbctl"; #"/etc/secureboot";
@@ -22,7 +23,7 @@
 
 
     kernelModules = [
-      "kvm_amd"
+      "kvm_intel"
       "vhost_vsock"
     ];
 
