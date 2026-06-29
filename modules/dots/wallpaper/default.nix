@@ -1,10 +1,13 @@
-{ config, inputs, lib, ... }:
+{ config, inputs, lib, pkgs, ... }:
 
 let
+  isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
+  isLinuxGui = isLinux && config.myHomeDots.enableGui;
   # Define the directory path
   wallpaperDir = "${config.home.homeDirectory}/Pictures/Wallpaper";
 in 
 {
+  config = lib.mkIf isLinuxGui {
   # 1. Deploy the wallpaper files from your flake input
   home.file."Pictures/Wallpaper" = {
     source = inputs.wallpaper;
@@ -23,5 +26,6 @@ in
       )
     '';
     force = true; 
+  };
   };
 }
