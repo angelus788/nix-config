@@ -59,6 +59,7 @@ in
 
                 settings = {
                   allowDiscards = true;
+                  crypttabExtraOpts = [ "tpm2-device=auto" ];
                 };
 
                 content = {
