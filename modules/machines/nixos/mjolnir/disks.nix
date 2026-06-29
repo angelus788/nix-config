@@ -16,15 +16,16 @@ let
   ];
 in
 {
-  boot.initrd.luks.devices.${cryptroot} = {
+ 
+  #boot.initrd.luks.devices.${cryptroot} = {
     # TODO: Remove this "device" attr if/when machine is reinstalled.
     # This is a workaround for the legacy -> gpt tables disko format.
-    device = lib.mkForce "/dev/disk/by-uuid/0d7b0fa7-4f14-4f1f-bef2-6b7c95de01ff";
-    allowDiscards = true;
-    preLVM = true;
+    #device = lib.mkForce "/dev/disk/by-uuid/0d7b0fa7-4f14-4f1f-bef2-6b7c95de01ff";
+    #allowDiscards = true;
+    #preLVM = true;
     # Add this line to tell systemd-cryptsetup to automatically use the TPM
-    crypttabExtraOpts = [ "tpm2-device=auto" ];
-  };
+    #crypttabExtraOpts = [ "tpm2-device=auto" ];
+  #};
 
   # TODO: Remove this if/when machine is reinstalled.
   # This is a workaround for the legacy -> gpt tables disko format.
