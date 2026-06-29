@@ -118,8 +118,17 @@ in
     steamos = {
       useSteamOSConfig = true;
     };
-    decky-loader.enable = true;
+    decky-loader = { 
+      enable = true;
+      extraPackages = with pkgs; [
+        curl
+        unzip
+        util-linux
+        gnugrep
+      ];
+    };
   };
+
   services.sunshine = {
     enable = true;
     autoStart = true;
