@@ -97,6 +97,11 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    wallpaper = {
+    url = "git+https://git.avgtechguy.com/avgtechguy/wallpaper";
+    flake = false; # We only want the files, not the flake output
+    };
   };
 
   outputs =

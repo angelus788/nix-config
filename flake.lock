@@ -640,6 +640,7 @@
         "nixvim": "nixvim",
         "secrets": "secrets",
         "treefmt-nix": "treefmt-nix",
+        "wallpaper": "wallpaper",
         "zen-browser": "zen-browser"
       }
     },
@@ -768,6 +769,22 @@
         "owner": "pyproject-nix",
         "repo": "uv2nix",
         "type": "github"
+      }
+    },
+    "wallpaper": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782757569,
+        "narHash": "sha256-bJCGdvfumfpiA4lB6/EQyYN+JoAfvA1Yqe4oOVjKo7M=",
+        "ref": "refs/heads/main",
+        "rev": "cb7266eee27a418a8108fd82659fb99471624c82",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://git.avgtechguy.com/avgtechguy/wallpaper"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.avgtechguy.com/avgtechguy/wallpaper"
       }
     },
     "zen-browser": {

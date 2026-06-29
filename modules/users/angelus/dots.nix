@@ -22,6 +22,7 @@ in
       ../../dots/tssystray/default.nix
       #../../dots/variety/default.nix
       ../../dots/vscodium/default.nix
+      ../../dots/wallpaper/default.nix
       #g../../dots/wpaperd/default.nix
       ../../dots/zed/default.nix
   ];
