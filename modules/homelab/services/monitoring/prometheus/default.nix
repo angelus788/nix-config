@@ -50,7 +50,7 @@ in
   config = lib.mkIf cfg.enable {
     services.grafana = {
       provision = {
-        enable = true;
+        enable = false;
         datasources.settings.datasources = [
           {
             name = "Prometheus";

@@ -45,7 +45,7 @@
       homeassistant.enable = false;
       raspberrymatic.enable = false;
       uptime-kuma.enable = true;
-      grafana.enable = true;
+      grafana.enable = false;
       prometheus = {
         enable = false;
         scrapeTargets = lib.lists.forEach [ "smartctl" "node" "systemd" "shellyplug" ] (exporter: {
