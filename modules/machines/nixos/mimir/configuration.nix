@@ -28,6 +28,7 @@
     ./filesystems
     ./secrets
     ./disko.nix
+    ../../../apps/tailscale
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
