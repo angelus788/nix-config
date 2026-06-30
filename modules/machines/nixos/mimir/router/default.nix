@@ -217,7 +217,7 @@ in
       "50-wg0" = {
         wireguardConfig = {
           ListenPort = 51820;
-          PrivateKeyFile = config.age.secrets.wireguardPrivateKeyAlison.path;
+          PrivateKeyFile = config.age.secrets.wireguardPrivateKeyMimir.path;
         };
         wireguardPeers =
           let
@@ -267,7 +267,7 @@ in
       nat64.default.global.pool6 = "64:ff9b::/96";
       enable = true;
     };
-    hostName = "alison";
+    hostName = "mimir";
     domain = "${config.networking.hostName}.${config.homelab.baseDomain}";
     search = [ config.homelab.baseDomain ];
   };
