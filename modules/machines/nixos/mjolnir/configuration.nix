@@ -23,19 +23,16 @@
 
   services.fwupd.enable = true;
 
-  programs.firefox.enable = true;
+  #programs.firefox.enable = true;
 
 
   environment.systemPackages = with pkgs; [
     pkgs.android-tools
-    bitwarden-cli
-    bitwarden-desktop
     claude-code
     google-chrome
     brave
     #cosmic-polkit
     fprintd
-    ghostty
     git
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     just
@@ -48,10 +45,8 @@
     thunderbird
     unstable.proton-pass-cli
     #unstable.tailscale-gui #try again at a later date
-    #variety
     vscodium
     wget
-    zed-editor
     zola
   ];
 
