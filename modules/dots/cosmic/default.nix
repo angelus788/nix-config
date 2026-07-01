@@ -1,9 +1,12 @@
 # cosmic-dock
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, osConfig ? { }, ... }:
 
 let
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
   isLinuxGui = isLinux && config.myHomeDots.enableGui;
+
+  # Auto-detect if the NixOS host has the COSMIC DE turned on
+  isCosmicHost = osConfig.services.desktopManager.cosmic.enable or false;
 in {
   # 1. Options must always be declared at the top-level of the module return set
   options.programs.cosmic.dock = {
