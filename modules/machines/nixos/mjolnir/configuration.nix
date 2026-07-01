@@ -51,25 +51,7 @@
   ];
 
 
-  # 1Password
-  programs = {
-    _1password.enable = true;
-    _1password-gui = {
-      enable = true;
-      polkitPolicyOwners = [ "angelus" ];
-    };
-  };
 
-  environment.etc = {
-    "1password/custom_allowed_browsers" = {
-      text = ''
-        vivaldi-bin
-        librewolf
-        zen
-      '';
-      mode = "0755";
-    };
-  };
 
   programs.nix-ld.enable = true;
 
@@ -107,13 +89,14 @@
     ./boot.nix
     ./disks.nix
     ./hardware-configuration.nix
-    ../../../apps/tailscale
+    ../../../apps/1password
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
     #../../../misc/papery
     #../../../apps/wpaperd
     ../../../misc/syncthing
+    ../../../apps/tailscale
   ];
 
 }
