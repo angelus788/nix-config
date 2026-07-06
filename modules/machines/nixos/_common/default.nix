@@ -18,7 +18,7 @@
         "github.com".publicKey =
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw";
         "[${gitAddress}]:69".publicKey =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw";
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
       };
       extraConfig = ''
         Host github.com
