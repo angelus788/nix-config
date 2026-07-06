@@ -42,7 +42,15 @@ in
     #pkgs.lutris #enable later on
     pkgs.s-tui
     pkgs.stress
+  ]; 
+  
+  nixpkgs.config.permittedInsecurePackages = [
+    "pnpm-9.15.9"
+    "electron-39.8.10"
   ];
+
+
+
 
   # fileSystems."/" = {
   #   device = "/dev/disk/by-id/nvme-CT1000P1SSD8_202629273359_1-part2";
