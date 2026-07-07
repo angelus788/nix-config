@@ -22,6 +22,7 @@ in {
         "firefox"
         "bitwarden"
         "obsidian"
+        "thunderbird"
       ];
     };
   };
