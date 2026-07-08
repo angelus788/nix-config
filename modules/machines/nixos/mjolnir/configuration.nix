@@ -93,6 +93,7 @@
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
+     ../../../apps/packet
     #../../../misc/papery
     #../../../apps/wpaperd
     ../../../misc/syncthing
