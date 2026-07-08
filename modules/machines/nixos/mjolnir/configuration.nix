@@ -30,6 +30,7 @@
     pkgs.android-tools
     claude-code
     google-chrome
+    bitwarden-desktop
     brave
     #cosmic-polkit
     fprintd
@@ -63,12 +64,14 @@
   security.pam.services = {
     login.fprintAuth = true;
     sudo.fprintAuth = true;
+    polkit-1.fprintAuth = true; # ← This is the bridge Bitwarden needs
     cosmic-greeter.fprintAuth = true;
     cosmic-lock.fprintAuth = true;
     cosmic-settings.fprintAuth = true;
   };
 
   security.polkit.enable = true;
+
 
   home-manager.users.angelus.myHomeDots.enableGui = true;
 
