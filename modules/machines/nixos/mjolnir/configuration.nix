@@ -29,6 +29,7 @@
   environment.systemPackages = with pkgs; [
     pkgs.android-tools
     claude-code
+    cifs-utils
     google-chrome
     bitwarden-desktop
     brave
@@ -85,6 +86,8 @@
     };
   };
 
+
+
   imports = [
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
     inputs.lanzaboote.nixosModules.lanzaboote
@@ -99,6 +102,7 @@
      ../../../apps/packet
     #../../../misc/papery
     #../../../apps/wpaperd
+    ../../../apps/smbshared
     ../../../misc/syncthing
     ../../../apps/tailscale
   ];
