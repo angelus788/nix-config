@@ -122,7 +122,6 @@
     stow
     tmux
     vim
-    vscode
     vscodium
     wget
     zola
