@@ -47,7 +47,7 @@
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [ "kvm-amd" "uinput"];
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

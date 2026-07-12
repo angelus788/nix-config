@@ -22,6 +22,9 @@
           "video"
           "podman"
           "input"
+          "uinput"
+          "dialout"
+          "plugdev"
           "networkmanager"
           "share"
         ];

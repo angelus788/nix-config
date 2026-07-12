@@ -23,6 +23,7 @@ in
   imports = [
     #./hardware-configuration.nix
     ./secrets
+    ../../../apps/openpuck
     ../../../misc/ryzen-undervolting
     ../../../misc/samsung-tv
     ../../../misc/syncthing
