@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   cfg = config.homelab;
@@ -31,21 +30,55 @@ in
   };
 
   config = lib.mkIf config.homelab.services.enable {
-# === INSERTED AGENIX / FRP CONFIGURATION HERE ===
+    # === INSERTED AGENIX / FRP CONFIGURATION HERE ===
     homelab.frp = {
       enable = true;
-      tokenFile = config.age.secrets.frpToken.path; 
+      tokenFile = config.age.secrets.frpToken.path;
     };
 
     networking.firewall.allowedTCPPorts = [
       80
       443
     ]
-    ++ (lib.optionals (
-      config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
-    ) [ 7000 ]);
-    systemd.services."frp-${config.networking.hostName}".serviceConfig.LoadCredential =
-      lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+    ++ (lib.optionals
+      (
+        config.networking.hostName == cfg.frp.serverHostname && config.homelab.frp.enable
+      ) [ 7000 ]);
+
+    systemd.services =
+      let
+        acmeFix = {
+          path = [
+            pkgs.diffutils
+            pkgs.findutils
+            pkgs.gnugrep
+            pkgs.coreutils
+            pkgs.lego
+          ];
+          serviceConfig = {
+            User = lib.mkForce "acme";
+            Group = lib.mkForce config.services.caddy.group;
+            EnvironmentFile = lib.mkForce config.homelab.cloudflare.dnsCredentialsFile;
+          };
+        };
+        # Safe list of domains to generate unique overrides for
+        domains = [
+          config.homelab.baseDomain
+          "avgtechguy.com"
+          "internalnetwork.party"
+        ];
+        acmeServices = lib.listToAttrs (map
+          (domain: {
+            name = "acme-order-renew-${domain}";
+            value = acmeFix;
+          })
+          (lib.unique domains));
+      in
+      {
+        # Your existing frp service credential loading (safely migrated inside)
+        "frp-${config.networking.hostName}".serviceConfig.LoadCredential =
+          lib.mkIf config.homelab.frp.enable "frpToken:${cfg.frp.tokenFile}";
+      } // acmeServices;
     services.frp.instances.${config.networking.hostName} = lib.mkIf config.homelab.frp.enable {
       enable = true;
       role = if (config.networking.hostName == cfg.frp.serverHostname) then "server" else "client";
