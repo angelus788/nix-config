@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   hl = config.homelab;
@@ -138,7 +137,7 @@ in
     };
   };
 
-services.hddfancontrol = {
+  services.hddfancontrol = {
     enable = true;
     settings = {
       harddrives = {
@@ -167,7 +166,7 @@ services.hddfancontrol = {
       echo "Error: nct6798 hardware monitor not found!" >&2
       exit 1
     '';
-    
+
     # Ensure systemd sets up the runtime directory permissions safely
     serviceConfig.RuntimeDirectory = "hddfancontrol-harddrives";
   };
@@ -217,8 +216,9 @@ services.hddfancontrol = {
     intel-gpu-tools
     powertop
     caddy
+    wakeonlan
   ];
-home-manager.users.angelus.myHomeDots.enableGui = false;
+  home-manager.users.angelus.myHomeDots.enableGui = false;
 
   tg-notify = {
     enable = true;
