@@ -99,6 +99,7 @@
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
+    ../../../apps/openpuck
      ../../../apps/packet
     #../../../misc/papery
     #../../../apps/wpaperd

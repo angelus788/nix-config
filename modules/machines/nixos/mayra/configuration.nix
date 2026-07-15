@@ -50,7 +50,11 @@ in
     "electron-39.8.10"
   ];
 
-
+  systemd.tmpfiles.rules = [
+    "d /data/sda 0775 angelus angelus - -"
+    "d /data/sdb 0775 angelus angelus - -"
+    "d /data/sdc 0775 angelus angelus - -"
+  ];
 
 
   # fileSystems."/" = {
