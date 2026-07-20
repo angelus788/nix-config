@@ -59,5 +59,9 @@
     tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
+        wireguardPrivateKeyOdin = {
+      file = "${inputs.secrets}/wireguardPrivateKeyOdin.age";
+      owner = "systemd-network";
+    };
   };
 }

@@ -115,6 +115,7 @@ in
     ./homelab
     ./secrets
     ./disko.nix
+    ./wireguard.nix
   ];
 
   services.duckdns = {
