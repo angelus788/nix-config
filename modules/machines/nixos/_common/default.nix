@@ -169,8 +169,8 @@
   ];
 
   nixpkgs.overlays = [
+    # 1. Your existing unstable overlay
     (final: prev: {
-      # 1. Keep your existing 'unstable' attribute for general use
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
         config = prev.config // {
@@ -181,8 +181,30 @@
 
       beets = final.unstable.beets;
     })
-  ];
 
+    # 2. Universal fetchurl override for uppush 2.5.0
+    (final: prev: {
+      fetchurl = args:
+        let
+          # Safely extract a string URL regardless of fetchurl argument style
+          urlStr =
+            if builtins.isAttrs args then
+              args.url or (if (args ? urls && builtins.length args.urls > 0) then builtins.head args.urls else "")
+            else if builtins.isString args then
+              args
+            else
+              "";
+        in
+        if builtins.isString urlStr && builtins.match ".*uppush.*2\\.5\\.0.*" urlStr != null then
+          prev.fetchurl (
+            (if builtins.isAttrs args then args else { url = args; }) // {
+              hash = "sha256-SRRFA1nQk0OsCm+FEaEN32bDTNCbcKyM0ZOhy5yXUEc=";
+            }
+          )
+        else
+          prev.fetchurl args;
+    })
+  ];
   #COMEBACKTOTHIS
 
   #nixpkgs.config.permittedInsecurePackages = [
