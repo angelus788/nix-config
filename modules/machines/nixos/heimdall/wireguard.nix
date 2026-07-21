@@ -27,7 +27,7 @@ in
           [
             {
               # odin
-              PublicKey = "3pFGJLF2uGPagy76AlqzDbS0kYyi/x8RikKEoy5XiB4=";
+              PublicKey = "pDUD3lURSne63c1uTAWgUhrPfrkm8KWtwErerH7KQyg=";
               AllowedIPs = [
                 (wgIp "v4" 2)
                 (wgIp "v6" 2)
