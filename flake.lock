@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1784661252,
-        "narHash": "sha256-JnLaAyvEqy2SVWJQ6NdR3xtARUkgY4VMx4HixGSg6iA=",
+        "lastModified": 1784707572,
+        "narHash": "sha256-WWTkOjY3xbfl42LXAmOOGsuLVTBKVjsSuQcNklvszSg=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "4d20d8faadcf3ff83a33cf7612f7f326b5080d7b",
+        "rev": "d60eecc129680a53edf47018701e31068be2843f",
         "type": "github"
       },
       "original": {
@@ -228,11 +228,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784588016,
-        "narHash": "sha256-ouZe80aWEhMLVMkqICFDN+JUw+0FJtCr/bh+hHtRtMg=",
+        "lastModified": 1784725727,
+        "narHash": "sha256-J5+C9wsO0lhDyUalQzfplDbRjyHDYeEH5+9sdyXtwa8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "deeb6b7eb7e0c44ae1819c051ce175bd92a85100",
+        "rev": "041a999e8c1c5b731913855909e68d30ca69b8e0",
         "type": "github"
       },
       "original": {
@@ -291,11 +291,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784364424,
-        "narHash": "sha256-Q+wMaCtO9j03RndXahlnPS+W1yNMZmpZJXwrXcP9icY=",
+        "lastModified": 1784705208,
+        "narHash": "sha256-G1JLSGuSf8G2yZUxwLAKH6buVqoTWPbfpiVLzSNq6ak=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "835c5d5e24107c45eb45cc792d206ec01604b465",
+        "rev": "cf9383788741bdabcb13f5c323a978fd63e681e8",
         "type": "github"
       },
       "original": {
@@ -395,11 +395,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784310968,
-        "narHash": "sha256-rkSPTePrKqs4dg+i7ZFCq93+HrClac6oSwXX927SVjA=",
+        "lastModified": 1784723954,
+        "narHash": "sha256-1CfD8ZUjCkTgjsneLZ/lxCHhgDfqxxE7/GX0MmsgiqA=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "779c32a00155994c86cde8213a8dd4df139d4355",
+        "rev": "a017f5b72210026af5b3ac5949f08d94380a6fbd",
         "type": "github"
       },
       "original": {
@@ -645,11 +645,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1784665300,
-        "narHash": "sha256-FDE5B7s33V1v5U9B3cBIRsG+rzVcs/oaNtmQyODiw58=",
+        "lastModified": 1784731628,
+        "narHash": "sha256-+AFAusY41bHlPP6ByfAUtvleZvH9hBGaeHSVqxa2hEM=",
         "ref": "refs/heads/main",
-        "rev": "7f704114f0059b58a93be15ff8354bba699c883f",
-        "revCount": 263,
+        "rev": "fbb9ef9bd49e15c75a6fad94a57255e4d161e49c",
+        "revCount": 264,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
