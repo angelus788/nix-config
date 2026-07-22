@@ -1,12 +1,16 @@
 { config, lib, ... }:
 let
   net = config.homelab.networks;
+  mainNet = net.external.heimdall;
   wg0Net = net.local.wireguard-ext;
-  heimdallWan = net.external.heimdall.v4.address; # Heimdall's VPS IP
+
+  # Strip any netmask suffix (e.g., "/24") to get a clean IP for Endpoint
+  heimdallIp = lib.head (lib.splitString "/" mainNet.v4.address);
 in
 {
   systemd.network = {
     enable = true;
+
     netdevs = {
       "50-wg0" = {
         netdevConfig = {
@@ -14,37 +18,36 @@ in
           Name = "wg0";
         };
         wireguardConfig = {
-          # Path to odin's private key secret
+          ListenPort = 51821;
           PrivateKeyFile = config.age.secrets.wireguardPrivateKeyOdin.path;
         };
         wireguardPeers = [
           {
-            # Heimdall VPS
+            # heimdall (Hub)
             PublicKey = "3pFGJLF2uGPagy76AlqzDbS0kYyi/x8RikKEoy5XiB4=";
-            Endpoint = "${heimdallWan}:51820";
-            
-            # Route traffic for the WireGuard subnet to Heimdall
+            Endpoint = "${heimdallIp}:51820"; # Clean IP:Port
+            PersistentKeepalive = 25;
             AllowedIPs = [
-              "${wg0Net.cidr.v4}/24"
+              "${lib.strings.removeSuffix ".1" wg0Net.cidr.v4}.0/24"
               "${wg0Net.cidr.v6}/64"
             ];
-            
-            # Keeps the connection open through Mimir/local NAT
-            PersistentKeepalive = 25;
           }
         ];
       };
     };
+
     networks = {
       "60-wg0" = {
         matchConfig.Name = "wg0";
         networkConfig = {
           Address = [
-            "10.5.0.2/24" # Matching wgIp "v4" 2
-            "fd00::2/64"   # Matching wgIp "v6" 2
+            "${lib.strings.removeSuffix ".1" wg0Net.cidr.v4}.2/24"
+            "${wg0Net.cidr.v6}2/64"
           ];
         };
       };
     };
   };
+
+  networking.firewall.allowedUDPPorts = [ 51821 ];
 }
