@@ -123,6 +123,10 @@ in
     domainsFile = config.age.secrets.duckDNSDomain.path;
     tokenFile = config.age.secrets.duckDNSToken.path;
   };
+  systemd.services.duckdns.serviceConfig = {
+    Restart = "on-failure";
+    RestartSec = "10s";
+  };
 
   systemd.services.hd-idle = {
     description = "External HD spin down daemon";

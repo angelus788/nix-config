@@ -99,8 +99,8 @@ in
         else
           {
             serverAddr =
-              lib.removeSuffix "/24"
-                config.homelab.networks.external.${cfg.frp.serverHostname}.v4.address;
+              builtins.head (lib.splitString "/"
+                config.homelab.networks.external.${cfg.frp.serverHostname}.v4.address);
             serverPort = 7000;
           }
           // common;
