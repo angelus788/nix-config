@@ -38,6 +38,13 @@ in
   };
   config = lib.mkIf cfg.enable {
     services.openssh.settings.AcceptEnv = [ "GIT_PROTOCOL" ];
+
+    services.openssh.extraConfig = ''
+      Match User forgejo
+        AuthorizedKeysCommand ${config.services.forgejo.package}/bin/forgejo keys -c /var/lib/forgejo/custom/conf/app.ini -e forgejo -u %u -t %t -k %k
+        AuthorizedKeysCommandUser forgejo
+    '';
+
     services.forgejo = {
       package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.forgejo;
       enable = true;
@@ -50,7 +57,16 @@ in
           HTTP_PORT = 3000;
           LANDING_PAGE = "/avgtechguy";
           SSH_PORT = lib.head config.services.openssh.ports;
+          START_SSH_SERVER = false;
         };
+        
+        ssh = {
+          # Ensures Forgejo maintains /var/lib/forgejo/.ssh/authorized_keys
+          CREATE_AUTHORIZED_KEYS_FILE = true;
+          # Disables token verification modal so keys/deploy keys add seamlessly in UI
+          ENABLE_SSH_KEY_VERIFICATION = false;
+        };
+
         log = {
           LEVEL = "Trace";
         };

@@ -6,57 +6,53 @@
   ...
 }:
 
+let
+  gitAddress = "git.${config.homelab.baseDomain}";
+  gitPort = 69;
+  repoUrl = "ssh://forgejo@${gitAddress}:${toString gitPort}/avgtechguy/nix-config.git";
+  sshKeyPath = "/persist/ssh/ssh_host_ed25519_key";
+in
 {
-  programs.ssh =
-    #COMEBACKTOTHIS
-    let
-      gitAddress = "git.avgtechguy.com";
-    in
-    {
-
-      knownHosts = {
-        "github.com".publicKey =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw";
-        "[${gitAddress}]:69".publicKey =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
+  # 1. Declaratively register SSH options & host keys
+  programs.ssh = {
+    knownHosts = {
+      "[${gitAddress}]:${toString gitPort}" = {
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
       };
-      
-      extraConfig = ''
-        # Global defaults
-        Host *
-          ControlMaster no
-          ControlPersist no
-          ControlPath none
-
-        # GitHub configuration
-        Host github.com
-          User angelus
-          IdentityFile /persist/ssh/ssh_host_ed25519_key
-          IdentitiesOnly yes
-
-        # Local Forgejo server configuration
-        Host ${gitAddress}
-          HostName ${gitAddress}
-          Port 69
-          User forgejo
-          IdentityFile /persist/ssh/ssh_host_ed25519_key
-          IdentitiesOnly yes
-      '';
+      "github.com" = {
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+      };
     };
+
+    # Force git@github.com to use HTTPS so public inputs never require SSH keys
+    extraConfig = ''
+      Url "https://github.com/".insteadOf = "git@github.com:"
+    '';
+  };
 
   system.stateVersion = "25.11";
 
   services.ntp.enable = true;
 
+  # 2. Fully declarative upgrade service override
   systemd.services.nixos-upgrade = {
     path = [ pkgs.git pkgs.openssh ];
+    environment = {
+      GIT_SSH_COMMAND = "${pkgs.openssh}/bin/ssh -i ${sshKeyPath} -o StrictHostKeyChecking=accept-new -o IdentitiesOnly=yes";
+    };
     preStart = ''
       cd /etc/nixos
-      # Permits root to safely run git operations if owned by another user
-      git config --global --add safe.directory /etc/nixos
-      # Fetch remote state and force local tree to mirror it completely
-      git fetch origin
-      git reset --hard origin/main
+      ${pkgs.git}/bin/git config --global --add safe.directory /etc/nixos
+
+      # Force origin remote to point strictly to Forgejo
+      if ! ${pkgs.git}/bin/git remote | grep -q "^origin$"; then
+        ${pkgs.git}/bin/git remote add origin "${repoUrl}"
+      else
+        ${pkgs.git}/bin/git remote set-url origin "${repoUrl}"
+      fi
+
+      ${pkgs.git}/bin/git fetch origin main
+      ${pkgs.git}/bin/git reset --hard origin/main
     '';
   };
 
@@ -133,8 +129,8 @@
         mode = "0440";
       };
     };
-
   };
+
   email = {
     enable = true;
     fromAddress = "myserver_announcements@mailbox.org";
@@ -167,8 +163,8 @@
     jq
     ripgrep
     lm_sensors
-    nixd # The Language Server
-    nixpkgs-fmt # Optional: For auto-formatting
+    nixd
+    nixpkgs-fmt
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
   ];
 
@@ -190,7 +186,6 @@
     (final: prev: {
       fetchurl = args:
         let
-          # Safely extract a string URL regardless of fetchurl argument style
           urlStr =
             if builtins.isAttrs args then
               args.url or (if (args ? urls && builtins.length args.urls > 0) then builtins.head args.urls else "")
@@ -209,10 +204,4 @@
           prev.fetchurl args;
     })
   ];
-  #COMEBACKTOTHIS
-
-  #nixpkgs.config.permittedInsecurePackages = [
-  #  "python3.13-beets-2.5.1"
-  #];
-
 }
