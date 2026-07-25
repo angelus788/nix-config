@@ -20,23 +20,27 @@
         "[${gitAddress}]:69".publicKey =
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
       };
+      
       extraConfig = ''
+        # Global defaults
+        Host *
+          ControlMaster no
+          ControlPersist no
+          ControlPath none
+
+        # GitHub configuration
         Host github.com
           User angelus
           IdentityFile /persist/ssh/ssh_host_ed25519_key
           IdentitiesOnly yes
-          Host *
-            IdentityAgent ~/.1password/agent.sock
-            Host *
-            IdentityAgent ~/.bitwarden/agent.sock
-          Host *
-            ControlMaster no
-            ControlPersist no
-            ControlPath none
-              IdentityFile /persist/ssh/ssh_host_ed25519_key
-              IdentitiesOnly yes
-              User forgejo
-              Port 69
+
+        # Local Forgejo server configuration
+        Host ${gitAddress}
+          HostName ${gitAddress}
+          Port 69
+          User forgejo
+          IdentityFile /persist/ssh/ssh_host_ed25519_key
+          IdentitiesOnly yes
       '';
     };
 
