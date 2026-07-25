@@ -3,10 +3,10 @@
 with lib;
 let
   cfg = config.syncthingSettings;
-  # What does this do?
-  # Answer: It generates a standard NixOS configuration format wrapper. 
-  # It allows `freeformType` to seamlessly translate Nix attribute sets directly into JSON for Syncthing.
   settingsFormat = pkgs.formats.json { };
+  # Dynamically uses whatever host imports this module
+  nodeName = config.networking.hostName;
+  fqdn = "${nodeName}.tailcaed2.ts.net";
 in
 {
   options.syncthingSettings = {
@@ -40,6 +40,7 @@ in
   };
 
   config = {
+    # 1. Bind local Syncthing GUI strictly to loopback
     services.syncthing = {
       enable = true;
       dataDir = "/home/angelus";
@@ -47,7 +48,7 @@ in
       configDir = "/etc/syncthing";
       user = "angelus";
       group = "users";
-      guiAddress = "${config.networking.hostName}.tailcaed2.ts.net:8384";
+      guiAddress = "127.0.0.1:8384";
       key = config.age.secrets.syncthing-key.path;
       cert = config.age.secrets.syncthing-cert.path;
       overrideDevices = true;
@@ -55,120 +56,89 @@ in
       
       settings = {
         devices = {
-          mayra = { 
-            id = "4FX3SR7-M2EMNVD-AHV5BO4-FQ4U3XU-EYGY6CX-34ENPKL-ZYTMFAD-JOLHZAT"; 
-          };
-          mjolnir = {
-            id = "BGC2RDL-CNAFJHL-SKWNQXE-VBRC476-4PO2SGZ-CQIGYS7-WQ2TBV2-5X72JQV";
-          };
-          odin = {
-            id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";
-          };
-          steamdeck = {
-            id = "4WSHAWU-ASYVCBZ-F5SCZJN-P7VFTE2-TXF2524-H4T3RL4-ZACBLBB-LIGZSAN";
-          };
-          stormbreaker = {
-            id = "REPLACE";
-          };
+          mayra = { id = "4FX3SR7-M2EMNVD-AHV5BO4-FQ4U3XU-EYGY6CX-34ENPKL-ZYTMFAD-JOLHZAT"; };
+          mjolnir = { id = "BGC2RDL-CNAFJHL-SKWNQXE-VBRC476-4PO2SGZ-CQIGYS7-WQ2TBV2-5X72JQV"; };
+          odin = { id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV"; };
+          steamdeck = { id = "4WSHAWU-ASYVCBZ-F5SCZJN-P7VFTE2-TXF2524-H4T3RL4-ZACBLBB-LIGZSAN"; };
+          stormbreaker = { id = "REPLACE"; };
         };
 
         folders = {
           d2r-offline-saves = mkIf (builtins.hasAttr "d2r-offline-saves" cfg.folders) {
             id = "d2r-offline-saves";
             path = cfg.folders.d2r-offline-saves.path;
-            devices = [
-              "mayra"
-              "odin"
-              "steamdeck"
-            ];
-            versioning = {
-              type = "simple";
-              params = {
-                keep = "5";
-              };
-            };
-            ignorePatterns = [
-              "Settings.json"
-              "*.key"
-            ];
+            devices = [ "mayra" "odin" "steamdeck" ];
+            versioning = { type = "simple"; params = { keep = "5"; }; };
+            ignorePatterns = [ "Settings.json" "*.key" ];
           };
 
           Documents = mkIf (builtins.hasAttr "Documents" cfg.folders) {
             id = "Documents";
             path = cfg.folders.Documents.path;
-            devices = [
-              "mayra"
-              "odin"
-              "mjolnir"
-              "stormbreaker"
-            ];
+            devices = [ "mayra" "odin" "mjolnir" "stormbreaker" ];
             versioning = {
               type = "staggered";
-              params = {
-                cleanInterval = "3600"; # 1 hour in seconds
-                maxAge = "15552000"; # 180 days in seconds
-              };
+              params = { cleanInterval = "3600"; maxAge = "15552000"; };
             };
           };
 
           Homework = mkIf (builtins.hasAttr "Homework" cfg.folders) {
             id = "Homework";
             path = cfg.folders.Homework.path;
-            devices = [
-              "mayra"
-              "mjolnir"
-              "odin"
-              "stormbreaker"
-            ];
+            devices = [ "mayra" "mjolnir" "odin" "stormbreaker" ];
             versioning = {
               type = "staggered";
-              params = {
-                cleanInterval = "3600"; # 1 hour in seconds
-                maxAge = "15552000"; # 180 days in seconds
-              };
+              params = { cleanInterval = "3600"; maxAge = "15552000"; };
             };
           };
 
           remarkable_sync = mkIf (builtins.hasAttr "remarkable_sync" cfg.folders) {
-            type = "receiveonly"; # Note: keeps original typo "recieveonly" from your config, Syncthing expects "receiveOnly" if this goes to native configs, but left as-is.
+            type = "receiveonly";
             id = "remarkable_sync";
             path = cfg.folders.remarkable_sync.path;
-            devices = [
-              "mayra"
-              "mjolnir"
-              "odin"
-              "stormbreaker"
-            ];
+            devices = [ "mayra" "mjolnir" "odin" "stormbreaker" ];
             versioning = {
               type = "staggered";
-              params = {
-                cleanInterval = "3600"; # 1 hour in seconds
-                maxAge = "15552000"; # 180 days in seconds
-              };
+              params = { cleanInterval = "3600"; maxAge = "15552000"; };
             };
           };
 
           pdf2remarkable = mkIf (builtins.hasAttr "pdf2remarkable" cfg.folders) {
             id = "pdf2remarkable";
             path = cfg.folders.pdf2remarkable.path;
-            devices = [
-              "mayra"
-              "mjolnir"
-              "odin"
-              "stormbreaker"
-            ];
+            devices = [ "mayra" "mjolnir" "odin" "stormbreaker" ];
           };
-        }; # This closes settings.folders cleanly
+        };
 
         options = {
-          urAccepted = 3;  # Allow usage reporting
+          urAccepted = 3;
         };
 
         gui = {
           user = "angelus";
           password = cfg.guiPassword;
+          insecureSkipHostcheck = true; # Allow proxied host header
         };
       };
     };
+
+    # 2. Local Caddy instance per node
+    services.caddy = {
+      enable = true;
+      virtualHosts."${config.networking.hostName}.tailcaed2.ts.net" = {
+        extraConfig = ''
+          tls {
+            get_certificate tailscale
+          }
+          reverse_proxy 127.0.0.1:8384
+        '';
+      };
+    };
+
+    # 3. Allow Tailscale to issue certs to Caddy on this node
+    services.tailscale.permitCertUid = "caddy";
+
+    # Open local HTTP/HTTPS firewall ports
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
   };
 }
