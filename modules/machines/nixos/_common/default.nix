@@ -7,7 +7,7 @@
 }:
 
 let
-  gitAddress = "git.${config.homelab.baseDomain}";
+  gitAddress = "git.avgtechguy.com";
   gitPort = 69;
   repoUrl = "ssh://forgejo@${gitAddress}:${toString gitPort}/avgtechguy/nix-config.git";
   sshKeyPath = "/persist/ssh/ssh_host_ed25519_key";
@@ -15,20 +15,24 @@ in
 {
   # 1. Declaratively register SSH options & host keys
   programs.ssh = {
-    knownHosts = {
-      "[${gitAddress}]:${toString gitPort}" = {
-        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
-      };
-      "github.com" = {
-        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+      knownHosts = {
+        "[${gitAddress}]:${toString gitPort}" = {
+          publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyEZdau0EtGRmwJoS3CZTYpet6gXgu47QrNgbMEy8aJ";
+        };
+        "github.com" = {
+          publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+        };
       };
     };
 
-    # Force git@github.com to use HTTPS so public inputs never require SSH keys
-    extraConfig = ''
-      Url "https://github.com/".insteadOf = "git@github.com:"
-    '';
-  };
+    # 2. Git global configuration
+    programs.git = {
+      enable = true;
+      config = {
+        # Redirects SSH requests for GitHub to HTTPS so public inputs never prompt for SSH keys
+        url."https://github.com/".insteadOf = "git@github.com:";
+      };
+    };
 
   system.stateVersion = "25.11";
 
@@ -64,7 +68,12 @@ in
       "--accept-flake-config"
     ];
     dates = "Sat *-*-* 02:30:00";
+    operation = "boot";
     allowReboot = true;
+    rebootWindow = {
+      lower = "02:30";
+      upper = "05:00";
+    };
   };
 
   imports = [
@@ -105,7 +114,6 @@ in
     ];
   };
 
-  programs.git.enable = true;
   programs.mosh.enable = true;
   programs.htop.enable = true;
   programs.neovim = {
