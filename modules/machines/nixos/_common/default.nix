@@ -176,18 +176,7 @@ in
   ];
 
   nixpkgs.overlays = [
-    # 1. Tailscale vendorHash fix for 1.98.9
-    (final: prev: {
-      tailscale = prev.tailscale.overrideAttrs (oldAttrs: {
-        vendorHash =
-          if (oldAttrs ? version && builtins.match ".*1\\.98\\.9.*" oldAttrs.version != null) then
-            "sha256-Sd2iLJ7eDfDYdIRuW4xuiKgzhQWJWGAnz97FJWrVRlE="
-          else
-            oldAttrs.vendorHash or null;
-      });
-    })
-
-    # 2. Existing unstable overlay
+    # Existing unstable overlay
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
