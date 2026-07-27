@@ -36,8 +36,6 @@ in
 
   system.stateVersion = "25.11";
 
-  services.ntp.enable = true;
-
   # 2. Fully declarative upgrade service override
   systemd.services.nixos-upgrade = {
     path = [ pkgs.git pkgs.openssh ];
@@ -83,6 +81,7 @@ in
   ];
 
   time.timeZone = "America/New_York";
+    services.ntp.enable = true;
 
   users.users = {
     angelus = {
@@ -177,7 +176,18 @@ in
   ];
 
   nixpkgs.overlays = [
-    # 1. Your existing unstable overlay
+    # 1. Tailscale vendorHash fix for 1.98.9
+    (final: prev: {
+      tailscale = prev.tailscale.overrideAttrs (oldAttrs: {
+        vendorHash =
+          if (oldAttrs ? version && builtins.match ".*1\\.98\\.9.*" oldAttrs.version != null) then
+            "sha256-Sd2iLJ7eDfDYdIRuW4xuiKgzhQWJWGAnz97FJWrVRlE="
+          else
+            oldAttrs.vendorHash or null;
+      });
+    })
+
+    # 2. Existing unstable overlay
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
