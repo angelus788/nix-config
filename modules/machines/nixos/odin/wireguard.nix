@@ -6,6 +6,7 @@ let
 
   # Strip any netmask suffix (e.g., "/24") to get a clean IP for Endpoint
   heimdallIp = lib.head (lib.splitString "/" mainNet.v4.address);
+  wg0V4Prefix = lib.strings.removeSuffix ".1" wg0Net.cidr.v4;
 in
 {
   systemd.network = {
@@ -28,7 +29,7 @@ in
             Endpoint = "${heimdallIp}:51820"; # Clean IP:Port
             PersistentKeepalive = 25;
             AllowedIPs = [
-              "${lib.strings.removeSuffix ".1" wg0Net.cidr.v4}.0/24"
+              "${wg0V4Prefix}.0/24"
               "${wg0Net.cidr.v6}/64"
             ];
           }
