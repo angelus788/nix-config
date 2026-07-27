@@ -8,26 +8,7 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    url = lib.mkOption {
-      type = lib.types.str;
-      default = "100.94.78.77";
-    };
-    homepage.name = lib.mkOption {
-      type = lib.types.str;
-      default = "ProtonMail Bridge";
-    };
-    homepage.description = lib.mkOption {
-      type = lib.types.str;
-      default = "Local IMAP/SMTP bridge for ProtonMail";
-    };
-    homepage.icon = lib.mkOption {
-      type = lib.types.str;
-      default = "proton-mail-bridge.png"; 
-    };
-    homepage.category = lib.mkOption {
-      type = lib.types.str;
-      default = "Services";
-    };
+
     role = lib.mkOption {
       type = lib.types.enum [
         "client"
