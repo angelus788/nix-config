@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1785224941,
-        "narHash": "sha256-ebV2hMo0+r8FIy1ceQcAHk2i3vXPxAN+iVqy6L6WBe4=",
+        "lastModified": 1785348806,
+        "narHash": "sha256-zLxVXGCaphtyY/sJrbygPtd91OIbXKQqVOngyZ/+KJg=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "525d8416d83fea02f8b13cca3992771f5a4dbf86",
+        "rev": "6507f8ab85544086c03ac242d0acd48487dc96a0",
         "type": "github"
       },
       "original": {
@@ -228,11 +228,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785288465,
-        "narHash": "sha256-nCkxaGRtyNheNTxoc527gjOG0BN2zovsWDQVBeKDMW8=",
+        "lastModified": 1785306346,
+        "narHash": "sha256-DScBkW0fOgpGPK2trNoX3ryLTlaC14+gglFo/BhGJ4g=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "36662afed2fa1c9b69bdd03edb92ad572202ca20",
+        "rev": "e705714e918c3b11affcdd15db2cbe3a070420a0",
         "type": "github"
       },
       "original": {
@@ -456,11 +456,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1785090369,
-        "narHash": "sha256-m0pDuRJG7EDo9ri+4Ksu83VsI+PlxNC9lNBfydejce4=",
+        "lastModified": 1785318670,
+        "narHash": "sha256-dN6Ou5x/+23FZLEpYP3IffO+NyJFzUlGumt1uu3MMaY=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "624af665418d3c65d544145b4d34ad696439570e",
+        "rev": "0954f7ee2f6bb3dc7d4e3d0d8bcb8fd4bde4cfc5",
         "type": "github"
       },
       "original": {
@@ -645,11 +645,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1785168242,
-        "narHash": "sha256-J2uwyY5hYv2W1WtfaRmBbosxVw0QuinVaJ/TOjjqM/s=",
+        "lastModified": 1785319232,
+        "narHash": "sha256-8PMoCUBGAXnxrPQhtaFvzdYHMcZ7sN9wBcg5N6HIAkE=",
         "ref": "refs/heads/main",
-        "rev": "fac04a8cc6ec93ac38ea77899f69b30b5a45c354",
-        "revCount": 265,
+        "rev": "2d0939d1343dde03e28e672b5c97e91d8702b6b1",
+        "revCount": 268,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
@@ -710,11 +710,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784369104,
-        "narHash": "sha256-47cxbcZODibHv3rELFQ9vZly0vUNkND/atn/U7HLeb0=",
+        "lastModified": 1785360170,
+        "narHash": "sha256-XE1lKgQ3eIO3E7zWryqcRsax+mYXod/5RHBn4YaR9YE=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "df3c0640565d04a0261253cdd89fce78ec50168a",
+        "rev": "d1187f8bc71fb8aab02395869ec3f5c1920f75c0",
         "type": "github"
       },
       "original": {
