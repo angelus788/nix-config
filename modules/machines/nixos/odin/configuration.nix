@@ -222,6 +222,7 @@ in
     powertop
     caddy
     wakeonlan
+    wireguard-tools
   ];
   home-manager.users.angelus.myHomeDots.enableGui = false;
 

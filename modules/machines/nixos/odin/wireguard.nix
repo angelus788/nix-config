@@ -8,13 +8,14 @@ let
   heimdallRaw = if mainNet ? v4 then (if builtins.isAttrs mainNet.v4 then mainNet.v4.address else mainNet.v4) else "127.0.0.1";
   heimdallIp = lib.head (lib.splitString "/" (if heimdallRaw != null then heimdallRaw else "127.0.0.1"));
 
-  # 2. Extract v4 prefix safely
-  wg0V4Raw = wg0Net.cidr.v4 or "10.5.0.1";
-  wg0V4Prefix = lib.strings.removeSuffix ".1" (lib.head (lib.splitString "/" wg0V4Raw));
+  # 2. Extract v4 network CIDR cleanly
+  wg0V4Cidr = wg0Net.cidr.v4 or "10.5.0.0/24";
+  wg0V4Prefix = lib.head (lib.splitString "/" wg0V4Cidr);
+  wg0V4Subnet = "${lib.concatStringsSep "." (lib.take 3 (lib.splitString "." wg0V4Prefix))}.0/24";
 
-  # 3. Extract v6 base safely (Guards against null/missing v6)
+  # 3. Extract v6 base safely
   wg0V6Raw = wg0Net.cidr.v6 or null;
-  wg0V6Base = if wg0V6Raw != null then lib.head (lib.splitString "/" wg0V6Raw) else null;
+  wg0V6Subnet = if wg0V6Raw != null then "${lib.head (lib.splitString "/" wg0V6Raw)}/64" else null;
 
   # NetNS parameters for external client tunnel
   netnsName = "wg_client";
@@ -43,9 +44,9 @@ in
             PublicKey = "3pFGJLF2uGPagy76AlqzDbS0kYyi/x8RikKEoy5XiB4=";
             Endpoint = "${heimdallIp}:51820";
             PersistentKeepalive = 25;
-            AllowedIPs = [
-              "${wg0V4Prefix}.0/24"
-            ] ++ lib.optional (wg0V6Base != null) "${wg0V6Base}/64";
+            
+            # Capital 'AllowedIPs' matching systemd option schema
+            AllowedIPs = [ wg0V4Subnet ] ++ lib.optional (wg0V6Subnet != null) wg0V6Subnet;
           }
         ];
       };
@@ -56,15 +57,14 @@ in
         matchConfig.Name = "wg0";
         networkConfig = {
           Address = [
-            "${wg0V4Prefix}.2/24"
-          ] ++ lib.optional (wg0V6Base != null) "${wg0V6Base}2/64";
+            "${wg0V4Prefix}/24"
+          ] ++ lib.optional (wg0V6Subnet != null) "${lib.head (lib.splitString "/" wg0V6Raw)}/64";
         };
       };
     };
   };
 
   networking.firewall.allowedUDPPorts = [ 51821 ];
-
   # ---------------------------------------------------------------------------
   # 2. Isolated External Egress Tunnel (wg_client) in NetNS
   # ---------------------------------------------------------------------------
