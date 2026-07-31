@@ -24,7 +24,7 @@ in
       type = lib.types.listOf lib.types.str;
       default = [
         "delugeweb"
-        "deluged-proxy"
+        "deluge-web-proxy"
         "deluged"
       ];
     };
@@ -45,6 +45,7 @@ in
       default = "Downloads";
     };
   };
+
   config = lib.mkIf cfg.enable {
     services.deluge = {
       enable = true;
@@ -52,6 +53,7 @@ in
       group = hl.group;
       web = {
         enable = true;
+        port = 8112;
       };
     };
 
@@ -62,38 +64,41 @@ in
       '';
     };
 
+    # REPLACE YOUR OLD systemd BLOCK WITH THIS:
     systemd = lib.mkIf hl.services.wireguard-netns.enable {
-      services.deluged.bindsTo = [ "netns@${ns}.service" ];
-      services.deluged.requires = [
-        "network-online.target"
-        "${ns}.service"
-      ];
-      services.deluged.serviceConfig.NetworkNamespacePath = [ "/var/run/netns/${ns}" ];
-      sockets."deluged-proxy" = {
-        enable = true;
-        description = "Socket for Proxy to Deluge WebUI";
-        listenStreams = [ "58846" ];
-        wantedBy = [ "sockets.target" ];
+      # 1. Bind deluged to the WireGuard netns
+      services.deluged = {
+        bindsTo = [ "${ns}.service" ];
+        wants = [ "network-online.target" ];
+        after = [ "${ns}.service" "network-online.target" ];
+        serviceConfig.NetworkNamespacePath = "/var/run/netns/${ns}";
       };
-      services."deluged-proxy" = {
-        enable = true;
-        description = "Proxy to Deluge Daemon in Network Namespace";
-        requires = [
-          "deluged.service"
-          "deluged-proxy.socket"
-        ];
-        after = [
-          "deluged.service"
-          "deluged-proxy.socket"
-        ];
-        unitConfig = {
-          JoinsNamespaceOf = "deluged.service";
+
+      # 2. Put delugeweb in the netns with deluged
+      services.delugeweb = {
+        bindsTo = [ "deluged.service" ];
+        after = [ "deluged.service" ];
+        serviceConfig.NetworkNamespacePath = "/var/run/netns/${ns}";
+      };
+
+      # 3. Host socket listening on port 8112
+      sockets.deluge-web-proxy = {
+        description = "Deluge WebUI Proxy Socket";
+        wantedBy = [ "sockets.target" ];
+        socketConfig = {
+          ListenStream = "127.0.0.1:8112";
         };
+      };
+
+      # 4. Proxy daemon running INSIDE the netns to forward host socket traffic to delugeweb
+      services.deluge-web-proxy = {
+        description = "Deluge WebUI NetNS Proxy Service";
+        requires = [ "deluge-web-proxy.socket" "delugeweb.service" ];
+        after = [ "deluge-web-proxy.socket" "delugeweb.service" ];
         serviceConfig = {
-          User = config.services.deluge.user;
-          Group = config.services.deluge.group;
-          ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=5min 127.0.0.1:58846";
-          PrivateNetwork = "yes";
+          NetworkNamespacePath = "/var/run/netns/${ns}";
+          ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd 127.0.0.1:8112";
+          PrivateTmp = true;
         };
       };
     };
