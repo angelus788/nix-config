@@ -4,9 +4,17 @@ let
   mainNet = net.external.heimdall;
   wg0Net = net.local.wireguard-ext;
 
-  # Strip any netmask suffix to get clean IP/Prefixes
-  heimdallIp = lib.head (lib.splitString "/" mainNet.v4.address);
-  wg0V4Prefix = lib.strings.removeSuffix ".1" (lib.head (lib.splitString "/" wg0Net.cidr.v4));
+  # 1. Safely extract Heimdall IP (handles both string and set forms)
+  heimdallRaw = if mainNet ? v4 then (if builtins.isAttrs mainNet.v4 then mainNet.v4.address else mainNet.v4) else "127.0.0.1";
+  heimdallIp = lib.head (lib.splitString "/" (if heimdallRaw != null then heimdallRaw else "127.0.0.1"));
+
+  # 2. Extract v4 prefix safely
+  wg0V4Raw = wg0Net.cidr.v4 or "10.5.0.1";
+  wg0V4Prefix = lib.strings.removeSuffix ".1" (lib.head (lib.splitString "/" wg0V4Raw));
+
+  # 3. Extract v6 base safely (Guards against null/missing v6)
+  wg0V6Raw = wg0Net.cidr.v6 or null;
+  wg0V6Base = if wg0V6Raw != null then lib.head (lib.splitString "/" wg0V6Raw) else null;
 
   # NetNS parameters for external client tunnel
   netnsName = "wg_client";
@@ -37,8 +45,7 @@ in
             PersistentKeepalive = 25;
             AllowedIPs = [
               "${wg0V4Prefix}.0/24"
-              "${wg0Net.cidr.v6}/64"
-            ];
+            ] ++ lib.optional (wg0V6Base != null) "${wg0V6Base}/64";
           }
         ];
       };
@@ -50,8 +57,7 @@ in
         networkConfig = {
           Address = [
             "${wg0V4Prefix}.2/24"
-            "${wg0Net.cidr.v6}2/64"
-          ];
+          ] ++ lib.optional (wg0V6Base != null) "${wg0V6Base}2/64";
         };
       };
     };
@@ -89,7 +95,7 @@ in
       # 3. Create interface in root host namespace
       ${pkgs.iproute2}/bin/ip link add ${wgClientIf} type wireguard
 
-      # 4. Configure credentials & FwMark in root namespace (ensures outer UDP uses host WAN)
+      # 4. Configure credentials & FwMark in root namespace
       ${pkgs.wireguard-tools}/bin/wg setconf ${wgClientIf} /run/agenix/wireguardCredentials
       ${pkgs.wireguard-tools}/bin/wg set ${wgClientIf} fwmark 51820
 
@@ -97,7 +103,7 @@ in
       ${pkgs.iproute2}/bin/ip link set ${wgClientIf} netns ${netnsName}
 
       # 6. Bring up interfaces and add default route inside netns
-      ${pkgs.iproute2}/bin/ip -n ${netnsName} address add ${wg0V4Prefix}.2/32 dev ${wgClientIf}
+      ${pkgs.iproute2}/bin/ip -n ${netnsName} address add 10.5.0.2/32 dev ${wgClientIf}
       ${pkgs.iproute2}/bin/ip -n ${netnsName} link set ${wgClientIf} up
       ${pkgs.iproute2}/bin/ip -n ${netnsName} link set lo up
       ${pkgs.iproute2}/bin/ip -n ${netnsName} route add default dev ${wgClientIf}

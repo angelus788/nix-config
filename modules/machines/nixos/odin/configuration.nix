@@ -245,4 +245,6 @@ in
       pdf2remarkable.path = "/home/angelus/pdf2remarkable";
     };
   };
+
+  systemd.network.wait-online.enable = false;
 }
