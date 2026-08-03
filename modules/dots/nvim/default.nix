@@ -77,7 +77,8 @@
       // lib.attrsets.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
         ansiblels = {
           enable = false; #COMEBACKTOTHIS
-          package = pkgs.callPackage ./ansible-language-server/package.nix { };
+          #package = pkgs.callPackage ./ansible-language-server/package.nix { };
+          package = pkgs.ansible-language-server;
           config = {
             settings.ansible = {
               useFullyQualifiedCollectionNames = true;

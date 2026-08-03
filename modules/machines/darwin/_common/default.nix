@@ -5,12 +5,6 @@
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
     };
-    overlays = [
-      (_self: super: {
-        nodejs = super.nodejs_22;
-
-      })
-    ];
   };
 
 

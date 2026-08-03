@@ -3,12 +3,12 @@
 }:
 pkgs.stdenv.mkDerivation rec {
   pname = "ansible-language-server";
-  version = "25.12.1";
+  version = "26.6.0";
   src = pkgs.fetchFromGitHub {
     owner = "ansible";
     repo = "vscode-ansible";
     tag = "v${version}";
-    hash = "sha256-N/6m3E6WKrgss4cGRYccBmxCCG8vPfvQlFGrnjh4kSM=";
+    hash = "sha256-N/000E6WKrgss4cGRYccBmxCCG8vPfvQlFGrnjh4kSM=";
   };
   buildInputs = [
     pkgs.nodejs
