@@ -90,6 +90,7 @@
     plugins = {
       neo-tree = {
         settings = {
+          clipboard.sync = "universal";
           close_if_last_window = true;
           default_component_configs = {
             name.use_filtered_colors = false;
