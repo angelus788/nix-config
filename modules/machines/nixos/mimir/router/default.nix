@@ -80,11 +80,10 @@ in
     ./tailscale.nix
     ./dns.nix
   ];
+
   services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:57", ATTR{type}=="1", NAME="wan0"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:56", ATTR{type}=="1", NAME="lan0"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:55", ATTR{type}=="1", NAME="lan1"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:e2:69:63:e7:54", ATTR{type}=="1", NAME="lan2"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="b0:22:7a:dc:78:2b", ATTR{type}=="1", NAME="wan0"
+    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="c0:18:03:65:51:15", ATTR{type}=="1", NAME="lan0"
   '';
 
   homelab.motd.networkInterfaces = lib.mapAttrsToList (_: v: v.interface) networks;
@@ -96,7 +95,10 @@ in
     config.networkConfig.IPv6Forwarding = true;
     networks = {
       "10-wan0" = {
-        matchConfig.Name = "wan0";
+        matchConfig = {
+          Name = "wan0";
+          MACAddress = "b0:22:7a:dc:78:2b";
+        };
         networkConfig = {
           DHCP = true;
           IPv6AcceptRA = true;
@@ -128,21 +130,19 @@ in
         };
         linkConfig.RequiredForOnline = "routable";
       };
+
       "20-lan0" = {
-        matchConfig.Name = "lan0";
+        matchConfig = {
+          Name = "lan0";
+          MACAddress = "c0:18:03:65:51:15";
+        };
         networkConfig.Bridge = "br0";
-        linkConfig.RequiredForOnline = "enslaved";
+        linkConfig = {
+          Unmanaged = "yes";
+          RequiredForOnline = "enslaved";
+        };
       };
-      "20-lan1" = {
-        matchConfig.Name = "lan1";
-        networkConfig.Bridge = "br0";
-        linkConfig.RequiredForOnline = "enslaved";
-      };
-      "20-lan2" = {
-        matchConfig.Name = "lan2";
-        networkConfig.Bridge = "br1";
-        linkConfig.RequiredForOnline = "enslaved";
-      };
+
       "30-iot" = lib.mkMerge [
         {
           matchConfig.Name = "iot";
@@ -150,15 +150,18 @@ in
         }
         (dhcpCfgIPv4Only "iot")
       ];
-      "30-guest" = {
-        matchConfig.Name = "guest";
-        networkConfig.Bridge = "br1";
-        linkConfig.RequiredForOnline = false;
-      };
+      "30-guest" = lib.mkMerge [
+        {
+          matchConfig.Name = "guest";
+          linkConfig.RequiredForOnline = false;
+        }
+        (dhcpCfgDualStack "guest")
+      ];
+
       "40-br0" = lib.mkMerge [
         {
           matchConfig.Name = "br0";
-          vlan = [
+          networkConfig.VLAN = [
             "iot"
             "guest"
           ];
@@ -166,13 +169,6 @@ in
           dhcpPrefixDelegationConfig.SubnetId = "0x1";
         }
         (dhcpCfgDualStack "lan")
-      ];
-      "40-br1" = lib.mkMerge [
-        {
-          matchConfig.Name = "br1";
-          linkConfig.RequiredForOnline = false;
-        }
-        (dhcpCfgDualStack "guest")
       ];
       "60-wg0" = {
         matchConfig.Name = "wg0";
@@ -187,17 +183,15 @@ in
         ];
       };
     };
+
     netdevs = {
       "50-br0" = {
         netdevConfig = {
           Kind = "bridge";
           Name = "br0";
         };
-      };
-      "50-br1" = {
-        netdevConfig = {
-          Kind = "bridge";
-          Name = "br1";
+        bridgeConfig = {
+          VLANFiltering = true;
         };
       };
       "50-iot" = {
@@ -262,6 +256,7 @@ in
       };
     };
   };
+
   networking = {
     jool = {
       nat64.default.global.pool6 = "64:ff9b::/96";
