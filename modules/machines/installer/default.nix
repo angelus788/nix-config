@@ -19,6 +19,8 @@
 
   security.sudo.wheelNeedsPassword = false;
 
+  boot.zfs.forceImportRoot = false;
+
   environment.systemPackages = with pkgs; [
     git
     rsync
