@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1785743280,
-        "narHash": "sha256-hPQHJPMoh8BZjeAfGxvMO6QuWQ+Z6YV6NwtHC+Q65m0=",
+        "lastModified": 1785828910,
+        "narHash": "sha256-sj+Ab6ctZSRQw2FE8+kLF/lqsDj9P151al6kbvI8Dos=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "015e90c5f3329e4ceddfce078b6b94a21d6ead61",
+        "rev": "d873aaf83f715a74d61a9a697caa28cf08eacfbe",
         "type": "github"
       },
       "original": {
