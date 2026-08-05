@@ -31,6 +31,10 @@
                     mountpoint = "/var/log";
                     mountOptions = [ "compress=zstd" "noatime" ];
                   };
+                  "@persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
                   "@swap" = {
                     mountpoint = "/.swapvolume";
                     swap.swapfile.size = "2G";
