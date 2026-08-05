@@ -1,6 +1,5 @@
-{
-  pkgs,
-  ...
+{ pkgs
+, ...
 }:
 {
   nix.settings.trusted-users = [
@@ -11,6 +10,13 @@
   users = {
     # 1. DEFINE THE USERS
     users = {
+
+      root = {
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII07ukuUm57yQYo2YL8GSLtPU8z9Q0NdU28d49wdoxbw"
+        ];
+      };
+
       angelus = {
         shell = pkgs.zsh;
         uid = 1000;

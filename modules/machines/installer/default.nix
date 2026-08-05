@@ -38,7 +38,7 @@
     settings = {
       PasswordAuthentication = false;
       LoginGraceTime = 0;
-      PermitRootLogin = "no";
+      PermitRootLogin = "prohibit-password";
     };
   };
 
