@@ -28,9 +28,9 @@
     };
 
     prefix = "/opt/homebrew";
-    caskArgs = {
-      no_quarantine = true;
-    };
+    #caskArgs = {
+    #  no_quarantine = true;
+    #};
 
     brews = [
       "mas"
@@ -50,6 +50,7 @@
       "little-snitch"
       #"monitorcontrol"
       "notion"
+      "obsidian"
       "pocket-casts"
       "proton-pass"
       "raycast"
@@ -115,7 +116,7 @@
     nixos-rebuild
     nixos-rebuild-ng
     nixpkgs-fmt
-    obsidian
+    #obsidian
     packer
     ripgrep
     rsync
