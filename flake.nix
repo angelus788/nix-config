@@ -93,14 +93,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    lanzaboote = { 
+    lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     wallpaper = {
-    url = "git+https://git.avgtechguy.com/avgtechguy/wallpaper";
-    flake = false; # We only want the files, not the flake output
+      url = "git+https://git.avgtechguy.com/avgtechguy/wallpaper";
+      flake = false; # We only want the files, not the flake output
     };
   };
 
@@ -117,6 +117,7 @@
         imports = [
           ./modules/machines/nixos
           ./modules/machines/darwin
+          ./modules/machines/standalone
           ./modules/devshell.nix
         ];
         _module.args.rootPath = ./.;
