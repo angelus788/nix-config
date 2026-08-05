@@ -8,8 +8,6 @@
   networking.networkmanager.enable = true;
 
 
-  nixpkgs.config.allowUnfree = true;
-
   services.duckdns = {
     enable = true;
     domainsFile = config.age.secrets.duckDNSDomain.path;
