@@ -9,13 +9,13 @@
     # Include the results of the hardware scan.
     ../../../misc/avgtechguy.com
     ./hardware-configuration.nix
+    ./disko.nix
     ../../../apps/tailscale
     ./secrets
   ];
 
-  # Bootloader.
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  #boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
   networking.hostName = "thor"; # Define your hostname.
