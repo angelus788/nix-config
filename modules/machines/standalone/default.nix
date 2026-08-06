@@ -37,9 +37,9 @@ in
               self.inputs.nix-index-database.homeModules.nix-index
 
               # Core dotfiles / secrets using rootPath
-              (rootPath + "/users/angelus/dots.nix")
-              (rootPath + "/users/angelus/age.nix")
-              (rootPath + "/dots/tmux")
+              (self + "/modules/users/angelus/dots.nix") # adjust subpath as needed
+              (self + "/modules/users/angelus/age.nix")
+              (self + "/modules/dots/tmux")
 
               # Global standalone configuration defaults
               {
