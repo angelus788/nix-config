@@ -24,7 +24,7 @@ check-clean:
 
 copy $host:
 	rsync -ax --delete --rsync-path="sudo rsync" ./ {{host}}:/etc/nixos/
-	
+
 
 # -----------------------------------------------------------------------------
 # Standalone Home Manager targets (Ubuntu, Steam Deck, macOS, etc.)
@@ -42,5 +42,18 @@ home-build $target:
 
 # Remote deploy Home Manager via SSH to a standalone target
 # Usage: just home-deploy deck@steamdeck
-home-deploy $target:
-    ssh {{ target }} "nix run --refresh github:nix-community/home-manager -- switch
+
+home-deploy target host=target:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "==> Deploying Home Manager configuration '{{target}}' to host '{{host}}'..."
+    ssh -A "{{host}}" "nix run --refresh github:nix-community/home-manager -- switch --flake 'git+https://git.avgtechguy.com/avgtechguy/nix-config.git#{{target}}'"
+
+# -----------------------------------------------------------------------------
+# Host Shortcuts
+# -----------------------------------------------------------------------------
+ubuntu:
+    just home-deploy angelus@ubuntu ubuntu
+
+steamdeck:
+    just home-deploy deck@steamdeck steamdeck
