@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
-  age.identityPaths = [ "/Users/angelus/.ssh/angelus" ];
+  age.identityPaths = [ "${config.home.homeDirectory}/.ssh/angelus" ];
 }
