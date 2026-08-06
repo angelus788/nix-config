@@ -1,6 +1,9 @@
 { pkgs, inputs, config, ... }:
 
 {
+  home.username = "deck";
+  home.homeDirectory = "/home/deck";
+
   # ---------------------------------------------------------------------------
   # SteamOS / Handheld Packages & Utilities
   # ---------------------------------------------------------------------------
@@ -14,17 +17,15 @@
     tmux
 
     # Sync & Data Transfer Tools
-    syncthing # Great for syncing offline game saves across PC & Steam Deck
+    syncthing
 
     # Useful Desktop / Gaming utilities for SteamOS Desktop Mode
-    protonup-qt # Easily download GE-Proton / Wine versions for Steam
-    flatpak # Interop tool if you run local Flatpak builds
+    protonup-qt
   ];
 
   # ---------------------------------------------------------------------------
   # Shell & Terminal Integrations
   # ---------------------------------------------------------------------------
-  # Automatically load Nix environment binaries into PATH for interactive shells
   programs.bash = {
     enable = true;
     initExtra = ''
@@ -42,11 +43,11 @@
   syncthingSettings = {
     guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
     folders = {
-      d2r-offline-saves.path = "/home/angelus/d2r-offline-saves";
-      Documents.path = "/home/angelus/Documents";
-      Homework.path = "/home/angelus/Homework";
-      remarkable_sync.path = "/home/angelus/remarkable_sync";
-      pdf2remarkable.path = "/home/angelus/pdf2remarkable";
+      d2r-offline-saves.path = "${config.home.homeDirectory}/d2r-offline-saves";
+      Documents.path = "${config.home.homeDirectory}/Documents";
+      Homework.path = "${config.home.homeDirectory}/Homework";
+      remarkable_sync.path = "${config.home.homeDirectory}/remarkable_sync";
+      pdf2remarkable.path = "${config.home.homeDirectory}/pdf2remarkable";
     };
   };
 
