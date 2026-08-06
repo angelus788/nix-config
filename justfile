@@ -115,3 +115,35 @@ ubuntu:
 
 steamdeck:
     just home-deploy deck@steamdeck steamdeck
+
+# -----------------------------------------------------------------------------
+# Other Host Shortcuts
+# -----------------------------------------------------------------------------
+
+
+# Automatically rebuilds and switches the current host based on hostname -s
+# Usage: just switch
+switch:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    HOST=$(hostname -s)
+    echo "==> Rebuilding and activating NixOS configuration locally for '${HOST}'..."
+    sudo nixos-rebuild switch --flake .#${HOST}
+
+# Test local build without switching boot generation or applying changes
+# Usage: just test
+test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    HOST=$(hostname -s)
+    echo "==> Testing local NixOS configuration build for '${HOST}'..."
+    sudo nixos-rebuild test --flake .#${HOST}
+
+# Dry-run local activation to inspect what services/packages will change
+# Usage: just dry-switch
+dry-switch:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    HOST=$(hostname -s)
+    echo "==> Dry-running local NixOS activation for '${HOST}'..."
+    nixos-rebuild dry-activate --flake .#${HOST}
