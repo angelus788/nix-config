@@ -24,3 +24,23 @@ check-clean:
 
 copy $host:
 	rsync -ax --delete --rsync-path="sudo rsync" ./ {{host}}:/etc/nixos/
+	
+
+# -----------------------------------------------------------------------------
+# Standalone Home Manager targets (Ubuntu, Steam Deck, macOS, etc.)
+# -----------------------------------------------------------------------------
+
+# Apply Home Manager config locally
+# Usage: just home-switch angelus@ubuntu
+home-switch $target:
+    nix run --refresh github:nix-community/home-manager -- switch --flake git+https://git.avgtechguy.com/avgtechguy/nix-config.git#{{target}}
+
+# Test Home Manager build locally without activating changes
+# Usage: just home-build deck@steamdeck
+home-build $target:
+    nix build --refresh .#homeConfigurations."{{target}}".activationPackage
+
+# Remote deploy Home Manager via SSH to a standalone target
+# Usage: just home-deploy deck@steamdeck
+home-deploy $target:
+    ssh {{ target }} "nix run --refresh github:nix-community/home-manager -- switch
