@@ -1,4 +1,4 @@
-{ lib, self, ... }:
+{ lib, self, rootPath, ... }:
 let
   entries = builtins.attrNames (builtins.readDir ./.);
   configs = builtins.filter (dir: builtins.pathExists (./. + "/${dir}/home.nix")) entries;
@@ -36,10 +36,10 @@ in
               self.inputs.agenix.homeManagerModules.default
               self.inputs.nix-index-database.homeModules.nix-index
 
-              # Core dotfiles / secrets
-              ../../users/angelus/dots.nix
-              ../../users/angelus/age.nix
-              ../../dots/tmux
+              # Core dotfiles / secrets using rootPath
+              (rootPath + "/users/angelus/dots.nix")
+              (rootPath + "/users/angelus/age.nix")
+              (rootPath + "/dots/tmux")
 
               # Global standalone configuration defaults
               {
