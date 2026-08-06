@@ -27,4 +27,7 @@
       ];
     };
   };
+
+  home.username = "angelus";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/angelus" else "/home/angelus";
 }
