@@ -37,9 +37,9 @@ in
               self.inputs.nix-index-database.homeModules.nix-index
 
               # Core dotfiles / secrets
-              ../../../users/angelus/dots.nix
-              ../../../users/angelus/age.nix
-              ../../../dots/tmux
+              ../../users/angelus/dots.nix
+              ../../users/angelus/age.nix
+              ../../dots/tmux
 
               # Global standalone configuration defaults
               {
