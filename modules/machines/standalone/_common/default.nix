@@ -3,7 +3,7 @@
   nix = {
     gc = {
       automatic = true;
-      frequency = "daily"; # HM uses 'frequency' instead of 'dates'
+      dates = "daily"; # HM uses 'frequency' instead of 'dates'
       options = "--delete-older-than 7d";
       # Note: 'persistent' is a systemd system option, not supported in HM
     };

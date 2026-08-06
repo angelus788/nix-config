@@ -36,18 +36,18 @@ in
               self.inputs.agenix.homeManagerModules.default
               self.inputs.nix-index-database.homeModules.nix-index
 
-              # Relative to modules/machines/standalone:
-              # ../../.. = modules/
-              ../../../users/angelus/dots.nix
-              ../../../users/angelus/age.nix
-              ../../../dots/tmux
+              # Relative to modules/machines/standalone (up 2 levels to modules/)
+              ../../users/angelus/dots.nix
+              ../../users/angelus/age.nix
+              ../../dots/tmux
 
               # Global standalone configuration defaults
               {
                 home.username = username;
                 home.homeDirectory = homeDir;
-                home.stateVersion = "26.05";
+                home.stateVersion = lib.mkDefault "26.05";
                 programs.home-manager.enable = true;
+                nix.package = pkgs.nix;
               }
 
               # Common standalone overrides (if present)
