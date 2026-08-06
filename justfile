@@ -65,18 +65,23 @@ boot host: (copy host)
 # -----------------------------------------------------------------------------
 
 # Local activation for macOS
-darwin-switch target="default":
+# Automatically rebuilds and switches the current Mac based on host name
+# Usage: just darwin-switch
+darwin-switch:
     #!/usr/bin/env bash
     set -euo pipefail
-    echo "==> Applying nix-darwin system configuration locally..."
-    darwin-rebuild switch --flake .#{{target}}
+    HOST=$(scutil --get LocalHostName 2>/dev/null || hostname -s)
+    echo "==> Rebuilding and activating nix-darwin configuration locally for '${HOST}'..."
+    sudo darwin-rebuild switch --flake .#${HOST}
 
-# Remote activation over SSH for macOS
-darwin-deploy target host=target:
+# Test build local macOS configuration without applying changes
+# Usage: just darwin-test
+darwin-test:
     #!/usr/bin/env bash
     set -euo pipefail
-    echo "==> Deploying nix-darwin system configuration '{{target}}' to macOS host '{{host}}'..."
-    ssh -A "{{host}}" "darwin-rebuild switch --flake .#{{target}}"
+    HOST=$(scutil --get LocalHostName 2>/dev/null || hostname -s)
+    echo "==> Testing local nix-darwin configuration build for '${HOST}'..."
+    darwin-rebuild build --flake .#${HOST}
 
 # -----------------------------------------------------------------------------
 # Standalone Home Manager Targets (Ubuntu, Steam Deck, macOS user profile, etc.)
