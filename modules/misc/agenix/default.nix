@@ -13,7 +13,7 @@
 
      tgNotifyCredentials = {
       file = "${inputs.secrets}/tgNotifyCredentials.age";
-      mode = "0440";
+      #mode = "0440";
      };
 
       gitIncludes.file = "${inputs.secrets}/gitIncludes.age";
