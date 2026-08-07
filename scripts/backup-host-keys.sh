@@ -2,66 +2,80 @@
 set -euo pipefail
 
 # Output directory for key backups
-BACKUP_DIR="./host_keys_backup"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_DIR="$SCRIPT_DIR/../host_keys_backup"
 mkdir -p "$BACKUP_DIR"
 
-# Host manifest over Tailscale
-# Format: "hostname" or "hostname:port"
+# Host manifest (matches your Bitwarden item search terms)
 HOSTS=(
-  "thor:69"
-  "odin:69"
-  "heimdall:69"
-  "mjolnir:69"
-  "mayra:69"
+  "thor"
+  "odin"
+  "heimdall"
+  "mjolnir"
+  "mayra"
 )
 
-SSH_USER="angelus"
-IDENTITY_FILE="$HOME/.ssh/angelus"
-
 echo "======================================================"
-echo " Starting Homelab SSH Host Key Extraction (Tailscale)"
+echo " Starting Homelab SSH Host Key Extraction (Bitwarden)"
 echo "======================================================"
 
-for ENTRY in "${HOSTS[@]}"; do
-  # Default port to 22 if not explicitly specified
-  if [[ "$ENTRY" == *":"* ]]; then
-    IFS=":" read -r HOSTNAME PORT <<< "$ENTRY"
-  else
-    HOSTNAME="$ENTRY"
-    PORT="22"
-  fi
-  
+# Ensure Bitwarden session is active
+if [ -z "${BW_SESSION:-}" ]; then
+  echo "Error: Bitwarden session is locked or unauthenticated." >&2
+  echo "Please open a new terminal or run 'bw unlock' first." >&2
+  exit 1
+fi
+
+for HOSTNAME in "${HOSTS[@]}" ; do
   HOST_DIR="$BACKUP_DIR/$HOSTNAME"
   mkdir -p "$HOST_DIR"
   chmod 700 "$HOST_DIR"
 
   echo ""
-  echo "--> Fetching host keys for [$HOSTNAME] over Tailscale (Port $PORT)..."
+  echo "--> Fetching host keys for [$HOSTNAME] from Bitwarden vault..."
 
-  SSH_CMD="ssh -p $PORT -i $IDENTITY_FILE -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=5"
+  # Find the unique ID using the flexible search filter that worked in your one-liner
+  ITEM_ID=$(bw list items --search "$HOSTNAME" 2>/dev/null | jq -r '.[] | select(.sshKey != null) | .id' | head -n 1)
 
-  if [ "$HOSTNAME" = "tyr" ] || [ "$HOSTNAME" = "$(hostname)" ]; then
-    # Local host direct copy if running on the target itself
-    sudo cat /persist/ssh/ssh_host_ed25519_key > "$HOST_DIR/ssh_host_ed25519_key"
-    sudo cat /persist/ssh/ssh_host_ed25519_key.pub > "$HOST_DIR/ssh_host_ed25519_key.pub"
-  else
-    # Remote host SSH pull over Tailscale
-    $SSH_CMD "$SSH_USER@$HOSTNAME" "sudo cat /persist/ssh/ssh_host_ed25519_key" > "$HOST_DIR/ssh_host_ed25519_key"
-    $SSH_CMD "$SSH_USER@$HOSTNAME" "sudo cat /persist/ssh/ssh_host_ed25519_key.pub" > "$HOST_DIR/ssh_host_ed25519_key.pub"
+  if [ -z "$ITEM_ID" ] || [ "$ITEM_ID" = "null" ]; then
+    echo "    ❌ Error: Could not find an SSH Key item for '$HOSTNAME' in Bitwarden. Skipping."
+    continue
   fi
 
+  # Fetch the fully decrypted item using its unique ID and extract the private key
+  bw get item "$ITEM_ID" 2>/dev/null | jq -r '.sshKey.privateKey // empty' > "$HOST_DIR/ssh_host_ed25519_key"
+
+  # Validate that the file is not empty
+  if [ ! -s "$HOST_DIR/ssh_host_ed25519_key" ] || grep -q "^null$" "$HOST_DIR/ssh_host_ed25519_key"; then
+    echo "    ❌ Error: Retrieved private key for '$HOSTNAME' was empty."
+    rm -f "$HOST_DIR/ssh_host_ed25519_key"
+    continue
+  fi
+
+  # Sanitize line endings (strip Windows carriage returns if any)
+  tr -d '\r' < "$HOST_DIR/ssh_host_ed25519_key" > "$HOST_DIR/ssh_host_ed25519_key.tmp"
+  mv "$HOST_DIR/ssh_host_ed25519_key.tmp" "$HOST_DIR/ssh_host_ed25519_key"
   chmod 600 "$HOST_DIR/ssh_host_ed25519_key"
+
+  # Validate OpenSSH private key header
+  if ! head -n 1 "$HOST_DIR/ssh_host_ed25519_key" | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+    echo "    ❌ Error: The extracted file for '$HOSTNAME' is not a valid OpenSSH private key format."
+    continue
+  fi
+
+  # Automatically generate the matching public key locally from the private key
+  ssh-keygen -y -f "$HOST_DIR/ssh_host_ed25519_key" > "$HOST_DIR/ssh_host_ed25519_key.pub"
   chmod 644 "$HOST_DIR/ssh_host_ed25519_key.pub"
 
   FINGERPRINT=$(ssh-keygen -lf "$HOST_DIR/ssh_host_ed25519_key.pub" | awk '{print $2}')
   PUBKEY_STR=$(cat "$HOST_DIR/ssh_host_ed25519_key.pub")
 
-  echo "    ✔ Host Key Saved to: $HOST_DIR/"
-  echo "    ✔ Fingerprint:       $FINGERPRINT"
-  echo "    ✔ Public Key:        $PUBKEY_STR"
+  echo "    ✔ Host Key Restored to: $HOST_DIR/"
+  echo "    ✔ Fingerprint:          $FINGERPRINT"
+  echo "    ✔ Public Key:           $PUBKEY_STR"
 done
 
 echo ""
 echo "======================================================"
-echo " Backup complete! All host keys saved under: $BACKUP_DIR/"
+echo " Restore complete! All host keys saved under: $BACKUP_DIR/"
 echo "======================================================"
