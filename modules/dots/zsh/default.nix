@@ -3,12 +3,26 @@
   config,
   inputs,
   lib,
+  osConfig ? { },
   ...
 }:
+let
+  # Safely detect hostname across NixOS and nix-darwin / Home Manager
+  hostName = config.networking.hostName or osConfig.networking.hostName or "";
+
+  # Target hosts that should decrypt and use Bitwarden credentials
+  isTargetHost = builtins.elem hostName [
+    "tyr"
+    "mjolnir"
+    "stormbreaker"
+  ];
+in
 {
   home.packages = with pkgs; [ grc ];
-  age.secrets = lib.mkIf (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
-    bwSession.file = "${inputs.secrets}/bwSession.age";
+
+  # 1. Load persistent API credentials for target hosts
+  age.secrets = lib.mkIf isTargetHost {
+    bwCredentials.file = "${inputs.secrets}/bwCredentials.age";
   };
 
   programs = {
@@ -30,20 +44,13 @@
         marker = "#EBCB8B";
       };
     };
+
     starship = {
       enable = true;
       enableZshIntegration = true;
       settings = pkgs.lib.importTOML ../starship/starship.toml;
-      #settings = {
-      #  add_newline = false;
-      #  gcloud = {
-      #    detect_env_vars = [ "GOOGLE_CLOUD" ];
-      #  };
-      #  aws = {
-      #    disabled = true;
-      #  };
-
     };
+
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -68,6 +75,7 @@
           { name = "unixorn/warhol.plugin.zsh"; }
         ];
       };
+
       shellAliases = {
         la = "ls --color -lha";
         df = "df -h";
@@ -78,15 +86,14 @@
         ya = "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
         aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
         mkdir = "mkdir -p";
-        # Only do `nix flake update` if flake.lock hasn't been updated within an hour
         deploy-nix = "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false && rsync -ax --delete ./ $1:/etc/nixos/ };f";
       };
 
       initContent = ''
         # Cycle back in the suggestions menu using Shift+Tab
         bindkey '^[[Z' reverse-menu-complete
-
         bindkey '^B' autosuggest-toggle
+
         # Make Ctrl+W remove one path segment instead of the whole path
         WORDCHARS=''${WORDCHARS/\/}
 
@@ -94,11 +101,11 @@
         zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
         zstyle ':completion:*' menu yes=long select
 
+        # macOS specific environment variables & paths
         ${
           if (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then
             ''
               path=("$HOME/.nix-profile/bin" "/run/wrappers/bin" "/etc/profiles/per-user/$USER/bin" "/nix/var/nix/profiles/default/bin" "/run/current-system/sw/bin" "/opt/homebrew/bin" $path)
-              export BW_SESSION=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.bwSession.path})
               export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
               alias lsblk="diskutil list"
               ulimit -n 2048
@@ -107,24 +114,38 @@
             ""
         }
 
-          export EDITOR=nvim || export EDITOR=vim
-          export LANG=en_US.UTF-8
-          export LC_CTYPE=en_US.UTF-8
-          export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-
-          source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
-          bindkey '^[[A' history-substring-search-up
-          bindkey '^[[B' history-substring-search-down
-
-          if command -v motd &> /dev/null
-          then
-            motd
+        # Auto-login and unlock Bitwarden if secret exists on this node
+        ${lib.optionalString (config.age.secrets ? bwCredentials) ''
+          if [ -f "${config.age.secrets.bwCredentials.path}" ]; then
+            source "${config.age.secrets.bwCredentials.path}"
+            if command -v bw &> /dev/null; then
+              if [ "$(bw status | ${pkgs.jq}/bin/jq -r '.status' 2>/dev/null)" = "unauthenticated" ]; then
+                bw login --apikey > /dev/null 2>&1
+              fi
+              if [ "$(bw status | ${pkgs.jq}/bin/jq -r '.status' 2>/dev/null)" = "locked" ] && [ -n "$BW_PASSWORD" ]; then
+                export BW_SESSION=$(bw unlock "$BW_PASSWORD" --raw 2>/dev/null)
+              fi
+            fi
           fi
-          bindkey -e
+        ''}
 
-          if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+        export EDITOR=nvim || export EDITOR=vim
+        export LANG=en_US.UTF-8
+        export LC_CTYPE=en_US.UTF-8
+        export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+        source $ZPLUG_HOME/repos/unixorn/warhol.plugin.zsh/warhol.plugin.zsh
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
+
+        if command -v motd &> /dev/null; then
+          motd
+        fi
+        bindkey -e
+
+        if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
           export TERM=xterm-256color
-          fi
+        fi
       '';
     };
   };
