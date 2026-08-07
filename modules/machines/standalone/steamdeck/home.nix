@@ -1,8 +1,8 @@
-{ pkgs, inputs, config, ... }:
+{ pkgs, inputs, config, lib, ... }:
 
 {
-  home.username = "deck";
-  home.homeDirectory = "/home/deck";
+  home.username = lib.mkForce "deck";
+  home.homeDirectory = lib.mkForce "/home/deck";
 
   # ---------------------------------------------------------------------------
   # SteamOS / Handheld Packages & Utilities
@@ -52,8 +52,8 @@
   };
 
   imports = [
-    ../../../misc/syncthing
-    ../../../misc/tailscale
+    ../../../misc/syncthing-hm
+    #../../../misc/tailscale
     ../../../misc/agenix
   ];
 }
