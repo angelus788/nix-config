@@ -1,13 +1,18 @@
 { pkgs, config, lib, ... }:
 
+let
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  guiEnabled = config.myHomeDots.enableGui or false;
+in
 {
-  config = lib.mkIf config.myHomeDots.enableGui {
-  programs.firefox = {
+  # Only apply this entire block on Linux GUI hosts
+  programs.firefox = lib.mkIf (isLinux && guiEnabled) {
     enable = true;
     configPath = "${config.xdg.configHome}/mozilla/firefox";
-    # This links the bitwarden manifest into ~/.mozilla/native-messaging-hosts
-    nativeMessagingHosts = [ pkgs.bitwarden-desktop ];
-    };
+    
+    # Enables communication between Bitwarden Desktop app and the Firefox extension
+    nativeMessagingHosts = [
+      pkgs.bitwarden-desktop
+    ];
   };
-
 }
