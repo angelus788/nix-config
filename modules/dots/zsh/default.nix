@@ -117,7 +117,11 @@ in
         # Auto-login and unlock Bitwarden if secret exists on this node
         ${lib.optionalString (config.age.secrets ? bwCredentials) ''
           if [ -f "${config.age.secrets.bwCredentials.path}" ]; then
+            # Automatically export all variables loaded from the secret file
+            set -a
             source "${config.age.secrets.bwCredentials.path}"
+            set +a
+
             if command -v bw &> /dev/null; then
               if [ "$(bw status | ${pkgs.jq}/bin/jq -r '.status' 2>/dev/null)" = "unauthenticated" ]; then
                 bw login --apikey > /dev/null 2>&1
