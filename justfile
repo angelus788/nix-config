@@ -108,9 +108,13 @@ home-build target:
 home-deploy target host=target:
     #!/usr/bin/env bash
     set -euo pipefail
-    echo "==> Deploying Home Manager configuration '{{target}}' to host '{{host}}'..."
-    ssh -A "{{host}}" "nix run --refresh github:nix-community/home-manager -- switch --flake 'git+https://git.avgtechguy.com/avgtechguy/nix-config.git#{{target}}'"
+    
+    echo "==> Syncing nix-config to {{host}}:~/nix-config..."
+    rsync -ax --delete --exclude .git ./ {{host}}:~/nix-config/
 
+    echo "==> Deploying Home Manager configuration '{{target}}'..."
+    ssh -A {{host}} "home-manager switch --flake ~/nix-config#{{target}}"
+    
 # -----------------------------------------------------------------------------
 # Host Shortcuts
 # -----------------------------------------------------------------------------
