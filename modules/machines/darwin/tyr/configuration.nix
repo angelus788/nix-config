@@ -39,6 +39,7 @@
     casks = [
       "1password"
       "1password-cli"
+      "bitwarden"
       "element"
       "eqmac"
       "firefox"
@@ -66,7 +67,7 @@
     ];
     masApps = {
       "Amphetamine" = 937984704;
-      "Bitwarden" = 1352778147;
+      #"Bitwarden" = 1352778147;
       "Signal Shifter" = 6446061552;
       #"Yoink" = 457622435;
     };
@@ -128,12 +129,19 @@
     zola
   ];
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
+
+
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
     #(pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
   ids.gids.nixbld = 350;
+
+  home-manager.users.angelus.myHomeDots.enableGui = true;
 
   networking.hostName = "tyr";
 
