@@ -1,6 +1,8 @@
 { pkgs, inputs, ... }:
 
 {
+  _module.args.disks = [ "/dev/nvme0n1" ];
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -97,7 +99,7 @@
     ./secrets
     ./boot.nix
     ./disko.nix
-    ./hardware-configuration.nix
+    #./hardware-configuration.nix
     ../../../apps/1password
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
