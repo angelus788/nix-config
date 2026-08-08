@@ -7,3 +7,4 @@
 .env
 result
 .terraform
+host_keys_backup/
