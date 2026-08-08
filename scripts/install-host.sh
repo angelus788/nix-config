@@ -102,11 +102,12 @@ ssh-keygen -R "$TARGET_IP" >/dev/null 2>&1 || true
 echo "--> Launching nixos-anywhere..."
 echo ""
 
-# 6. Run nixos-anywhere with SSH_AUTH_SOCK cleared and explicit identity option
+# 6. Run nixos-anywhere with SSH_AUTH_SOCK cleared, build-on-remote, and custom options
 SSH_AUTH_SOCK="" nix run github:nix-community/nixos-anywhere -- \
   --extra-files "$EXTRA_FILES_DIR" \
   --flake ".#$HOSTNAME" \
   --post-kexec-ssh-port "$SSH_PORT" \
+  --build-on-remote \
   --ssh-option "IdentitiesOnly=yes" \
   --ssh-option "IdentityFile=$HOME/.ssh/angelus" \
   --ssh-option "StrictHostKeyChecking=no" \
