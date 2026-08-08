@@ -10,12 +10,6 @@
 
   services.flatpak.enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   services.printing.enable = true;
 
   services.pulseaudio.enable = false;
@@ -30,7 +24,6 @@
   services.fwupd.enable = true;
 
   programs.firefox.enable = true;
-
 
   environment.systemPackages = with pkgs; [
     bitwarden-cli
@@ -100,15 +93,22 @@
   };
 
   imports = [
-    #inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490
+    inputs.lanzaboote.nixosModules.lanzaboote
     ./secrets
+    ./boot.nix
+    ./disks.nix
     ./hardware-configuration.nix
+    ../../../apps/1password
     ../../../apps/DE/cosmic
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
-    #../../../apps/vscodium
-    ../../../apps/tailscale
+    ../../../apps/openpuck
+    ../../../apps/packet
+    #../../../misc/papery
+    #../../../apps/wpaperd
+    ../../../apps/smbshared
     ../../../misc/syncthing
+    ../../../apps/tailscale
   ];
 
 }
