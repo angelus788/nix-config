@@ -96,7 +96,7 @@
     inputs.lanzaboote.nixosModules.lanzaboote
     ./secrets
     ./boot.nix
-    ./disks.nix
+    ./disko.nix
     ./hardware-configuration.nix
     ../../../apps/1password
     ../../../apps/DE/cosmic
