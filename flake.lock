@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1786737884,
-        "narHash": "sha256-KZ0K5ryFBxgAFJVmSTv1mQYdu129Q5V+SgSOtLRMp40=",
+        "lastModified": 1786781029,
+        "narHash": "sha256-XdVItrg8vYQHf40a/7iWhjZhaM5lHOKIM9BCv8rVV9Y=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "91872d3b542971e2a74f69f345afd7bfeee52302",
+        "rev": "a0e49f059954f16921099e5ae4bbd0226ba77e7a",
         "type": "github"
       },
       "original": {
@@ -645,11 +645,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1786804689,
-        "narHash": "sha256-BPW0cRkBRmpZU1LYrk7XRUMW7WX9xfXdw8MkCn5FfXA=",
+        "lastModified": 1786823833,
+        "narHash": "sha256-oZSWXkln3RrOXXorA8FQxW3AEfJ29UJEWg/8/sxc710=",
         "ref": "refs/heads/main",
-        "rev": "1750b4a33bec27a2403d189aa16ffac5997523fb",
-        "revCount": 290,
+        "rev": "46e6dbec9afddfb1a5d04144bcfe56aaf49fd248",
+        "revCount": 291,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
