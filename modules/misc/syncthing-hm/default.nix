@@ -9,6 +9,7 @@ with lib;
 let
   cfg = config.syncthingSettings;
   settingsFormat = pkgs.formats.json { };
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
 in
 {
   options.syncthingSettings = {
@@ -164,6 +165,26 @@ in
         options = {
           urAccepted = 3;
         };
+      };
+    };
+
+    # Automatically proxy Syncthing over Tailscale HTTPS via systemd user service
+    systemd.user.services.syncthing-tailscale-serve = mkIf isLinux {
+      Unit = {
+        Description = "Expose Syncthing GUI over Tailscale HTTPS";
+        After = [ "syncthing.service" ];
+        Wants = [ "syncthing.service" ];
+      };
+
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --bg http://127.0.0.1:8384";
+        ExecStop = "${pkgs.tailscale}/bin/tailscale serve reset";
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
       };
     };
   };
