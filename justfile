@@ -104,7 +104,7 @@ home-build target:
     nix build --refresh .#homeConfigurations."{{target}}".activationPackage
 
 # Remote deploy Home Manager via SSH to a standalone target
-# Usage: just home-deploy deck@steamdeck steamdeck
+# Usage: just home-deploy steamdeck deck@steamdeck
 home-deploy target host=target:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -113,7 +113,13 @@ home-deploy target host=target:
     rsync -ax --delete --exclude .git ./ {{host}}:~/nix-config/
 
     echo "==> Deploying Home Manager configuration '{{target}}'..."
-    ssh -A {{host}} "home-manager switch --flake ~/nix-config#{{target}}"
+    ssh -A {{host}} '
+        export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
+        if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
+        home-manager switch --flake ~/nix-config#{{target}}
+    '
     
 # -----------------------------------------------------------------------------
 # Host Shortcuts
