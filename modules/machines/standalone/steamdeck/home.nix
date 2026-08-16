@@ -59,6 +59,7 @@
 
   imports = [
     ../../../misc/syncthing-hm
+    ../../../misc/tailscale-hm
     #../../../misc/tailscale
     ../../../misc/agenix
     ./secrets.nix
