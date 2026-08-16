@@ -33,7 +33,7 @@
   imports = [
     # Include the results of the hardware scan.
     #../../../misc/avgtechguy.com
-    ../../../apps/netbird
+    #../../../apps/netbird
     ./hardware-configuration.nix
     ./disko.nix
     ../../../apps/tailscale
