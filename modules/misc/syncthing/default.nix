@@ -9,7 +9,6 @@ with lib;
 let
   cfg = config.syncthingSettings;
   settingsFormat = pkgs.formats.json { };
-  # Dynamically uses whatever host imports this module
   nodeName = config.networking.hostName;
   fqdn = "${nodeName}.tailcaed2.ts.net";
 in
@@ -75,13 +74,13 @@ in
             id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";
           };
           steamdeck = {
-            id = "I7EBUD3-FR5TWIA-R24PCHQ-QB2TUHG-72UQT56-EZHHTU2-5S2IFJV-YIBTHQ4";
+            id = "TRLJTOR-TSIF4FB-JTDBBBX-BHMUHKE-5NL3JOX-JKG3KV7-TT376A3-YSVHZQ3";
           };
           stormbreaker = {
             id = "TUKVJGF-LSXM5VC-XC5IY3D-7PQBJDB-N4NVPBO-NG5WJE4-FYJ54NT-TEPGIA6";
           };
           ubuntu = {
-            id = "X4PG46F-VS5PX3G-JRFF2EQ-UWVIAG3-SGP6LRH-FPPPWCM-UQDGOTF-YSSS2QD";
+            id = "TJDO4ME-M7S7AVU-TOA66BJ-C47BVF3-AEMYC7Z-SM3RIPJ-5WXW3KD-LM4ISQI";
           };
         };
 
@@ -114,6 +113,8 @@ in
               "odin"
               "mjolnir"
               "stormbreaker"
+              "steamdeck"
+              "ubuntu"
             ];
             versioning = {
               type = "staggered";
@@ -132,6 +133,8 @@ in
               "mjolnir"
               "odin"
               "stormbreaker"
+              "steamdeck"
+              "ubuntu"
             ];
             versioning = {
               type = "staggered";
@@ -151,6 +154,8 @@ in
               "mjolnir"
               "odin"
               "stormbreaker"
+              "steamdeck"
+              "ubuntu"
             ];
             versioning = {
               type = "staggered";
@@ -169,6 +174,8 @@ in
               "mjolnir"
               "odin"
               "stormbreaker"
+              "steamdeck"
+              "ubuntu"
             ];
           };
         };
@@ -180,7 +187,7 @@ in
         gui = {
           user = "angelus";
           password = cfg.guiPassword;
-          insecureSkipHostcheck = true; # Allow proxied host header
+          insecureSkipHostcheck = true;
         };
       };
     };

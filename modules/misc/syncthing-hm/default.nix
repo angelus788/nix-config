@@ -46,6 +46,8 @@ in
     # Home Manager Syncthing User Service
     services.syncthing = {
       enable = true;
+      overrideDevices = true;
+      overrideFolders = true;
 
       # Maps to Home Manager's services.syncthing.settings structure
       settings = {
@@ -59,21 +61,27 @@ in
         devices = {
           mayra = {
             id = "4FX3SR7-M2EMNVD-AHV5BO4-FQ4U3XU-EYGY6CX-34ENPKL-ZYTMFAD-JOLHZAT";
+            autoAcceptFolders = true;
           };
           mjolnir = {
             id = "BGC2RDL-CNAFJHL-SKWNQXE-VBRC476-4PO2SGZ-CQIGYS7-WQ2TBV2-5X72JQV";
+            autoAcceptFolders = true;
           };
           odin = {
             id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";
+            autoAcceptFolders = true;
           };
           steamdeck = {
-            id = "I7EBUD3-FR5TWIA-R24PCHQ-QB2TUHG-72UQT56-EZHHTU2-5S2IFJV-YIBTHQ4";
+            id = "TRLJTOR-TSIF4FB-JTDBBBX-BHMUHKE-5NL3JOX-JKG3KV7-TT376A3-YSVHZQ3";
+            autoAcceptFolders = true;
           };
           stormbreaker = {
             id = "TUKVJGF-LSXM5VC-XC5IY3D-7PQBJDB-N4NVPBO-NG5WJE4-FYJ54NT-TEPGIA6";
+            autoAcceptFolders = true;
           };
           ubuntu = {
-            id = "X4PG46F-VS5PX3G-JRFF2EQ-UWVIAG3-SGP6LRH-FPPPWCM-UQDGOTF-YSSS2QD";
+            id = "TJDO4ME-M7S7AVU-TOA66BJ-C47BVF3-AEMYC7Z-SM3RIPJ-5WXW3KD-LM4ISQI";
+            autoAcceptFolders = true;
           };
         };
 
@@ -106,6 +114,8 @@ in
               "odin"
               "mjolnir"
               "stormbreaker"
+              "steamdeck"
+              "ubuntu"
             ];
             versioning = {
               type = "staggered";
