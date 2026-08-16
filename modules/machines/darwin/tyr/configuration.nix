@@ -11,6 +11,7 @@
 
   imports = [
     #"${inputs.secrets}/work.nix"
+    ./netbird.nix
     ./secrets.nix
     ./tailscale.nix
   ];

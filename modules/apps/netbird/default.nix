@@ -1,15 +1,37 @@
-{ config, pkgs, ... }:
-
 {
-  # NetBird Client Configuration
-  services.netbird.clients.wt0 = {
-    login = {
-      enable = true;
-      setupKeyFile = config.age.secrets.netbird-setup-key.path;
-    };
-    openFirewall = true;
-  };
+  config,
+  pkgs,
+  ...
+}:
+let
+  targetUser = "angelus";
+in
+{
+  # Enable NetBird daemon service
+  services.netbird.enable = true;
 
-  # Optional: Required if you rely on NetBird client-side MagicDNS resolution
-  services.resolved.enable = true;
+  # Firewall exceptions
+  networking.firewall.trustedInterfaces = [ "wt0" ]; # NetBird uses 'wt0' interface
+
+  # Auto-connect service using Agenix setup key
+  systemd.services.netbird-autoconnect = {
+    description = "Connect NetBird with Setup Key";
+    after = [
+      "network-online.target"
+      "netbird.service"
+    ];
+    wants = [
+      "network-online.target"
+      "netbird.service"
+    ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "netbird-up" ''
+        KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
+        ${pkgs.netbird}/bin/netbird up --setup-key "$KEY"
+      '';
+    };
+  };
 }
