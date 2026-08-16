@@ -12,6 +12,7 @@
   imports = [
     #"${inputs.secrets}/work.nix"
     ./secrets.nix
+    ./tailscale.nix
   ];
 
   #devShells.aarch64-darwin.default
@@ -24,7 +25,7 @@
       autoUpdate = true;
       cleanup = "uninstall";
       upgrade = true;
-      extraFlags = [ "--force" ]; 
+      extraFlags = [ "--force" ];
     };
 
     prefix = "/opt/homebrew";
@@ -35,6 +36,7 @@
     brews = [
       "mas"
       "pulumi"
+      "tailscale"
     ];
     casks = [
       "1password"
@@ -58,7 +60,7 @@
       "signal"
       "soundsource"
       "spotify"
-      "tailscale-app"
+      #"tailscale-app"
       "thunderbird"
       "telegram"
       "todoist-app"
@@ -132,7 +134,6 @@
   nixpkgs.config.permittedInsecurePackages = [
     "electron-39.8.10"
   ];
-
 
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
