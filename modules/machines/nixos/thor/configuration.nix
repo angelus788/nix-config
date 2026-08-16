@@ -7,7 +7,6 @@
   networking.hostName = "thor"; # Define your hostname.
   networking.networkmanager.enable = true;
 
-
   services.duckdns = {
     enable = true;
     domainsFile = config.age.secrets.duckDNSDomain.path;
@@ -33,7 +32,8 @@
 
   imports = [
     # Include the results of the hardware scan.
-    ../../../misc/avgtechguy.com
+    #../../../misc/avgtechguy.com
+    ../../../apps/netbird
     ./hardware-configuration.nix
     ./disko.nix
     ../../../apps/tailscale
