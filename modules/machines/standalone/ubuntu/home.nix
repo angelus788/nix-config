@@ -1,9 +1,15 @@
-{ pkgs, inputs, config, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
 
 {
   imports = [
     ../../../misc/syncthing-hm # Uses the Home Manager refactored Syncthing module
     ../../../misc/agenix
+    ./secrets.nix
   ];
 
   # ---------------------------------------------------------------------------
@@ -48,7 +54,7 @@
   # ---------------------------------------------------------------------------
   # Server Syncthing Settings
   # ---------------------------------------------------------------------------
-  # Uses config.home.homeDirectory so it dynamically expands to /home/angelus 
+  # Uses config.home.homeDirectory so it dynamically expands to /home/angelus
   # (or whatever username is defined in userMap for Ubuntu)
   syncthingSettings = {
     guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
@@ -63,7 +69,7 @@
   # ---------------------------------------------------------------------------
   # User-Level Systemd Services (Ubuntu headless)
   # ---------------------------------------------------------------------------
-  # Keeps background tools like tmux sessions or user systemd units alive 
+  # Keeps background tools like tmux sessions or user systemd units alive
   # even when you log out of SSH (optional, but very helpful on headless servers)
   #
   # Note: To enable linger on Ubuntu, run once via SSH: loginctl enable-linger $USER

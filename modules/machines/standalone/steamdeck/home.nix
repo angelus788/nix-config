@@ -1,4 +1,10 @@
-{ pkgs, inputs, config, lib, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  lib,
+  ...
+}:
 
 {
   home.username = lib.mkForce "deck";
@@ -55,5 +61,6 @@
     ../../../misc/syncthing-hm
     #../../../misc/tailscale
     ../../../misc/agenix
+    ./secrets.nix
   ];
 }
