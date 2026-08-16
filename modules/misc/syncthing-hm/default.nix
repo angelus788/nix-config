@@ -67,10 +67,13 @@ in
             id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";
           };
           steamdeck = {
-            id = "4WSHAWU-ASYVCBZ-F5SCZJN-P7VFTE2-TXF2524-H4T3RL4-ZACBLBB-LIGZSAN";
+            id = "I7EBUD3-FR5TWIA-R24PCHQ-QB2TUHG-72UQT56-EZHHTU2-5S2IFJV-YIBTHQ4";
           };
           stormbreaker = {
             id = "TUKVJGF-LSXM5VC-XC5IY3D-7PQBJDB-N4NVPBO-NG5WJE4-FYJ54NT-TEPGIA6";
+          };
+          ubuntu = {
+            id = "X4PG46F-VS5PX3G-JRFF2EQ-UWVIAG3-SGP6LRH-FPPPWCM-UQDGOTF-YSSS2QD";
           };
         };
 
