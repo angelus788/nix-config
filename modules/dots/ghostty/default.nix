@@ -1,7 +1,8 @@
 { pkgs, ... }:
 let
   # Use pkgs.stdenv to avoid the "undefined variable" error on Darwin
-  isLinux = pkgs.stdenv.isLinux;
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+
 in
 {
   programs.ghostty = {
