@@ -18,6 +18,7 @@ in
     extraUpFlags = [
       "--accept-routes"
       "--ssh"
+      "--reset"
     ];
   };
 

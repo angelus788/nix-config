@@ -1,7 +1,6 @@
-{
-  inputs,
-  pkgs,
-  ...
+{ inputs
+, pkgs
+, ...
 }:
 {
   system.primaryUser = "angelus";
@@ -12,6 +11,7 @@
   imports = [
     #"${inputs.secrets}/work.nix"
     #./netbird.nix
+    ./networking.nix
     ./secrets.nix
     ./tailscale.nix
   ];

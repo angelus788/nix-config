@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  inputs,
-  ...
+{ pkgs
+, config
+, inputs
+, ...
 }:
 
 {
@@ -32,6 +31,7 @@
 
       ${pkgs.tailscale}/bin/tailscale up \
         --authkey="$AUTH_KEY" \
+        --accept-dns=true \
         --ssh \
         --accept-routes \
         --reset
