@@ -10,10 +10,10 @@
 
   imports = [
     #"${inputs.secrets}/work.nix"
-    #./netbird.nix
     ./networking.nix
     ./secrets.nix
-    ./tailscale.nix
+    ../darwin_apps/netbird.nix
+    ../darwin_apps/tailscale.nix
   ];
 
   #devShells.aarch64-darwin.default

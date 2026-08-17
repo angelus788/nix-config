@@ -13,6 +13,7 @@
 
   networking.search = [
     "tailcaed2.ts.net"
+    "netbird.selfhosted"
     "mynetworksettings.com"
   ];
 

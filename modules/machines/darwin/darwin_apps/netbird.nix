@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  inputs,
-  ...
+{ pkgs
+, config
+, inputs
+, ...
 }:
 
 {
@@ -34,7 +33,8 @@
       # Connect to NetBird using the setup key
       # Add --management-url if you are self-hosting NetBird
       ${pkgs.netbird}/bin/netbird up \
-        --setup-key="$SETUP_KEY"
+        --setup-key="$SETUP_KEY" \
+        --disable-dns
     '';
     serviceConfig = {
       RunAtLoad = true;
