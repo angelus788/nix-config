@@ -38,6 +38,9 @@
 
     couchdb-password.file = "${inputs.secrets}/couchdb-password.age";
 
+    netbirdDataStoreEncryptionKey.file = "${inputs.secrets}/netbirdDataStoreEncryptionKey.age";
+    netbirdOidcSecret.file = "${inputs.secrets}/netbirdOidcSecret.age";
+
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
     #duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     #duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";

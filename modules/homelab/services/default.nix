@@ -182,6 +182,7 @@ in
     ./monitoring/prometheus/exporters/shelly_plug_exporter
     ./navidrome
     ./nextcloud
+    ./netbird
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./protonmail-bridge
