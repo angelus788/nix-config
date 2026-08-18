@@ -66,7 +66,6 @@
         enable = true;
         role = "server";
         netbirdUrl = config.homelab.services.netbird.url;
-        oidc.issuer = "https://login.internalnetwork.party/realms/netbird";
       };
 
       #plausible = { # Deactivating Plausible
