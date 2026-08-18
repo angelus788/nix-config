@@ -14,7 +14,7 @@ This section is generated automatically from the Nix configuration using GitHub 
 |---|---|---|---|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/couchdb.svg' width=32 height=32>|CouchDB|NoSQL Database|Services|
 |<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/forgejo.svg' width=32 height=32>|Forgejo|A painless, self-hosted Git service|Services|
-|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/netbird.svg' width=32 height=32>|NetBird|WireGuard overlay network manager|Infrastructure|
+|<img src='https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/netbird.svg' width=32 height=32>|NetBird|WireGuard overlay network manager|Services|
 
 
 ### mimir
