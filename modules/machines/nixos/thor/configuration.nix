@@ -20,6 +20,7 @@
     hdparm
     hd-idle
     hddtemp
+    just
     smartmontools
     cpufrequtils
     intel-gpu-tools
