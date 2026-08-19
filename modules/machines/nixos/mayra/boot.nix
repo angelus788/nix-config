@@ -15,11 +15,11 @@
       hwaccel = true; #= ''
       #font-name=MesloLGS NF
       #font-size=20
-    #'';
+      #'';
     };
   };
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_12; #pkgs.linuxPackages_latest;
     consoleLogLevel = 0;
     initrd = {
       verbose = false;
@@ -47,7 +47,7 @@
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-    kernelModules = [ "kvm-amd" "uinput"];
+    kernelModules = [ "kvm-amd" "uinput" ];
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
