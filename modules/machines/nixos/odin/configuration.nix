@@ -247,5 +247,18 @@ in
     };
   };
 
+  systemd.services."netns@" = {
+    description = "%I network namespace";
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+
+      # Clean stale namespace bind-mount before attempting creation
+      ExecStartPre = "-${pkgs.iproute2}/bin/ip netns del %I";
+      ExecStart = "${pkgs.iproute2}/bin/ip netns add %I";
+      ExecStop = "${pkgs.iproute2}/bin/ip netns del %I";
+    };
+  };
+
   systemd.network.wait-online.enable = false;
 }
