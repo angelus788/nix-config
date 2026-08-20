@@ -15,6 +15,7 @@
 
   environment.systemPackages = with pkgs; [
     gnome-keyring
+    claude-code
     pciutils
     glances
     hdparm
