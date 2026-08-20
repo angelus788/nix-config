@@ -101,6 +101,12 @@ in
           turnDomain = cfg.url;
           oidcConfigEndpoint = "${cfg.oidc.issuer}/.well-known/openid-configuration";
           settings = {
+            DataStoreEncryptionKey = {
+              _secret = config.age.secrets.netbirdDataStoreEncryptionKey.path;
+            };
+            TURNConfig.Secret = {
+              _secret = config.age.secrets.netbirdTurnSecret.path;
+            };
             PKCEAuthorizationFlow.ProviderConfig = {
               Audience = cfg.oidc.audience;
               ClientID = cfg.oidc.clientId;
@@ -115,6 +121,17 @@ in
           };
         };
         signal.enable = true;
+
+        coturn = {
+          enable = true;
+          domain = cfg.url;
+          passwordFile = config.age.secrets.netbirdTurnPassword.path;
+        };
+      };
+
+      age.secrets.netbirdTurnPassword = {
+        owner = "turnserver";
+        group = "turnserver";
       };
 
       services.caddy.virtualHosts."netbird.avgtechguy.com".extraConfig = ''
@@ -160,11 +177,6 @@ in
           # Force the OIDC config endpoint explicitly to the Keycloak domain
           NETBIRD_MGMT_OIDC_CONFIGURATION_ENDPOINT = "${cfg.oidc.issuer}/.well-known/openid-configuration";
         };
-
-        preStart = lib.mkAfter ''
-            if [ -f "$NETBIRD_STORE_ENGINE_DATA_STORE_ENCRYPTION_KEY" ] || [ -n "$NETBIRD_STORE_ENGINE_DATA_STORE_ENCRYPTION_KEY" ]; then ${pkgs.jq}/bin/jq --arg key "$NETBIRD_STORE_ENGINE_DATA_STORE_ENCRYPTION_KEY" '.DataStoreEncryptionKey = $key' /var/lib/netbird-mgmt/management.json > /var/lib/netbird-mgmt/management.json.tmp && mv /var/lib/netbird-mgmt/management.json.tmp /var/lib/netbird-mgmt/management.json;
-          fi
-        '';
       };
     })
 
