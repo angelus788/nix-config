@@ -5,28 +5,27 @@ let
   hasFail2ban = config.services ? fail2ban-cloudflare && config.services.fail2ban-cloudflare.enable;
 
   # Extract the dashboard and bake our config.json directly into the static root
+  dashboardConfigFile = pkgs.writeText "netbird-config.json" (builtins.toJSON {
+    AUTH_AUTHORITY = cfg.oidc.issuer;
+    AUTH_CLIENT_ID = cfg.oidc.clientId;
+    AUTH_AUDIENCE = cfg.oidc.audience;
+    AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api";
+    NETBIRD_MGMT_API_ENDPOINT = "https://${cfg.url}";
+    NETBIRD_MGMT_GRPC_API_ENDPOINT = "https://${cfg.url}";
+    USE_AUTH0 = false;
+  });
+
+  # Extract the dashboard and place the generated config.json into the static root
   netbirdDashboardConfigured = pkgs.runCommand "netbird-dashboard-configured" { } ''
     mkdir -p $out
     
-    # Dynamically locate the directory containing index.html inside the derivation
+    # Locate index.html inside the store package
     DASH_ROOT=$(dirname $(find ${pkgs.netbird-dashboard} -name "index.html" | head -n 1))
     
-    # Copy all static assets from that directory into our new root
+    # Copy static assets and place our validated config.json file
     cp -a $DASH_ROOT/. $out/
     chmod -R +w $out
-    
-    # Write the config.json exactly where the SPA expects it
-    cat > $out/config.json <<EOF
-    {
-      "AUTH_AUTHORITY": "${cfg.oidc.issuer}",
-      "AUTH_CLIENT_ID": "${cfg.oidc.clientId}",
-      "AUTH_AUDIENCE": "${cfg.oidc.audience}",
-      "AUTH_SUPPORTED_SCOPES": "openid profile email offline_access api",
-      "NETBIRD_MGMT_API_ENDPOINT": "https://${cfg.url}",
-      "NETBIRD_MGMT_GRPC_API_ENDPOINT": "https://${cfg.url}",
-      "USE_AUTH0": "false"
-    }
-    EOF
+    cp ${dashboardConfigFile} $out/config.json
   '';
 in
 {
@@ -117,7 +116,7 @@ in
             AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api";
             NETBIRD_MGMT_API_ENDPOINT = "https://${cfg.url}";
             NETBIRD_MGMT_GRPC_API_ENDPOINT = "https://${cfg.url}";
-            USE_AUTH0 = "false";
+            USE_AUTH0 = false;
           };
         };
 
