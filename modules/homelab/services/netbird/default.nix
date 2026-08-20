@@ -47,6 +47,10 @@ in
       ];
       default = "client";
     };
+    monitoredServices = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = if cfg.role == "server" then [ "netbird-management" "netbird-signal" "coturn" ] else [ "netbird" ];
+    };
     oidc = {
       enable = lib.mkOption {
         type = lib.types.bool;

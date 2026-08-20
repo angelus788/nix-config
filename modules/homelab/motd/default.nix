@@ -89,13 +89,27 @@ let
     printf "$BOLD Service status$ENDCOLOR\n"
 
     function get_service_status() {
-      if systemctl is-failed "$1" | grep -q 'failed'; then
-        printf "$RED• $ENDCOLOR%-50s $RED[failed]$ENDCOLOR\n" "$1"
-      elif systemctl is-failed "$1" | grep -xq 'active'; then
-        printf "$GREEN• $ENDCOLOR%-50s $GREEN[active]$ENDCOLOR\n" "$1"
-      else
-        printf "$YELLOW• $ENDCOLOR%-50s $YELLOW[unknown]$ENDCOLOR\n" "$1"
+      local unit="$1"
+      local state
+      state=$(systemctl is-active "$unit" 2>/dev/null)
+
+      # Not a system unit at all: fall back to the caller's own user-scoped
+      # systemd instance (e.g. protonmail-bridge runs as systemd.user.services).
+      if [ "$(systemctl show -p LoadState --value "$unit" 2>/dev/null)" = "not-found" ]; then
+        state=$(systemctl --user is-active "$unit" 2>/dev/null)
       fi
+
+      case "$state" in
+        active)
+          printf "$GREEN• $ENDCOLOR%-50s $GREEN[active]$ENDCOLOR\n" "$unit"
+          ;;
+        failed)
+          printf "$RED• $ENDCOLOR%-50s $RED[failed]$ENDCOLOR\n" "$unit"
+          ;;
+        *)
+          printf "$YELLOW• $ENDCOLOR%-50s $YELLOW[$state]$ENDCOLOR\n" "$unit"
+          ;;
+      esac
     }
     ${lib.strings.concatStrings (lib.lists.forEach monitoredServices (x: "get_service_status ${x}\n"))}
   '';
