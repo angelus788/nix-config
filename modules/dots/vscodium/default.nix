@@ -1,47 +1,48 @@
 { config, lib, pkgs, ... }:
 {
   config = lib.mkIf config.myHomeDots.enableGui {
-  programs.vscodium = {
-    enable = true;
-    #package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
+    programs.vscodium = {
+      enable = true;
+      #package = pkgs.vscodium; # Tells the module to install VSCodium instead of VS Code
 
-    profiles.default = {
-      extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        arcticicestudio.nord-visual-studio-code
-      ];
+      profiles.default = {
+        extensions = with pkgs.vscode-extensions; [
+          jnoortheen.nix-ide
+          arcticicestudio.nord-visual-studio-code
+          anthropic.claude-code
+        ];
 
-      userSettings = {
-        # Use nixd as the LSP
-        "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nixd";
-        "nix.serverSettings" = {
-          "nixd" = {
-            "formatting" = {
-              "command" = [ "nixpkgs-fmt" ];
-            };
-            "options" = {
-              "nixos" = {
-                "expr" = "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.mjolnir.options";
+        userSettings = {
+          # Use nixd as the LSP
+          "nix.enableLanguageServer" = true;
+          "nix.serverPath" = "nixd";
+          "nix.serverSettings" = {
+            "nixd" = {
+              "formatting" = {
+                "command" = [ "nixpkgs-fmt" ];
+              };
+              "options" = {
+                "nixos" = {
+                  "expr" = "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.mjolnir.options";
+                };
               };
             };
           };
-        };
 
-        "[nix]" = {
-          "editor.defaultFormatter" = "jnoortheen.nix-ide";
-          "editor.formatOnSave" = true;
-        };
+          "[nix]" = {
+            "editor.defaultFormatter" = "jnoortheen.nix-ide";
+            "editor.formatOnSave" = true;
+          };
 
-        "telemetry.enableTelemetry" = false;
-        "update.mode" = "none";
+          "telemetry.enableTelemetry" = false;
+          "update.mode" = "none";
+        };
       };
     };
-  };
 
-  home.packages = with pkgs; [
-    nixd
-    nixpkgs-fmt
-  ];
+    home.packages = with pkgs; [
+      nixd
+      nixpkgs-fmt
+    ];
   };
 }

@@ -16,16 +16,30 @@ let
   });
 
   # Extract the dashboard and place the generated config.json into the static root
-  netbirdDashboardConfigured = pkgs.runCommand "netbird-dashboard-configured" { } ''
+  netbirdDashboardConfigured = pkgs.runCommand "netbird-dashboard-configured"
+    {
+      nativeBuildInputs = [ pkgs.gettext ]; # provides envsubst
+    } ''
     mkdir -p $out
-    
-    # Locate index.html inside the store package
     DASH_ROOT=$(dirname $(find ${pkgs.netbird-dashboard} -name "index.html" | head -n 1))
-    
-    # Copy static assets and place our validated config.json file
     cp -a $DASH_ROOT/. $out/
     chmod -R +w $out
-    cp ${dashboardConfigFile} $out/config.json
+
+    export NETBIRD_MGMT_API_ENDPOINT="https://${cfg.url}"
+    export NETBIRD_MGMT_GRPC_API_ENDPOINT="https://${cfg.url}"
+    export AUTH_AUTHORITY="${cfg.oidc.issuer}"
+    export AUTH_CLIENT_ID="${cfg.oidc.clientId}"
+    export AUTH_AUDIENCE="${cfg.oidc.audience}"
+    export AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
+    export USE_AUTH0="false"
+    export NETBIRD_HOTJAR_TRACK_ID=""
+    export NETBIRD_GOOGLE_TAG_MANAGER_ID=""
+    # add every $VARNAME you find from the grep above as an export here
+
+    find $out -type f \( -name "*.html" -o -name "*.js" -o -name "*.json" \) -print0 \
+      | while IFS= read -r -d ''' file; do
+          envsubst < "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+        done
   '';
 in
 {
@@ -146,6 +160,7 @@ in
 
         # Serve the bundled dashboard files (now directly in the root of the derivation)
         handle {
+        header /config.json Cache-Control "no-store"
           root * ${netbirdDashboardConfigured}
           try_files {path} {path}/ /index.html
           file_server

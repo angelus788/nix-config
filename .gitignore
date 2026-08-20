@@ -7,4 +7,5 @@
 .env
 result
 .terraform
+.claude
 host_keys_backup/
