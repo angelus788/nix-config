@@ -90,13 +90,13 @@ in
             };
           }
           {
-            Downloads = {
+            Media = {
               header = true;
               style = "column";
             };
           }
           {
-            Media = {
+            Tools = {
               header = true;
               style = "column";
             };
@@ -117,7 +117,7 @@ in
           homepageCategories = [
             "Arr"
             "Media"
-            "Downloads"
+            "Tools"
             "Services"
             "Observability"
             "Smart Home"
@@ -128,28 +128,33 @@ in
             (lib.attrsets.filterAttrs (
               _name: value: value ? homepage && value.homepage.category == x
             ) homelab.services);
+          serviceEntry =
+            x:
+            let
+              customUrls = {
+                forgejo = "https://git.avgtechguy.com";
+                couchdb = "https://couchdb.avgtechguy.com/_utils";
+              };
+              serviceUrl = customUrls.${x} or "https://${hl.${x}.url}";
+            in
+            {
+              "${hl.${x}.homepage.name}" = {
+                icon = hl.${x}.homepage.icon;
+                description = hl.${x}.homepage.description;
+                href = serviceUrl;
+                siteMonitor = serviceUrl; # This will now show the green status for the custom URL
+              };
+            };
+          categoryServiceList =
+            cat:
+            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (
+              homepageServices "${cat}"
+            )) serviceEntry;
         in
         lib.lists.forEach homepageCategories (cat: {
           "${cat}" =
-            lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (homepageServices "${cat}"))
-              (
-                x:
-                let
-                  customUrls = {
-                    forgejo = "https://git.avgtechguy.com";
-                    couchdb = "https://couchdb.avgtechguy.com/_utils";
-                  };
-                  serviceUrl = customUrls.${x} or "https://${hl.${x}.url}";
-                in
-                {
-                  "${hl.${x}.homepage.name}" = {
-                    icon = hl.${x}.homepage.icon;
-                    description = hl.${x}.homepage.description;
-                    href = serviceUrl;
-                    siteMonitor = serviceUrl; # This will now show the green status for the custom URL
-                  };
-                }
-              );
+            categoryServiceList cat
+            ++ lib.optional (cat == "Arr") { Downloads = categoryServiceList "Downloads"; };
         })
         ++ [ { Misc = cfg.misc; } ]
         ++ [

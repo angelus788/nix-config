@@ -68,6 +68,8 @@
         netbirdUrl = config.homelab.services.netbird.url;
       };
 
+      rustdesk.enable = true;
+
       #plausible = { # Deactivating Plausible
       #  enable = true;
       #  secretKeybaseFile = config.age.secrets.plausibleSecretKeybaseFile.path;

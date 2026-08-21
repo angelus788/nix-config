@@ -188,6 +188,7 @@ in
     ./protonmail-bridge
     ./paperless-ngx
     ./radicale
+    ./rustdesk
     ./sabnzbd
     ./slskd
     ./uptime-kuma
