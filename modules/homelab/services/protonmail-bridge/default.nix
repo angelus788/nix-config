@@ -51,8 +51,8 @@ in
           script = ''
             export PASSWORD_STORE_DIR="$HOME/.password-store"
             if ! gpg --list-keys "Proton Bridge" >/dev/null 2>&1; then
-              gpg --batch --passphrase "" --quick-generate-key "Proton Bridge <bridge@internalnetwork.party>" rsa2048 default never
-              KEY_ID=$(gpg --list-keys --keyid-format LONG "Proton Bridge" | awk '/pub/ {split($2, a, "/"); print a[2]}')
+              gpg --batch --passphrase "" --quick-generate-key "Proton Bridge <bridge@internalnetwork.party>" rsa2048 sign,encrypt never
+              KEY_ID=$(gpg --with-colons --list-keys "Proton Bridge" | awk -F: '/^fpr:/ {print $10; exit}')
               echo "$KEY_ID:6:" | gpg --import-ownertrust
               pass init "$KEY_ID"
             fi
@@ -73,6 +73,8 @@ in
           environment = {
             PASSWORD_STORE_DIR = "%h/.password-store";
           };
+
+          path = with pkgs; [ pass gnupg ];
 
           serviceConfig = {
             Restart = "always";
