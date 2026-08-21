@@ -37,6 +37,11 @@ in
               icon = lib.mkOption {
                 type = lib.types.str;
               };
+              category = lib.mkOption {
+                type = lib.types.str;
+                default = "Misc";
+                description = "Homepage group this entry is displayed under.";
+              };
             };
           }
         )
@@ -150,13 +155,21 @@ in
             lib.lists.forEach (lib.attrsets.mapAttrsToList (name: _value: name) (
               homepageServices "${cat}"
             )) serviceEntry;
+          miscCategory = item: (lib.head (lib.attrValues item)).category;
+          stripMiscCategory = item: lib.mapAttrs (_name: value: lib.removeAttrs value [ "category" ]) item;
+          miscForCategory =
+            cat: map stripMiscCategory (lib.filter (item: miscCategory item == cat) cfg.misc);
+          miscOther = map stripMiscCategory (
+            lib.filter (item: !(lib.elem (miscCategory item) homepageCategories)) cfg.misc
+          );
         in
         lib.lists.forEach homepageCategories (cat: {
           "${cat}" =
             categoryServiceList cat
-            ++ lib.optional (cat == "Arr") { Downloads = categoryServiceList "Downloads"; };
+            ++ lib.optional (cat == "Arr") { Downloads = categoryServiceList "Downloads"; }
+            ++ miscForCategory cat;
         })
-        ++ [ { Misc = cfg.misc; } ]
+        ++ lib.optional (miscOther != [ ]) { Misc = miscOther; }
         ++ [
           {
             Glances =

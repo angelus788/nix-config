@@ -123,6 +123,7 @@ in
                 siteMonitor = "https://${ip}";
                 description = "Open-source KVM solution";
                 icon = "pikvm.png";
+                category = "Tools";
               };
           }
           {
