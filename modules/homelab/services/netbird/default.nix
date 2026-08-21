@@ -133,11 +133,6 @@ in
         };
       };
 
-      age.secrets.netbirdTurnPassword = {
-        owner = "turnserver";
-        group = "turnserver";
-      };
-
       services.caddy.virtualHosts."netbird.avgtechguy.com".extraConfig = ''
         # Route standard REST API traffic to management
         handle /api/* {

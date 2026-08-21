@@ -40,7 +40,11 @@
 
     netbirdDataStoreEncryptionKey.file = "${inputs.secrets}/netbirdDataStoreEncryptionKey.age";
     netbirdOidcSecret.file = "${inputs.secrets}/netbirdOidcSecret.age";
-    netbirdTurnPassword.file = "${inputs.secrets}/netbirdTurnPassword.age";
+    netbirdTurnPassword = {
+      owner = "turnserver";
+      group = "turnserver";
+      file = "${inputs.secrets}/netbirdTurnPassword.age";
+    };
     netbirdTurnSecret.file = "${inputs.secrets}/netbirdTurnSecret.age";
 
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
