@@ -95,6 +95,7 @@
     bitwarden-cli
     #bitwarden-desktop #was not building under 26.05 (try later)
     brave
+    claude-code
     ddev
     deploy-rs
     devenv
