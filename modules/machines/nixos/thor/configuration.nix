@@ -40,6 +40,7 @@
     ./disko.nix
     ../../../apps/tailscale
     ./secrets
+    ./homelab.nix
   ];
 
   home-manager.users.angelus.myHomeDots.enableGui = false;

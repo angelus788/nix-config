@@ -1,0 +1,85 @@
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
+let
+  service = "hermes-agent";
+  cfg = config.homelab.services.${service};
+in
+{
+  imports = [ inputs.hermes-agent.nixosModules.default ];
+
+  options.homelab.services.${service} = {
+    enable = lib.mkEnableOption {
+      description = "Enable ${service}";
+    };
+    ollamaModel = lib.mkOption {
+      type = lib.types.str;
+      default = "hermes3:8b";
+      description = "Ollama model tag Hermes uses as its default LLM (CPU inference, so keep this small)";
+    };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "thor.tailcaed2.ts.net";
+      description = "Tailscale MagicDNS name the Hermes dashboard binds to and is published at (via `tailscale serve`)";
+    };
+    dashboardAuthEnvironmentFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = ''
+        EnvironmentFile providing HERMES_DASHBOARD_BASIC_AUTH_USERNAME/_PASSWORD/_SECRET.
+        Required: Hermes refuses to bind to anything but loopback without an
+        auth provider configured, and this module binds to the Tailscale
+        MagicDNS name (see `url`).
+      '';
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Hermes";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Self-improving AI agent framework (Nous Research)";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "mdi-robot-happy";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Tools";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    # Local CPU-only inference backend for Hermes; not exposed outside loopback.
+    services.ollama = {
+      enable = true;
+      host = "127.0.0.1";
+      port = 11434;
+      loadModels = [ cfg.ollamaModel ];
+    };
+
+    services.hermes-agent = {
+      enable = true;
+      addToSystemPackages = true;
+      environment.OLLAMA_BASE_URL = "http://127.0.0.1:11434";
+      settings.model.default = "ollama/${cfg.ollamaModel}";
+      environmentFiles = lib.optional (
+        cfg.dashboardAuthEnvironmentFile != null
+      ) cfg.dashboardAuthEnvironmentFile;
+      backend = {
+        mode = "dashboard";
+        # Hermes refuses non-loopback binds without an auth provider (see
+        # dashboardAuthEnvironmentFile) and rejects requests whose Host header
+        # doesn't match the bind target — binding to the Tailscale MagicDNS
+        # name makes both checks agree with what `tailscale serve` forwards.
+        host = cfg.url;
+        waitFor = "hostname";
+        port = 9119;
+      };
+    };
+  };
+}

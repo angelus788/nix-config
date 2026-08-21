@@ -168,6 +168,7 @@ in
     ##./deemix
     ./forgejo
     ./forgejo-runner
+    ./hermes-agent
     ./homepage
     ./immich
     ./invoiceplane

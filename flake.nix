@@ -102,6 +102,11 @@
       url = "git+https://git.avgtechguy.com/avgtechguy/wallpaper";
       flake = false; # We only want the files, not the flake output
     };
+
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
