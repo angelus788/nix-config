@@ -17,8 +17,13 @@ in
     };
     ollamaModel = lib.mkOption {
       type = lib.types.str;
-      default = "hermes3:8b";
-      description = "Ollama model tag Hermes uses as its default LLM (CPU inference, so keep this small)";
+      default = "llama3.1:8b";
+      description = ''
+        Ollama model tag Hermes uses as its default LLM (CPU inference, so keep this small).
+        Must support tool-calling — Nous Research's own "hermes3"/"hermes4" chat models do
+        NOT (Hermes Agent itself detects and warns on this; see hermes_cli/model_switch.py
+        upstream), despite the naming coincidence with this agent framework.
+      '';
     };
     url = lib.mkOption {
       type = lib.types.str;
@@ -61,6 +66,11 @@ in
       port = 11434;
       loadModels = [ cfg.ollamaModel ];
     };
+
+    # Lets the interactive user read the shared HERMES_HOME state (owned by
+    # the dedicated hermes user/group) so the CLI works over SSH, matching
+    # what the upstream module does automatically for container.hostUsers.
+    users.users.angelus.extraGroups = [ config.services.hermes-agent.group ];
 
     services.hermes-agent = {
       enable = true;
