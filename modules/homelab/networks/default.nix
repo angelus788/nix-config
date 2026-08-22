@@ -1,6 +1,41 @@
 { lib, ... }:
 {
   options.homelab.networks = {
+    overlay = lib.mkOption {
+      default = { };
+      description = ''
+        Per-host address on the current trusted overlay VPN used to expose
+        internal services to already-authenticated remote clients (Tailscale
+        today). Kept separate from `local`/`external` so that migrating the
+        overlay provider (e.g. to a self-hosted NetBird deployment) only
+        means updating these values in one place, not every consumer.
+      '';
+      example = lib.literalExpression ''
+        odin = {
+          address = "100.94.78.77";
+          provider = "tailscale";
+        };
+      '';
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options = {
+            address = lib.mkOption {
+              type = lib.types.str;
+              example = "100.94.78.77";
+              description = "This host's address on the overlay network.";
+            };
+            provider = lib.mkOption {
+              type = lib.types.enum [
+                "tailscale"
+                "netbird"
+              ];
+              default = "tailscale";
+              description = "Which overlay VPN currently assigns this address.";
+            };
+          };
+        }
+      );
+    };
     external = lib.mkOption {
       default = { };
       example = lib.literalExpression ''

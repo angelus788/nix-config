@@ -2,6 +2,7 @@
 let
   service = "protonmail-bridge";
   cfg = config.homelab.services.${service};
+  overlayAddress = config.homelab.networks.overlay.${config.networking.hostName}.address;
 in
 {
   options.homelab.services.${service} = {
@@ -82,27 +83,35 @@ in
           };
         };
 
-      # Socat proxy for IMAP (Listens ONLY on Tailscale IP, forwards to localhost)
+      # Socat proxy for IMAP (Listens ONLY on the overlay VPN address, forwards to localhost)
         systemd.user.services."${service}-proxy-imap" = {
-          description = "ProtonMail Bridge IMAP Tailscale Proxy";
+          description = "ProtonMail Bridge IMAP Overlay VPN Proxy";
           wantedBy = [ "default.target" ];
           after = [ "${service}.service" ];
+          # Tailscale (a system service) may not have brought up its interface/
+          # address yet when this user unit starts at boot — user units can't
+          # reliably order after system units (After=/Wants= are a no-op across
+          # that boundary), so retry patiently instead of racing it.
+          startLimitIntervalSec = 300;
+          startLimitBurst = 30;
           serviceConfig = {
             Restart = "always";
-            # Changed TCP4-LISTEN:1143 to TCP4-LISTEN:1143,bind=100.94.78.77
-            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1143,bind=100.94.78.77,fork,reuseaddr TCP4:127.0.0.1:1143";
+            RestartSec = 5;
+            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1143,bind=${overlayAddress},fork,reuseaddr TCP4:127.0.0.1:1143";
           };
         };
 
-        # Socat proxy for SMTP (Listens ONLY on Tailscale IP, forwards to localhost)
+        # Socat proxy for SMTP (Listens ONLY on the overlay VPN address, forwards to localhost)
         systemd.user.services."${service}-proxy-smtp" = {
-          description = "ProtonMail Bridge SMTP Tailscale Proxy";
+          description = "ProtonMail Bridge SMTP Overlay VPN Proxy";
           wantedBy = [ "default.target" ];
           after = [ "${service}.service" ];
+          startLimitIntervalSec = 300;
+          startLimitBurst = 30;
           serviceConfig = {
             Restart = "always";
-            # Changed TCP4-LISTEN:1025 to TCP4-LISTEN:1025,bind=100.94.78.77
-            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1025,bind=100.94.78.77,fork,reuseaddr TCP4:127.0.0.1:1025";
+            RestartSec = 5;
+            ExecStart = "${pkgs.socat}/bin/socat TCP4-LISTEN:1025,bind=${overlayAddress},fork,reuseaddr TCP4:127.0.0.1:1025";
           };
         };
       })
