@@ -164,9 +164,19 @@ in
       };
 
       systemd.services.netbird-management = {
-        serviceConfig.EnvironmentFile = [
-          config.age.secrets.netbirdOidcSecret.path
-        ];
+        # netbird-management does a hard OIDC-discovery check against Keycloak
+        # (on a different host) at every startup and refuses to boot if it
+        # fails. If both restart around the same time (e.g. nightly auto-
+        # upgrade on both hosts), the default 5-tries-in-10s limit gives up
+        # long before Keycloak finishes booting. Retry patiently instead.
+        startLimitIntervalSec = 900;
+        startLimitBurst = 50;
+        serviceConfig = {
+          EnvironmentFile = [
+            config.age.secrets.netbirdOidcSecret.path
+          ];
+          RestartSec = 15;
+        };
 
         environment = {
           NETBIRD_MGMT_OIDC_ISSUER_ENDPOINT = cfg.oidc.issuer;
