@@ -88,7 +88,7 @@ in
       hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
     };
     root = {
-      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
+      hashedPasswordFile = config.age.secrets.initialHashedPassword.path;
     };
   };
 
