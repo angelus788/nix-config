@@ -77,7 +77,6 @@ in
 {
   imports = [
     ./firewall.nix
-    ./tailscale.nix
     ./dns.nix
   ];
 
