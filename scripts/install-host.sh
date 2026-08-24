@@ -37,26 +37,18 @@ trap 'rm -rf "$STAGING_DIR"' EXIT
 echo "--> Staging SSH host keys into temporary extra-files..."
 EXTRA_FILES_DIR="$STAGING_DIR/extra-files"
 
-# Use /persist/ssh for stormbreaker, /etc/ssh for traditional hosts
-if [ "$HOSTNAME" = "stormbreaker" ]; then
-  mkdir -p "$EXTRA_FILES_DIR/persist/ssh"
-  cp "$BACKUP_DIR/ssh_host_ed25519_key" "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key"
-  cp "$BACKUP_DIR/ssh_host_ed25519_key.pub" "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key.pub"
+# Every host's _common/default.nix points services.openssh.hostKeys and
+# age.identityPaths at /persist/ssh/ssh_host_ed25519_key (disko gives every
+# host a /persist subvolume) — inject the backed-up key there for all hosts
+# so it survives reinstalls and agenix can actually decrypt on first boot.
+mkdir -p "$EXTRA_FILES_DIR/persist/ssh"
+cp "$BACKUP_DIR/ssh_host_ed25519_key" "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key"
+cp "$BACKUP_DIR/ssh_host_ed25519_key.pub" "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key.pub"
 
-  chmod 755 "$EXTRA_FILES_DIR/persist"
-  chmod 755 "$EXTRA_FILES_DIR/persist/ssh"
-  chmod 600 "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key"
-  chmod 644 "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key.pub"
-else
-  mkdir -p "$EXTRA_FILES_DIR/etc/ssh"
-  cp "$BACKUP_DIR/ssh_host_ed25519_key" "$EXTRA_FILES_DIR/etc/ssh/ssh_host_ed25519_key"
-  cp "$BACKUP_DIR/ssh_host_ed25519_key.pub" "$EXTRA_FILES_DIR/etc/ssh/ssh_host_ed25519_key.pub"
-
-  chmod 755 "$EXTRA_FILES_DIR/etc"
-  chmod 755 "$EXTRA_FILES_DIR/etc/ssh"
-  chmod 600 "$EXTRA_FILES_DIR/etc/ssh/ssh_host_ed25519_key"
-  chmod 644 "$EXTRA_FILES_DIR/etc/ssh/ssh_host_ed25519_key.pub"
-fi
+chmod 755 "$EXTRA_FILES_DIR/persist"
+chmod 755 "$EXTRA_FILES_DIR/persist/ssh"
+chmod 600 "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key"
+chmod 644 "$EXTRA_FILES_DIR/persist/ssh/ssh_host_ed25519_key.pub"
 
 # 4. Create a robust mock ssh-copy-id wrapper that forces your custom identity file
 cat << 'MOCK_EOF' > "$STAGING_DIR/ssh-copy-id"
