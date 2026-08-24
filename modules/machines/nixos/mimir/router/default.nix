@@ -228,13 +228,22 @@ in
         };
         wireguardPeers =
           let
+            # Drop the router's own last address segment (e.g. the ".1" in
+            # "10.8.1.1", or the "1" after "::" in "fd00:2::1") and append the
+            # peer's segment instead. Splitting on the real separator handles
+            # both protocols correctly — a literal `removeSuffix ".1"` only
+            # coincidentally works for IPv4 and silently no-ops on IPv6, since
+            # "fd00:2::1" doesn't end with the two-character string ".1".
             wgIp =
               proto: x:
-              (
-                (lib.strings.removeSuffix ".1" networks.wireguard.cidr.${proto})
-                + ".${toString x}"
-                + (if proto == "v6" then "/128" else "/32")
-              );
+              let
+                sep = if proto == "v6" then ":" else ".";
+                segments = lib.splitString sep networks.wireguard.cidr.${proto};
+                prefix = lib.concatStringsSep sep (
+                  lib.lists.take (builtins.length segments - 1) segments
+                );
+              in
+              "${prefix}${sep}${toString x}${if proto == "v6" then "/128" else "/32"}";
           in
           [
             {
