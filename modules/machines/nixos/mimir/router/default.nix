@@ -81,10 +81,24 @@ in
     ./dns.nix
   ];
 
-  services.udev.extraRules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="b0:22:7a:dc:78:2b", ATTR{type}=="1", NAME="wan0"
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="c0:18:03:65:51:15", ATTR{type}=="1", NAME="lan0"
-  '';
+  # Renaming NICs via services.udev.extraRules is unreliable: that rule file
+  # runs at a generic priority, after systemd-udevd's own predictable-naming
+  # rules (73-net-name-slot.rules etc.) have typically already claimed a name
+  # for that boot's uevent — so the rename can silently lose the race. Every
+  # systemd.network.networks stanza below matches on Name = "wan0"/"lan0" (in
+  # addition to MAC), so a lost rename means that config never applies at all.
+  # systemd.network.links is the mechanism systemd-udevd actually provides for
+  # this and is guaranteed to run at the correct stage.
+  systemd.network.links = {
+    "10-wan0" = {
+      matchConfig.MACAddress = "b0:22:7a:dc:78:28";
+      linkConfig.Name = "wan0";
+    };
+    "10-lan0" = {
+      matchConfig.MACAddress = "c0:18:03:65:51:15";
+      linkConfig.Name = "lan0";
+    };
+  };
 
   homelab.motd.networkInterfaces = lib.mapAttrsToList (_: v: v.interface) networks;
 
@@ -97,7 +111,7 @@ in
       "10-wan0" = {
         matchConfig = {
           Name = "wan0";
-          MACAddress = "b0:22:7a:dc:78:2b";
+          MACAddress = "b0:22:7a:dc:78:28";
         };
         networkConfig = {
           DHCP = true;
