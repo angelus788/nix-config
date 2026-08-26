@@ -187,6 +187,16 @@ in
       };
 
       beets = final.unstable.beets;
+
+      # Self-hosted netbird stack pinned on 26.05 stable was stuck on 0.71.4, which
+      # predates a breaking signal-protocol change (removal of the legacy Hello
+      # handshake in v0.74.7) that current netbird clients require - peers could
+      # never complete ICE/relay negotiation against it. Pull the whole netbird
+      # family from unstable so client, server, and dashboard versions stay in sync.
+      netbird = final.unstable.netbird;
+      netbird-management = final.unstable.netbird-management;
+      netbird-signal = final.unstable.netbird-signal;
+      netbird-dashboard = final.unstable.netbird-dashboard;
     })
 
     # 2. Universal fetchurl override for uppush 2.5.0
