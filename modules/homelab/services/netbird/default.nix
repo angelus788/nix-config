@@ -265,8 +265,12 @@ in
 
     # BYOP account proxy-cluster (heimdall)
     (lib.mkIf cfg.proxy.enable {
+      # The container has no userns remapping, so its internal uid/gid 1000
+      # (the "netbird" user baked into the image) is literally host uid/gid
+      # 1000 for volume permission purposes - owning this root:root broke
+      # ACME cert issuance entirely (permission denied writing lock/key files).
       systemd.tmpfiles.rules = [
-        "d ${cfg.proxy.certDir} 0750 root root - -"
+        "d ${cfg.proxy.certDir} 0750 1000 1000 - -"
       ];
 
       services.caddy.globalConfig = lib.optionalString (cfg.proxy.caddyBindAddresses != [ ]) ''
@@ -297,9 +301,13 @@ in
       virtualisation.oci-containers.containers.netbird-proxy = {
         image = cfg.proxy.image;
         autoStart = true;
+        # The container's single "main listener" binds internally on :8443
+        # (it multiplexes plain HTTP and TLS/ALPN on one socket) - nothing
+        # ever listens on 80/443 inside the container, so both host ports
+        # must forward there instead of 1:1.
         ports = [
-          "${cfg.proxy.address}:80:80"
-          "${cfg.proxy.address}:443:443"
+          "${cfg.proxy.address}:80:8443"
+          "${cfg.proxy.address}:443:8443"
         ];
         volumes = [
           "${cfg.proxy.certDir}:/certs"
