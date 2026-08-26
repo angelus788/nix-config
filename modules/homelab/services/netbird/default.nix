@@ -213,8 +213,8 @@ in
           reverse_proxy h2c://127.0.0.1:8011
         }
 
-        # Route gRPC Signal traffic
-        handle /signal.SignalExchange/* {
+        # Route gRPC Signal traffic (protobuf package is "signalexchange", not "signal")
+        handle /signalexchange.SignalExchange/* {
           reverse_proxy h2c://127.0.0.1:10000
         }
 
