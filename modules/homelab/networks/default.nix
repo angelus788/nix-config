@@ -63,6 +63,12 @@
                 example = "192.168.1.1";
                 type = lib.types.str;
               };
+              extraAddresses = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                example = [ "203.0.113.10" ];
+                description = "Additional public IPv4 addresses (bare, no CIDR) routed to this host, e.g. a cloud provider reserved/floating IP bound to a second service.";
+              };
             };
             v6 = {
               address = lib.mkOption {

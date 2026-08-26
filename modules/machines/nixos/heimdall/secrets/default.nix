@@ -40,6 +40,7 @@
 
     netbirdDataStoreEncryptionKey.file = "${inputs.secrets}/netbirdDataStoreEncryptionKey.age";
     netbirdOidcSecret.file = "${inputs.secrets}/netbirdOidcSecret.age";
+    netbirdProxyToken.file = "${inputs.secrets}/netbirdProxyToken.age";
     netbirdTurnPassword = {
       owner = "turnserver";
       group = "turnserver";

@@ -66,6 +66,17 @@
         enable = true;
         role = "server";
         netbirdUrl = config.homelab.services.netbird.url;
+        dns.domain = "thorsaga.net";
+        proxy = {
+          enable = true;
+          domain = "proxy.avgtechguy.com";
+          address = lib.head config.homelab.networks.external.heimdall.v4.extraAddresses;
+          interface = config.homelab.networks.external.heimdall.interface;
+          caddyBindAddresses = [
+            (lib.head (lib.splitString "/" config.homelab.networks.external.heimdall.v4.address))
+          ];
+          tokenFile = config.age.secrets.netbirdProxyToken.path;
+        };
       };
 
       rustdesk.enable = true;

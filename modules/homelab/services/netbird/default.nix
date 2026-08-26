@@ -49,7 +49,9 @@ in
     };
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = if cfg.role == "server" then [ "netbird-management" "netbird-signal" "coturn" ] else [ "netbird" ];
+      default =
+        (if cfg.role == "server" then [ "netbird-management" "netbird-signal" "coturn" ] else [ "netbird" ])
+        ++ lib.optional cfg.proxy.enable "podman-netbird-proxy";
     };
     oidc = {
       enable = lib.mkOption {
@@ -78,6 +80,67 @@ in
         description = "Path to file containing OIDC client secret environment variables";
       };
     };
+
+    dns = {
+      domain = lib.mkOption {
+        type = lib.types.str;
+        default = "netbird.selfhosted";
+        example = "nb.avgtechguy.com";
+        description = "Domain suffix for peer DNS resolution (NetBird's MagicDNS equivalent, e.g. <peer-hostname>.<domain>). Resolved entirely client-side by each peer's local NetBird daemon - never queried against public DNS, so it doesn't need to be a domain you own, though using one avoids any chance of shadowing a real site while connected.";
+      };
+    };
+
+    proxy = {
+      enable = lib.mkEnableOption {
+        description = "Bring-your-own-proxy (BYOP) account cluster, exposing NetBird-only services over an internet-facing reverse proxy";
+      };
+      domain = lib.mkOption {
+        type = lib.types.str;
+        example = "proxy.avgtechguy.com";
+        description = "Apex domain of the account proxy-cluster. An A record for this domain and a wildcard CNAME (*.<domain>) must point at `address`.";
+      };
+      address = lib.mkOption {
+        type = lib.types.str;
+        example = "152.42.152.248";
+        description = "Public IPv4 the proxy container binds ports 80/443 to. Kept distinct from the host's primary IP so it doesn't collide with an existing reverse proxy (e.g. Caddy) bound there.";
+      };
+      interface = lib.mkOption {
+        type = lib.types.str;
+        example = "ens3";
+        description = "Interface `address` is added to. Applied imperatively (ip addr replace) rather than declaratively, since the interface may already be owned by another .network file (e.g. cloud-init's generated config) that takes precedence over any Nix-managed one.";
+      };
+      caddyBindAddresses = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        example = [ "159.65.167.45" ];
+        description = ''
+          A specific-address bind can only coexist with an already-active wildcard
+          (0.0.0.0) bind on the same port if the wildcard one is narrowed away —
+          Linux gives the wildcard listener the whole port otherwise, regardless of
+          bind order. If Caddy already wildcard-binds 80/443 on this host, list its
+          own address(es) here so Caddy's global `default_bind` is narrowed to just
+          those, freeing `address` for the proxy container. Leave empty if nothing
+          else on this host binds 80/443.
+        '';
+      };
+      tokenFile = lib.mkOption {
+        type = lib.types.path;
+        description = "Path to an env file containing NB_PROXY_TOKEN=<account-scoped proxy token>";
+      };
+      certDir = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/netbird-proxy/certs";
+      };
+      private = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Restrict proxied services to NetBird peers only (NB_PROXY_PRIVATE)";
+      };
+      image = lib.mkOption {
+        type = lib.types.str;
+        default = "netbirdio/reverse-proxy:latest";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable (lib.mkMerge [
@@ -103,6 +166,7 @@ in
         management = {
           enable = true;
           turnDomain = cfg.url;
+          dnsDomain = cfg.dns.domain;
           oidcConfigEndpoint = "${cfg.oidc.issuer}/.well-known/openid-configuration";
           settings = {
             DataStoreEncryptionKey = {
@@ -144,6 +208,11 @@ in
           reverse_proxy h2c://127.0.0.1:8011
         }
 
+        # Route gRPC ProxyService traffic (used by BYOP reverse-proxy clusters)
+        handle /management.ProxyService/* {
+          reverse_proxy h2c://127.0.0.1:8011
+        }
+
         # Route gRPC Signal traffic
         handle /signal.SignalExchange/* {
           reverse_proxy h2c://127.0.0.1:10000
@@ -153,7 +222,7 @@ in
         handle {
         header /config.json Cache-Control "no-store"
           root * ${config.services.netbird.server.dashboard.finalDrv}
-          try_files {path} {path}/ /index.html
+          try_files {path} {path}.html {path}/index.html /index.html
           file_server
         }
       '';
@@ -192,6 +261,66 @@ in
     # Client Role (odin & other nodes)
     (lib.mkIf (cfg.role == "client") {
       services.netbird.enable = true;
+    })
+
+    # BYOP account proxy-cluster (heimdall)
+    (lib.mkIf cfg.proxy.enable {
+      systemd.tmpfiles.rules = [
+        "d ${cfg.proxy.certDir} 0750 root root - -"
+      ];
+
+      services.caddy.globalConfig = lib.optionalString (cfg.proxy.caddyBindAddresses != [ ]) ''
+        default_bind ${lib.concatStringsSep " " cfg.proxy.caddyBindAddresses}
+      '';
+
+      # Applied imperatively: `interface` is typically already owned by another
+      # .network file (e.g. cloud-init's generated config), which wins over any
+      # Nix-managed .network file matching the same link, so declaring this
+      # address via systemd.network.networks would silently have no effect.
+      systemd.services.netbird-proxy-address = {
+        description = "Assign reserved IP for the NetBird BYOP proxy to ${cfg.proxy.interface}";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${pkgs.iproute2}/bin/ip -4 addr replace ${cfg.proxy.address}/32 dev ${cfg.proxy.interface}";
+        };
+      };
+
+      systemd.services.podman-netbird-proxy = {
+        after = [ "netbird-proxy-address.service" ];
+        requires = [ "netbird-proxy-address.service" ];
+      };
+
+      virtualisation.oci-containers.containers.netbird-proxy = {
+        image = cfg.proxy.image;
+        autoStart = true;
+        ports = [
+          "${cfg.proxy.address}:80:80"
+          "${cfg.proxy.address}:443:443"
+        ];
+        volumes = [
+          "${cfg.proxy.certDir}:/certs"
+        ];
+        environment = {
+          NB_PROXY_DOMAIN = cfg.proxy.domain;
+          NB_PROXY_MANAGEMENT_ADDRESS = "https://${cfg.url}";
+          NB_PROXY_CERTIFICATE_DIRECTORY = "/certs";
+          NB_PROXY_ACME_CERTIFICATES = "true";
+          NB_PROXY_PRIVATE = if cfg.proxy.private then "true" else "false";
+        };
+        extraOptions = [
+          "--pull=newer"
+          "--env-file=${cfg.proxy.tokenFile}"
+          # The container runs as an unprivileged uid and can't bind 80/443 in its
+          # own netns without this — without it, podman falls back to a host-side
+          # privileged pre-bind that conflicts with netavark's DNAT rule for the
+          # same published address, and every connection gets refused.
+          "--cap-add=NET_BIND_SERVICE"
+        ];
+      };
     })
   ]);
 }
