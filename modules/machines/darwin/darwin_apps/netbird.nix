@@ -27,6 +27,14 @@
         sleep 1
       done
 
+      # Wait for the agenix secret to be decrypted/mounted
+      for i in {1..30}; do
+        if [ -r ${config.age.secrets.netbirdSetupKey.path} ]; then
+          break
+        fi
+        sleep 1
+      done
+
       # Extract the decrypted key from Agenix
       SETUP_KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
 
@@ -34,7 +42,8 @@
       # Add --management-url if you are self-hosting NetBird
       ${pkgs.netbird}/bin/netbird up \
         --setup-key="$SETUP_KEY" \
-        --disable-dns
+        --management-url https://netbird.avgtechguy.com \
+        --allow-server-ssh
     '';
     serviceConfig = {
       RunAtLoad = true;
