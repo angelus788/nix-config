@@ -9,8 +9,6 @@ with lib;
 let
   cfg = config.syncthingSettings;
   settingsFormat = pkgs.formats.json { };
-  nodeName = config.networking.hostName;
-  fqdn = "${nodeName}.tailcaed2.ts.net";
 in
 {
   options.syncthingSettings = {
@@ -56,7 +54,10 @@ in
       configDir = "/etc/syncthing";
       user = "angelus";
       group = "users";
-      guiAddress = "127.0.0.1:8384";
+      # Listens on all interfaces so it's reachable over whichever overlay
+      # network (Tailscale via Caddy, NetBird directly) is active on this
+      # host; actual exposure is still firewall-gated per interface below.
+      guiAddress = "0.0.0.0:8384";
       key = config.age.secrets.syncthing-key.path;
       cert = config.age.secrets.syncthing-cert.path;
       overrideDevices = true;
@@ -192,8 +193,9 @@ in
       };
     };
 
-    # 2. Local Caddy instance per node
-    services.caddy = {
+    # 2a. Tailscale hosts: local Caddy gets a real cert via tailscaled's
+    # LocalAPI and reverse-proxies to the GUI over loopback.
+    services.caddy = mkIf config.services.tailscale.enable {
       enable = true;
       virtualHosts."${config.networking.hostName}.tailcaed2.ts.net" = {
         extraConfig = ''
@@ -205,13 +207,19 @@ in
       };
     };
 
-    # 3. Allow Tailscale to issue certs to Caddy on this node
-    services.tailscale.permitCertUid = "caddy";
+    services.tailscale.permitCertUid = mkIf config.services.tailscale.enable "caddy";
 
-    # Open local HTTP/HTTPS firewall ports
-    networking.firewall.allowedTCPPorts = [
+    networking.firewall.allowedTCPPorts = mkIf config.services.tailscale.enable [
       80
       443
     ];
+
+    # 2b. NetBird hosts: no equivalent cert-signing API exists, so skip TLS
+    # entirely and reach the GUI directly over the overlay at
+    # http://<hostname>.thorsaga.net:8384 - not a security downgrade, since
+    # the transport is already fully encrypted by WireGuard either way.
+    networking.firewall.interfaces = mkIf config.services.netbird.enable {
+      ${config.services.netbird.clients.default.interface}.allowedTCPPorts = [ 8384 ];
+    };
   };
 }
