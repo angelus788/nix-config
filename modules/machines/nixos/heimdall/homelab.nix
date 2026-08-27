@@ -71,6 +71,13 @@
           enable = true;
           domain = "proxy.avgtechguy.com";
           address = lib.head config.homelab.networks.external.heimdall.v4.extraAddresses;
+          # DigitalOcean NATs the reserved IP's inbound traffic onto this
+          # droplet's "anchor IP" before delivery, so the proxy container must
+          # bind here rather than to `address` itself. Static for the
+          # droplet's lifetime; re-check via
+          # `curl 169.254.169.254/metadata/v1/interfaces/public/0/anchor_ipv4/address`
+          # from the droplet if it's ever recreated/migrated.
+          bindAddress = "10.17.0.5";
           interface = config.homelab.networks.external.heimdall.interface;
           caddyBindAddresses = [
             (lib.head (lib.splitString "/" config.homelab.networks.external.heimdall.v4.address))

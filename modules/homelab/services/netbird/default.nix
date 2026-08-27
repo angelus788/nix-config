@@ -102,7 +102,22 @@ in
       address = lib.mkOption {
         type = lib.types.str;
         example = "152.42.152.248";
-        description = "Public IPv4 the proxy container binds ports 80/443 to. Kept distinct from the host's primary IP so it doesn't collide with an existing reverse proxy (e.g. Caddy) bound there.";
+        description = "Public-facing IPv4 for the proxy-cluster's DNS records and TLS certs. Kept distinct from the host's primary IP so it doesn't collide with an existing reverse proxy (e.g. Caddy) bound there.";
+      };
+      bindAddress = lib.mkOption {
+        type = lib.types.str;
+        default = cfg.proxy.address;
+        example = "10.17.0.5";
+        description = ''
+          Local address the proxy container's published ports (80/443) actually
+          bind to. Usually the same as `address`, but on providers where `address`
+          is a reserved/floating IP that gets NAT'd onto a different local address
+          before delivery (e.g. DigitalOcean's "anchor IP" - see
+          `curl 169.254.169.254/metadata/v1/interfaces/public/0/anchor_ipv4/address`
+          from the droplet), this must be set to that local address instead, or
+          inbound traffic will never match the bind and connections will be
+          refused despite `address` looking correctly configured.
+        '';
       };
       interface = lib.mkOption {
         type = lib.types.str;
@@ -306,8 +321,8 @@ in
         # ever listens on 80/443 inside the container, so both host ports
         # must forward there instead of 1:1.
         ports = [
-          "${cfg.proxy.address}:80:8443"
-          "${cfg.proxy.address}:443:8443"
+          "${cfg.proxy.bindAddress}:80:8443"
+          "${cfg.proxy.bindAddress}:443:8443"
         ];
         volumes = [
           "${cfg.proxy.certDir}:/certs"
