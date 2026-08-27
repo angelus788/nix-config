@@ -10,17 +10,24 @@
   services.tailscale = {
     enable = true;
     authKeyFile = config.age.secrets.tailscaleAuthKey.path;
+    # Required for subnet-router/exit-node forwarding (enables IP forwarding).
+    useRoutingFeatures = "server";
     extraUpFlags =
       let
+        isExternal = lib.attrsets.hasAttrByPath [ config.networking.hostName ] config.homelab.networks.external;
         advertisedRoute =
-          if lib.attrsets.hasAttrByPath [ config.networking.hostName ] config.homelab.networks.external then
-            config.homelab.networks.external.${config.networking.hostName}.v4.address
+          if isExternal then
+            "${config.homelab.networks.external.${config.networking.hostName}.v4.address}/32"
           else
-            config.homelab.networks.local.lan.reservations.${config.networking.hostName}.Address;
+            # homelab.networks.local.lan.cidr.v4 is stale (192.168.2.1, doesn't
+            # match the actual 192.168.1.0/24 range hosts/reservations live on),
+            # so the real LAN subnet is hardcoded here rather than trusted.
+            "192.168.1.0/24";
       in
       [
-        "--advertise-routes=${advertisedRoute}/32"
-        "--reset"
-      ];
+        "--advertise-routes=${advertisedRoute}"
+      ]
+      ++ lib.optional (!isExternal) "--advertise-exit-node"
+      ++ [ "--reset" ];
   };
 }
