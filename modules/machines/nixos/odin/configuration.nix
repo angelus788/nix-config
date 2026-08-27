@@ -206,6 +206,12 @@ in
     ];
   };
 
+  # caddy predates this host's services.caddy usage and was created with a
+  # dynamically-allocated uid (983); nixpkgs wants the static uid 239 but
+  # NixOS won't renumber an existing user's files on activation, so it just
+  # warns forever. Declare the actual on-disk uid instead of fighting it.
+  users.users.caddy.uid = lib.mkForce 983;
+
   services.autoaspm.enable = true;
   powerManagement.powertop.enable = true;
 
@@ -258,6 +264,18 @@ in
       ExecStart = "${pkgs.iproute2}/bin/ip netns add %I";
       ExecStop = "${pkgs.iproute2}/bin/ip netns del %I";
     };
+  };
+
+  # Tailscale exit-node/subnet-router forwards UDP through enp1s0; GRO is off
+  # by default and caps forwarding throughput without this.
+  # https://tailscale.com/s/ethtool-config-udp-gro
+  systemd.services.tailscale-udp-gro-fix = {
+    description = "Enable UDP GRO forwarding on enp1s0 for Tailscale exit-node/subnet-router";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "oneshot";
+    script = "${pkgs.ethtool}/bin/ethtool -K enp1s0 rx-udp-gro-forwarding on rx-gro-list off";
   };
 
   systemd.network.wait-online.enable = false;
