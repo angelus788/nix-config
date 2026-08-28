@@ -1,10 +1,8 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  pkgs,
+  ...
 }:
-let
-  targetUser = "angelus";
-in
 {
   # Enable NetBird daemon service
   services.netbird.enable = true;
@@ -29,10 +27,11 @@ in
       RemainAfterExit = true;
       ExecStart = pkgs.writeShellScript "netbird-up" ''
         KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
-        ${pkgs.netbird}/bin/netbird up 
+        ${pkgs.netbird}/bin/netbird up \
         --setup-key "$KEY" \
         --management-url https://netbird.avgtechguy.com \
-        --allow-server-ssh
+        --allow-server-ssh \
+        --disable-dns=false
       '';
     };
   };

@@ -27,8 +27,8 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "thor.tailcaed2.ts.net";
-      description = "Tailscale MagicDNS name the Hermes dashboard binds to and is published at (via `tailscale serve`)";
+      default = "thor.thorsaga.net";
+      description = "NetBird DNS name the Hermes dashboard binds to and is reachable at directly over the overlay (no TLS - NetBird has no client-side cert-minting equivalent to Tailscale's, but the transport is already WireGuard-encrypted)";
     };
     dashboardAuthEnvironmentFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
@@ -36,8 +36,8 @@ in
       description = ''
         EnvironmentFile providing HERMES_DASHBOARD_BASIC_AUTH_USERNAME/_PASSWORD/_SECRET.
         Required: Hermes refuses to bind to anything but loopback without an
-        auth provider configured, and this module binds to the Tailscale
-        MagicDNS name (see `url`).
+        auth provider configured, and this module binds to the NetBird DNS
+        name (see `url`).
       '';
     };
     homepage.name = lib.mkOption {
@@ -84,8 +84,8 @@ in
         mode = "dashboard";
         # Hermes refuses non-loopback binds without an auth provider (see
         # dashboardAuthEnvironmentFile) and rejects requests whose Host header
-        # doesn't match the bind target — binding to the Tailscale MagicDNS
-        # name makes both checks agree with what `tailscale serve` forwards.
+        # doesn't match the bind target — binding to the NetBird DNS name
+        # makes both checks agree with what clients actually connect to.
         host = cfg.url;
         waitFor = "hostname";
         port = 9119;

@@ -6,6 +6,12 @@
 
   networking.hostName = "thor"; # Define your hostname.
   networking.networkmanager.enable = true;
+  # NetBird's DNS split-resolution (thor.thorsaga.net -> the wt0 overlay IP,
+  # used by hermes-agent to bind) only works if something hands it control
+  # over resolution; NetworkManager's own resolv.conf writer doesn't defer
+  # to it, which otherwise leaves the hostname resolving to the public IP.
+  networking.networkmanager.dns = "systemd-resolved";
+  services.resolved.enable = true;
 
   services.duckdns = {
     enable = true;
@@ -35,10 +41,9 @@
   imports = [
     # Include the results of the hardware scan.
     #../../../misc/avgtechguy.com
-    #../../../apps/netbird
     ./hardware-configuration.nix
     ./disko.nix
-    ../../../apps/tailscale
+    ../../../apps/netbird
     ./secrets
     ./homelab.nix
   ];
