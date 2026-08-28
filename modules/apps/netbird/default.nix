@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }:
 let
   targetUser = "angelus";
@@ -30,7 +29,10 @@ in
       RemainAfterExit = true;
       ExecStart = pkgs.writeShellScript "netbird-up" ''
         KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
-        ${pkgs.netbird}/bin/netbird up --setup-key "$KEY"
+        ${pkgs.netbird}/bin/netbird up 
+        --setup-key "$KEY" \
+        --management-url https://netbird.avgtechguy.com \
+        --allow-server-ssh
       '';
     };
   };
