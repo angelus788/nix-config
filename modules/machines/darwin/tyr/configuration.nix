@@ -13,7 +13,6 @@
     ./networking.nix
     ./secrets.nix
     ../darwin_apps/netbird.nix
-    ../darwin_apps/tailscale.nix
   ];
 
   #devShells.aarch64-darwin.default
@@ -37,7 +36,6 @@
     brews = [
       "mas"
       "pulumi"
-      "tailscale"
     ];
     casks = [
       "1password"
