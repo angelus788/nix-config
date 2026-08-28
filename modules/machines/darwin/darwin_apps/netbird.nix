@@ -40,10 +40,18 @@
 
       # Connect to NetBird using the setup key
       # Add --management-url if you are self-hosting NetBird
+      #
+      # --disable-dns=false forces DNS management on even if a prior
+      # connection left DisableDNS=true persisted in this peer's local
+      # state (management remembers the last value per-peer) - without it,
+      # macOS never gets NetBird's split-DNS resolver for custom domains
+      # like thorsaga.net and silently falls back to whatever nameservers
+      # are already configured.
       ${pkgs.netbird}/bin/netbird up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
-        --allow-server-ssh
+        --allow-server-ssh \
+        --disable-dns=false
     '';
     serviceConfig = {
       RunAtLoad = true;
