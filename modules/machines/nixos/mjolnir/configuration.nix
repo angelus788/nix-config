@@ -105,7 +105,7 @@
     #../../../apps/wpaperd
     ../../../apps/smbshared
     ../../../misc/syncthing
-    ../../../apps/tailscale
+    ../../../apps/netbird
   ];
 
 }

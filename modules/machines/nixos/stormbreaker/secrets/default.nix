@@ -11,6 +11,5 @@
     smbshared.file = "${inputs.secrets}/smbshared.age";
     syncthing-cert.file = "${inputs.secrets}/syncthing-cert-stormbreaker.age";
     syncthing-key.file = "${inputs.secrets}/syncthing-key-stormbreaker.age";
-    tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
   };
 }
