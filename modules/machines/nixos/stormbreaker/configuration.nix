@@ -8,6 +8,12 @@
 
   networking.hostName = "stormbreaker";
 
+  # agenix's identity (/persist/ssh/ssh_host_ed25519_key, see _common) must be
+  # readable during nixos-activation, which runs during the initrd->real-root
+  # transition before ordinary (non-neededForBoot) filesystems mount - without
+  # this, every age secret silently fails to decrypt on every cold boot.
+  fileSystems."/persist".neededForBoot = true;
+
   networking.networkmanager.enable = true;
 
   services.flatpak.enable = true;
