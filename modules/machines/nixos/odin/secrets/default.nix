@@ -56,7 +56,7 @@
     };
     syncthing-cert.file = "${inputs.secrets}/syncthing-cert-odin.age";
     syncthing-key.file = "${inputs.secrets}/syncthing-key-odin.age";
-    tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
+    netbirdSetupKey.file = "${inputs.secrets}/netbirdSetupKey.age";
     vaultwardenCloudflared.file = "${inputs.secrets}/vaultwardenCloudflared.age";
     wireguardCredentials.file = "${inputs.secrets}/wireguardCredentials.age";
         wireguardPrivateKeyOdin = {

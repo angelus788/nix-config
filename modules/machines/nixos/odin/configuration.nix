@@ -99,16 +99,20 @@ in
       allowPing = true;
       trustedInterfaces = [
         "lan1"
-        "tailscale0"
         "enp1s0"
       ];
     };
   };
 
+  # NetBird routing peer for the Homelab LAN subnet route and the exit-node
+  # route (both defined server-side in the NetBird dashboard) - mirrors what
+  # Tailscale's useRoutingFeatures = "server" provided (IP forwarding).
+  services.netbird.useRoutingFeatures = "server";
+
   imports = [
     #../../../misc/avgtechguy.com
     ../../../misc/syncthing
-    ../../../misc/tailscale
+    ../../../apps/netbird
     ../../../misc/agenix
     ./filesystems
     #./backup
@@ -266,11 +270,11 @@ in
     };
   };
 
-  # Tailscale exit-node/subnet-router forwards UDP through enp1s0; GRO is off
-  # by default and caps forwarding throughput without this.
-  # https://tailscale.com/s/ethtool-config-udp-gro
-  systemd.services.tailscale-udp-gro-fix = {
-    description = "Enable UDP GRO forwarding on enp1s0 for Tailscale exit-node/subnet-router";
+  # NetBird exit-node/subnet-router forwards UDP through enp1s0; GRO is off
+  # by default and caps forwarding throughput without this. Same fix
+  # Tailscale needed for the same reason: https://tailscale.com/s/ethtool-config-udp-gro
+  systemd.services.netbird-udp-gro-fix = {
+    description = "Enable UDP GRO forwarding on enp1s0 for NetBird exit-node/subnet-router";
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
