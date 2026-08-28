@@ -71,6 +71,6 @@
     ./digitalocean.nix
     ./secrets
     ./wireguard.nix
-    ../../../apps/tailscale
+    ../../../apps/netbird
   ];
 }
