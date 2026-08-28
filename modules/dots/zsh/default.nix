@@ -86,6 +86,7 @@ in
         ya = "yt-dlp --continue --no-check-certificate --format=bestaudio -x --audio-format wav";
         aspm = "sudo lspci -vv | awk '/ASPM/{print $0}' RS= | grep --color -P '(^[a-z0-9:.]+|ASPM )'";
         mkdir = "mkdir -p";
+        fixmouse = "printf '\\e[?1000l\\e[?1002l\\e[?1003l\\e[?1006l'";
         deploy-nix = "f() { if [[ $(find . -mmin -60 -type f -name flake.lock | wc -c) -eq 0 ]]; then nix flake update; fi && deploy .#$1 --remote-build -s --auto-rollback false && rsync -ax --delete ./ $1:/etc/nixos/ };f";
       };
 
