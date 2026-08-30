@@ -8,6 +8,6 @@
     #initialHashedPassword.file = "${inputs.secrets}/initialHashedPassword.age";
     syncthing-cert.file = "${inputs.secrets}/syncthing-cert-mayra.age";
     syncthing-key.file = "${inputs.secrets}/syncthing-key-mayra.age";
-    tailscaleAuthKey.file = "${inputs.secrets}/tailscaleAuthKey.age";
+    netbirdSetupKey.file = "${inputs.secrets}/netbirdSetupKey.age";
   };
 }

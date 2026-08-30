@@ -20,6 +20,15 @@ in
     options bluetooth disable_ertm=1
   '';
 
+  # Upstream nixpkgs bug: netbird-ui's own .desktop Exec line is now
+  # `env WEBKIT_DISABLE_DMABUF_RENDERER=1 netbird-ui`, but the netbird NixOS
+  # module's wrapper still substitutes the literal `Exec=netbird-ui`, so
+  # --replace-fail aborts the build with "pattern doesn't match". ui.enable
+  # defaults to true on any host with a graphical session (plasma6 here) -
+  # disable it until nixpkgs catches up. The CLI/daemon/tunnel work fine
+  # without the tray icon.
+  services.netbird.ui.enable = false;
+
   imports = [
     #./hardware-configuration.nix
     ./secrets
@@ -27,7 +36,7 @@ in
     ../../../misc/ryzen-undervolting
     ../../../misc/samsung-tv
     ../../../misc/syncthing
-    ../../../apps/tailscale
+    ../../../apps/netbird
     #../../../misc/lgtv
     inputs.jovian.nixosModules.default
     #./lact.nix
