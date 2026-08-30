@@ -15,7 +15,7 @@
     networkmanager.enable = true;
     hostName = "mjolnir";
   };
-  
+
   services.flatpak.enable = true;
 
 
@@ -49,6 +49,7 @@
     just
     obsidian
     proton-pass
+    rustdesk
     spotify
     #rquickshare
     seahorse
@@ -109,7 +110,7 @@
     #../../../apps/DE/gnome
     #../../../apps/DE/plasma
     ../../../apps/openpuck
-     ../../../apps/packet
+    ../../../apps/packet
     #../../../misc/papery
     #../../../apps/wpaperd
     ../../../apps/smbshared
