@@ -83,6 +83,7 @@
             (lib.head (lib.splitString "/" config.homelab.networks.external.heimdall.v4.address))
           ];
           tokenFile = config.age.secrets.netbirdProxyToken.path;
+          tokenSourceFile = config.age.secrets.netbirdProxyToken.file;
         };
       };
 

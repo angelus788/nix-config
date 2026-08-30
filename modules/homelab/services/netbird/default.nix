@@ -142,6 +142,22 @@ in
         type = lib.types.path;
         description = "Path to an env file containing NB_PROXY_TOKEN=<account-scoped proxy token>";
       };
+      tokenSourceFile = lib.mkOption {
+        type = lib.types.nullOr lib.types.path;
+        default = null;
+        example = "config.age.secrets.netbirdProxyToken.file";
+        description = ''
+          The encrypted .age file `tokenFile` is decrypted from (i.e.
+          `age.secrets.<name>.file`, not `.path`). Used only as a
+          restart trigger: agenix decrypts to the same runtime path on every
+          activation regardless of whether the token actually changed, so
+          the container never noticed a rotated token and kept retrying
+          with the stale one until NetBird's management server rate-limited
+          it. This store path's hash changes whenever the encrypted source
+          changes, which content-addresses a real rotation and forces a
+          restart without over-triggering on unrelated deploys.
+        '';
+      };
       certDir = lib.mkOption {
         type = lib.types.str;
         default = "/var/lib/netbird-proxy/certs";
@@ -311,6 +327,7 @@ in
       systemd.services.podman-netbird-proxy = {
         after = [ "netbird-proxy-address.service" ];
         requires = [ "netbird-proxy-address.service" ];
+        restartTriggers = lib.optional (cfg.proxy.tokenSourceFile != null) cfg.proxy.tokenSourceFile;
       };
 
       virtualisation.oci-containers.containers.netbird-proxy = {
@@ -332,6 +349,11 @@ in
           NB_PROXY_MANAGEMENT_ADDRESS = "https://${cfg.url}";
           NB_PROXY_CERTIFICATE_DIRECTORY = "/certs";
           NB_PROXY_ACME_CERTIFICATES = "true";
+          # Defaults to tls-alpn-01, but Let's Encrypt has been declining to
+          # offer that challenge type for this account/authz ("no viable
+          # challenge type found" during cert prefetch). http-01 only needs
+          # port 80, which is already forwarded to the container below.
+          NB_PROXY_ACME_CHALLENGE_TYPE = "http-01";
           NB_PROXY_PRIVATE = if cfg.proxy.private then "true" else "false";
         };
         extraOptions = [
