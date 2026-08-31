@@ -190,6 +190,14 @@ in
         privateIP = "${wgBase}.2/32";
         dnsIP = wg.dns;
         #dnsIP = wg.cidr.v4;
+        monitoredServices = [
+          "wg_client"
+          "slskd"
+          "slskd-web-proxy"
+          "deluged"
+          "delugeweb"
+          "deluge-web-proxy"
+        ];
       };
     };
   };

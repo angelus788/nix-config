@@ -88,10 +88,10 @@ in
           description = "ProtonMail Bridge IMAP Overlay VPN Proxy";
           wantedBy = [ "default.target" ];
           after = [ "${service}.service" ];
-          # Tailscale (a system service) may not have brought up its interface/
-          # address yet when this user unit starts at boot — user units can't
-          # reliably order after system units (After=/Wants= are a no-op across
-          # that boundary), so retry patiently instead of racing it.
+          # The overlay VPN (netbird, a system service) may not have brought up
+          # its interface/address yet when this user unit starts at boot — user
+          # units can't reliably order after system units (After=/Wants= are a
+          # no-op across that boundary), so retry patiently instead of racing it.
           startLimitIntervalSec = 300;
           startLimitBurst = 30;
           serviceConfig = {
