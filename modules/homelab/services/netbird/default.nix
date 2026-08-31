@@ -206,6 +206,24 @@ in
             TURNConfig.Secret = {
               _secret = config.age.secrets.netbirdTurnSecret.path;
             };
+            # Keycloak service-account client (see modules/homelab/services/keycloak) that lets
+            # netbird-management sync/invite users. Read-only "view-users" role only - it cannot
+            # write or delete anything in Keycloak.
+            IdpManagerConfig = {
+              ManagerType = "keycloak";
+              ClientConfig = {
+                ClientID = "netbird-backend";
+                ClientSecret = {
+                  _secret = config.age.secrets.netbirdIdpClientSecret.path;
+                };
+                GrantType = "client_credentials";
+                Issuer = cfg.oidc.issuer;
+                TokenEndpoint = "${cfg.oidc.issuer}/protocol/openid-connect/token";
+              };
+              ExtraConfig = {
+                AdminEndpoint = lib.replaceStrings [ "/realms/" ] [ "/admin/realms/" ] cfg.oidc.issuer;
+              };
+            };
             PKCEAuthorizationFlow.ProviderConfig = {
               Audience = cfg.oidc.audience;
               ClientID = cfg.oidc.clientId;

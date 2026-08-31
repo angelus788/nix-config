@@ -39,6 +39,7 @@
     couchdb-password.file = "${inputs.secrets}/couchdb-password.age";
 
     netbirdDataStoreEncryptionKey.file = "${inputs.secrets}/netbirdDataStoreEncryptionKey.age";
+    netbirdIdpClientSecret.file = "${inputs.secrets}/netbirdIdpClientSecret.age";
     netbirdOidcSecret.file = "${inputs.secrets}/netbirdOidcSecret.age";
     netbirdProxyToken.file = "${inputs.secrets}/netbirdProxyToken.age";
     netbirdTurnPassword = {
