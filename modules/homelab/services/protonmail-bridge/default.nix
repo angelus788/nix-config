@@ -96,7 +96,18 @@ in
           
           script = ''
             export PASSWORD_STORE_DIR="$HOME/.password-store"
-            if ! gpg --list-keys "Proton Bridge" >/dev/null 2>&1; then
+            # protonmail-bridge.service touches the same GPG keybox concurrently at
+            # boot, so a single --list-keys check can lose the lock race and report
+            # a false "not found" here; retry before concluding the key is missing.
+            key_exists=0
+            for _ in 1 2 3 4 5; do
+              if gpg --list-keys "Proton Bridge" >/dev/null 2>&1; then
+                key_exists=1
+                break
+              fi
+              sleep 2
+            done
+            if [ "$key_exists" = 0 ]; then
               gpg --batch --passphrase "" --quick-generate-key "Proton Bridge <bridge@internalnetwork.party>" rsa2048 sign,encrypt never
               KEY_ID=$(gpg --with-colons --list-keys "Proton Bridge" | awk -F: '/^fpr:/ {print $10; exit}')
               echo "$KEY_ID:6:" | gpg --import-ownertrust
