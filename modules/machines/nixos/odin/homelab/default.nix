@@ -145,8 +145,8 @@ in
         misc = [
           {
             PiKVM = {
-              href = "https://kvm.thorsaga.net";
-              siteMonitor = "https://kvm.thorsaga.net";
+              href = "https://kvm.thorsaga.net/login/";
+              siteMonitor = "https://kvm.thorsaga.net/login/";
               description = "Open-source KVM solution";
               icon = "pikvm.png";
               category = "Tools";
