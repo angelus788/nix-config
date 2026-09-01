@@ -16,10 +16,13 @@ in
   };
 
   # PiKVM only serves its own self-signed cert, and pikvm.thorsaga.net is
-  # resolved directly to it by NetBird's MagicDNS for mesh peers - fronting
-  # it with Caddy here (same LAN as PiKVM) gets a real Let's Encrypt cert.
-  # thorsaga.net is on the same Cloudflare account as internalnetwork.party
-  # (verified via the API), so this reuses that existing DNS-01 credential.
+  # PiKVM's own NetBird peer name (automatic peer-domain-name, not something
+  # we control) - fronting it with Caddy here (same LAN as PiKVM) under a
+  # separate name, kvm.thorsaga.net (an Extra DNS Label on odin's own NetBird
+  # peer, see configuration.nix), gets a real Let's Encrypt cert without
+  # touching PiKVM's own peer identity. thorsaga.net is on the same
+  # Cloudflare account as internalnetwork.party (verified via the API), so
+  # this reuses that existing DNS-01 credential.
   security.acme.certs."thorsaga.net" = {
     reloadServices = [ "caddy.service" ];
     domain = "thorsaga.net";
@@ -31,7 +34,7 @@ in
     environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
   };
 
-  services.caddy.virtualHosts."pikvm.thorsaga.net" = {
+  services.caddy.virtualHosts."kvm.thorsaga.net" = {
     useACMEHost = "thorsaga.net";
     extraConfig = ''
       reverse_proxy https://${config.homelab.networks.local.lan.reservations.pikvm.Address} {
@@ -142,8 +145,8 @@ in
         misc = [
           {
             PiKVM = {
-              href = "https://pikvm.thorsaga.net";
-              siteMonitor = "https://pikvm.thorsaga.net";
+              href = "https://kvm.thorsaga.net";
+              siteMonitor = "https://kvm.thorsaga.net";
               description = "Open-source KVM solution";
               icon = "pikvm.png";
               category = "Tools";
