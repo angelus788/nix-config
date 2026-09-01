@@ -52,7 +52,7 @@ deploy host: (copy host)
     #!/usr/bin/env bash
     set -euo pipefail
     echo "==> Deploying NixOS system configuration to host '{{host}}'..."
-    nixos-rebuild switch --flake .#{{host}} --target-host {{host}} --build-host {{host}} --no-reexec --sudo --ask-sudo-password
+    nixos-rebuild switch --flake .#{{host}} --target-host {{host}} --build-host {{host}} --no-reexec --sudo
 
 boot host: (copy host)
     #!/usr/bin/env bash
