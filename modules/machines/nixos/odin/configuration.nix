@@ -25,7 +25,7 @@ in
   networking.hostId = lib.mkForce null;
 
   networking.hosts = {
-    "127.0.0.1" = [ "login.internalnetwork.party" ];
+    "127.0.0.1" = [ "login.internalnetwork.party" "kvm.thorsaga.net" ];
   };
 
   #services.prometheus.exporters = {
