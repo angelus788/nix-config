@@ -109,6 +109,14 @@ in
   # Tailscale's useRoutingFeatures = "server" provided (IP forwarding).
   services.netbird.useRoutingFeatures = "server";
 
+  # NOTE: the "kvm" Extra DNS Label plan for kvm.thorsaga.net (fronting
+  # PiKVM with the Caddy vhost in ./homelab/default.nix) is on hold - the
+  # current NetBird setup key was supposed to have "Allow Extra DNS Labels"
+  # enabled but the management server rejects logins with
+  # "setup key doesn't allow extra DNS labels". Re-add the ExecStart
+  # override here (see git history) with `--extra-dns-labels kvm` once
+  # that's actually fixed dashboard-side.
+
   imports = [
     #../../../misc/avgtechguy.com
     ../../../misc/syncthing
