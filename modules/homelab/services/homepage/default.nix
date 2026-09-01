@@ -139,6 +139,13 @@ in
               customUrls = {
                 forgejo = "https://git.avgtechguy.com";
                 couchdb = "https://couchdb.avgtechguy.com/_utils";
+                # hermes-agent only runs on thor, not odin (where Homepage
+                # itself runs) - the default "https://${hl.hermes-agent.url}"
+                # falls back to the option's declared default
+                # (thor.thorsaga.net, unreliable split-DNS) instead of
+                # thor's actual bind target (its raw NetBird IP, plain HTTP,
+                # port 9119) since odin never overrides that option itself.
+                hermes-agent = "http://100.84.83.10:9119";
               };
               serviceUrl = customUrls.${x} or "https://${hl.${x}.url}";
             in
