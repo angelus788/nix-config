@@ -50,7 +50,17 @@ in
     monitoredServices = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default =
-        (if cfg.role == "server" then [ "netbird-management" "netbird-signal" "coturn" ] else [ "netbird" ])
+        (
+          if cfg.role == "server" then
+            [
+              "netbird-management"
+              "netbird-signal"
+              "coturn"
+              "netbird-relay"
+            ]
+          else
+            [ "netbird" ]
+        )
         ++ lib.optional cfg.proxy.enable "podman-netbird-proxy";
     };
     oidc = {
@@ -206,6 +216,17 @@ in
             TURNConfig.Secret = {
               _secret = config.age.secrets.netbirdTurnSecret.path;
             };
+            # NetBird's own dedicated relay protocol (distinct from the TURN/coturn
+            # config above) - required for "Lazy Connections" and "Force Relay" to
+            # work at all. Without this, clients requesting a relayed connection
+            # have no relay server to fall back to and just hang in "Connecting".
+            Relay = {
+              Addresses = [ "rels://${cfg.url}:443" ];
+              CredentialsTTL = "12h";
+              Secret = {
+                _secret = config.age.secrets.netbirdRelaySecret.path;
+              };
+            };
             # Keycloak service-account client (see modules/homelab/services/keycloak) that lets
             # netbird-management sync/invite users. Read-only "view-users" role only - it cannot
             # write or delete anything in Keycloak.
@@ -267,6 +288,12 @@ in
           reverse_proxy h2c://127.0.0.1:10000
         }
 
+        # Route NetBird's dedicated relay protocol (websocket, not gRPC) - required
+        # for "Lazy Connections" and "Force Relay" to work.
+        handle /relay* {
+          reverse_proxy 127.0.0.1:33080
+        }
+
         # Serve the bundled dashboard files (now directly in the root of the derivation)
         handle {
         header /config.json Cache-Control "no-store"
@@ -303,6 +330,43 @@ in
           NETBIRD_MGMT_AUTH_AUTHORITY = cfg.oidc.issuer;
           # Force the OIDC config endpoint explicitly to the Keycloak domain
           NETBIRD_MGMT_OIDC_CONFIGURATION_ENDPOINT = "${cfg.oidc.issuer}/.well-known/openid-configuration";
+        };
+      };
+
+      # NetBird's dedicated relay server. Distinct from coturn (classic TURN/STUN,
+      # used for ICE candidate gathering) - this is required for the client-side
+      # "Lazy Connections" and "Force Relay" features, which specifically target
+      # this protocol rather than falling back to TURN. Bound to loopback only;
+      # exposed publicly via the /relay* Caddy route above rather than opening a
+      # second port, since the relay protocol is plain websocket over TLS and
+      # Caddy already terminates TLS for this domain.
+      systemd.services.netbird-relay = {
+        description = "NetBird dedicated relay server";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        restartTriggers = [ config.age.secrets.netbirdRelaySecret.file ];
+        serviceConfig = {
+          # DynamicUser means this service can't read the agenix-decrypted
+          # secret directly (root-owned, restrictive perms) - LoadCredential
+          # has systemd itself (running as root) read it and hand it over via
+          # a service-private credentials directory instead.
+          LoadCredential = "relay-secret:${config.age.secrets.netbirdRelaySecret.path}";
+          ExecStart = "${pkgs.writeShellScript "netbird-relay-start" ''
+            exec ${pkgs.netbird-relay}/bin/netbird-relay \
+              --listen-address 127.0.0.1:33080 \
+              --exposed-address rels://${cfg.url}:443 \
+              --health-listen-address 127.0.0.1:9093 \
+              --metrics-port 9092 \
+              --auth-secret "$(${pkgs.systemd}/bin/systemd-creds cat relay-secret)"
+          ''}";
+          DynamicUser = true;
+          Restart = "always";
+          RestartSec = 15;
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          ProtectSystem = "strict";
+          ProtectHome = true;
         };
       };
     })

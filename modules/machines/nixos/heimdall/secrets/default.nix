@@ -42,6 +42,7 @@
     netbirdIdpClientSecret.file = "${inputs.secrets}/netbirdIdpClientSecret.age";
     netbirdOidcSecret.file = "${inputs.secrets}/netbirdOidcSecret.age";
     netbirdProxyToken.file = "${inputs.secrets}/netbirdProxyToken.age";
+    netbirdRelaySecret.file = "${inputs.secrets}/netbirdRelaySecret.age";
     netbirdTurnPassword = {
       owner = "turnserver";
       group = "turnserver";

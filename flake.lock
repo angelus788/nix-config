@@ -785,11 +785,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1788210766,
-        "narHash": "sha256-Zlr4u+yikFKODbMtH3j9VFUUKYErXS6g/glADGn9yrM=",
+        "lastModified": 1788263313,
+        "narHash": "sha256-lY0/lqhIuO9RcJqxc2bcgF4sTD1l7Ow1mjIn+fuU0gI=",
         "ref": "refs/heads/main",
-        "rev": "9e12fe6e12a95ff075f87e9e1d3c0d787ef6438c",
-        "revCount": 317,
+        "rev": "701c198607e548f34ca945ef2a90dc77ec064c19",
+        "revCount": 318,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
