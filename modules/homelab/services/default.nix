@@ -66,6 +66,7 @@ in
           config.homelab.baseDomain
           "avgtechguy.com"
           "internalnetwork.party"
+          "thorsaga.net"
         ];
         acmeServices = lib.listToAttrs (map
           (domain: {
