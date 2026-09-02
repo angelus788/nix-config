@@ -101,11 +101,13 @@
     sudo.fprintAuth = true;
     polkit-1.fprintAuth = true; # ← This is the bridge Bitwarden needs
     cosmic-greeter = {
-      fprintAuth = true;
-      # services.gnome.gnome-keyring.enable only wires enableGnomeKeyring into
-      # the plain "login" PAM service, never cosmic-greeter/cosmic-lock - so
-      # the login keyring never gets an unlock hook in the graphical session,
-      # which is the "won't unlock the password keeper" symptom on cold boot.
+      # No fprintAuth here on purpose: NixOS wires pam_fprintd.so in as
+      # "sufficient" ahead of pam_unix, so a fingerprint login short-circuits
+      # the auth stack and pam_unix never runs - meaning pam_gnome_keyring
+      # never sees the login password and the keyring stays locked all
+      # session. Password-only at the greeter is what actually unlocks it;
+      # fingerprint still works everywhere else (lock, sudo, polkit) once
+      # the keyring is unlocked for the session.
       enableGnomeKeyring = true;
     };
     cosmic-lock = {
