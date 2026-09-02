@@ -87,11 +87,30 @@
     tod.enable = false; # T490 Synaptics does NOT use TOD driver
   };
 
+  # power-profiles-daemon runtime-suspends the Synaptics fingerprint reader
+  # (USB 06cb:*) after 2s idle; libfprint doesn't always wake it in time,
+  # causing "No such device" / "device is still busy" errors from fprintd
+  # and slow/unreliable scans (confirmed on mjolnir, same T490 hardware).
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="06cb", TEST=="power/control", ATTR{power/control}="on"
+  '';
+
   security.pam.services = {
     login.fprintAuth = true;
     sudo.fprintAuth = true;
-    cosmic-greeter.fprintAuth = true;
-    cosmic-lock.fprintAuth = true;
+    polkit-1.fprintAuth = true; # ← This is the bridge Bitwarden needs
+    cosmic-greeter = {
+      fprintAuth = true;
+      # services.gnome.gnome-keyring.enable only wires enableGnomeKeyring into
+      # the plain "login" PAM service, never cosmic-greeter/cosmic-lock - so
+      # the login keyring never gets an unlock hook in the graphical session,
+      # which is the "won't unlock the password keeper" symptom on cold boot.
+      enableGnomeKeyring = true;
+    };
+    cosmic-lock = {
+      fprintAuth = true;
+      enableGnomeKeyring = true;
+    };
     cosmic-settings.fprintAuth = true;
   };
 
