@@ -50,6 +50,8 @@
     };
     netbirdTurnSecret.file = "${inputs.secrets}/netbirdTurnSecret.age";
 
+    pocketIdEncryptionKey.file = "${inputs.secrets}/pocketIdEncryptionKey.age";
+
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
     #duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     #duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";

@@ -185,6 +185,7 @@ in
     ./navidrome
     ./nextcloud
     ./netbird
+    ./pocket-id
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic
     ./protonmail-bridge

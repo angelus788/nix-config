@@ -29,6 +29,38 @@
       };
     };
 
+  # TEMPORARY: pocket-id failover rehearsal (2026-09-02). Pocket-id enforces
+  # RFC 6749 §3.1.2 ("redirect_uri MUST NOT include a fragment component")
+  # and unconditionally rejects the dashboard's default fragment-based
+  # redirect_uri ("https://netbird.avgtechguy.com/#callback"), even when
+  # registered verbatim as a callback URL - confirmed via direct /authorize
+  # requests against pocket-id. AUTH_REDIRECT_URI overrides the frontend's
+  # computed default with a fragment-free path instead.
+  #
+  # Must be a distinct PATH, not just "/" - @axa-fr/react-oidc's OidcRoutes
+  # decides whether the current page load *is* the OAuth callback by
+  # comparing getPath(currentUrl) === getPath(redirect_uri), where getPath()
+  # returns path+hash with the trailing slash stripped. The default
+  # "/#callback" hashes to "#callback", distinct from a normal page load's
+  # "". A fragment-free "/" hashes to "" too - identical to every normal
+  # page load - so the dashboard treated *every* visit as a callback attempt
+  # and fired a bogus token exchange with code=undefined. "/oauth-callback"
+  # keeps that comparison meaningful without a fragment; Caddy's SPA
+  # try_files fallback serves the same app shell for any unmatched path, so
+  # no separate route needs to exist server-side.
+  #
+  # Leave AUTH_SILENT_REDIRECT_URI unset - the oidc-client lib hard-errors
+  # ("redirect_uri and silent_redirect_uri must be different") if both are
+  # set to the same value, and an unset one just no-ops the silent-renew
+  # feature rather than breaking login. Revert alongside the oidc.issuer/
+  # scope override below once the rehearsal is done.
+  services.netbird.server.dashboard.settings = {
+    # Relative, not absolute - the frontend prepends window.location.origin
+    # itself; an absolute URL here caused a duplicated origin
+    # ("https://netbird.avgtechguy.comhttps://netbird.avgtechguy.com/").
+    AUTH_REDIRECT_URI = "/oauth-callback";
+  };
+
   homelab = {
     baseDomain = "avgtechguy.com";
     cloudflare.dnsCredentialsFile = config.age.secrets.cloudflareDnsApiCredentialsAvgtechguy.path;
@@ -67,6 +99,22 @@
         role = "server";
         netbirdUrl = config.homelab.services.netbird.url;
         dns.domain = "thorsaga.net";
+        # TEMPORARY: pocket-id failover rehearsal (2026-09-02). Keycloak's
+        # own client_id/audience are already "netbird-dashboard", matching
+        # pocket-id's, so only issuer/scope/idpSyncEnabled need overriding
+        # here. idpSyncEnabled = false because pocket-id has no Keycloak-
+        # compatible admin API - with it left on, management's per-request
+        # IdpManagerConfig token fetch 200s into pocket-id's SPA fallback
+        # HTML and every dashboard API call gets rejected as an invalid
+        # JWT (see modules/homelab/services/netbird's idpSyncEnabled doc).
+        # Revert this block (delete the whole oidc override) once the
+        # rehearsal login + PAT-based admin promotion is done and
+        # odin/Keycloak is back.
+        oidc = {
+          issuer = "https://id.avgtechguy.com";
+          scope = "openid profile email offline_access";
+          idpSyncEnabled = false;
+        };
         proxy = {
           enable = true;
           domain = "proxy.avgtechguy.com";
@@ -88,6 +136,11 @@
       };
 
       rustdesk.enable = true;
+
+      pocket-id = {
+        enable = true;
+        encryptionKeyFile = config.age.secrets.pocketIdEncryptionKey.path;
+      };
 
       #plausible = { # Deactivating Plausible
       #  enable = true;

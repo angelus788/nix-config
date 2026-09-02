@@ -89,6 +89,35 @@ in
         default = null;
         description = "Path to file containing OIDC client secret environment variables";
       };
+      scope = lib.mkOption {
+        type = lib.types.str;
+        default = "openid profile email offline_access api";
+        description = ''
+          Scopes requested from the OIDC provider. Defaults match Keycloak,
+          where `api` is a custom client scope mapper this repo's Keycloak
+          setup provides. Other providers (e.g. pocket-id, used as an
+          emergency failover issuer) won't recognize `api` - override to
+          "openid profile email offline_access" for those.
+        '';
+      };
+      idpSyncEnabled = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Whether to configure IdpManagerConfig (Keycloak admin-API user
+          sync). ClientConfig.TokenEndpoint/ExtraConfig.AdminEndpoint below
+          are Keycloak-specific URL shapes - management polls
+          TokenEndpoint on essentially every dashboard API request to fetch
+          a service-account token. Against a non-Keycloak issuer with no
+          such route (e.g. pocket-id, used as an emergency failover issuer),
+          that request 200s into the provider's SPA fallback HTML instead
+          of 404ing, and management's JSON decode of it fails with
+          "invalid character '<' looking for beginning of value" - which
+          surfaces as every JWT on /api/* being rejected as invalid, not as
+          a sync-specific error. Set to false for providers without a
+          Keycloak-compatible admin API.
+        '';
+      };
     };
 
     dns = {
@@ -197,7 +226,7 @@ in
             AUTH_AUTHORITY = cfg.oidc.issuer;
             AUTH_CLIENT_ID = cfg.oidc.clientId;
             AUTH_AUDIENCE = cfg.oidc.audience;
-            AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api";
+            AUTH_SUPPORTED_SCOPES = cfg.oidc.scope;
             NETBIRD_MGMT_API_ENDPOINT = "https://${cfg.url}";
             NETBIRD_MGMT_GRPC_API_ENDPOINT = "https://${cfg.url}";
             USE_AUTH0 = false;
@@ -227,6 +256,18 @@ in
                 _secret = config.age.secrets.netbirdRelaySecret.path;
               };
             };
+            PKCEAuthorizationFlow.ProviderConfig = {
+              Audience = cfg.oidc.audience;
+              ClientID = cfg.oidc.clientId;
+              Scope = cfg.oidc.scope;
+              UseIDToken = true;
+            };
+            DeviceAuthorizationFlow.ProviderConfig = {
+              Audience = cfg.oidc.audience;
+              ClientID = cfg.oidc.clientId;
+              Scope = cfg.oidc.scope;
+            };
+          } // lib.optionalAttrs cfg.oidc.idpSyncEnabled {
             # Keycloak service-account client (see modules/homelab/services/keycloak) that lets
             # netbird-management sync/invite users. Read-only "view-users" role only - it cannot
             # write or delete anything in Keycloak.
@@ -244,17 +285,6 @@ in
               ExtraConfig = {
                 AdminEndpoint = lib.replaceStrings [ "/realms/" ] [ "/admin/realms/" ] cfg.oidc.issuer;
               };
-            };
-            PKCEAuthorizationFlow.ProviderConfig = {
-              Audience = cfg.oidc.audience;
-              ClientID = cfg.oidc.clientId;
-              Scope = "openid profile email offline_access api";
-              UseIDToken = true;
-            };
-            DeviceAuthorizationFlow.ProviderConfig = {
-              Audience = cfg.oidc.audience;
-              ClientID = cfg.oidc.clientId;
-              Scope = "openid profile email offline_access api";
             };
           };
         };
