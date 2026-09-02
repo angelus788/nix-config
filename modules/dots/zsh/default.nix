@@ -151,6 +151,15 @@ in
         if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
           export TERM=xterm-256color
         fi
+
+        # nvim/tmux mouse mode can be left stuck on if they exit abnormally
+        # (killed pane, crash, dropped SSH connection), swallowing clicks
+        # until the terminal's mouse-tracking modes are reset. Do it before
+        # every prompt instead of relying on manually running `fixmouse`.
+        _reset_mouse_mode() {
+          printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
+        }
+        precmd_functions+=(_reset_mouse_mode)
       '';
     };
   };
