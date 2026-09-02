@@ -192,6 +192,16 @@ in
 
   system.autoUpgrade.enable = true;
 
+  # odin has recurring hard freezes (silent, no kernel/journal trace) that
+  # previously required physically cycling the external PSU. The board has a
+  # real hardware watchdog (intel_oc_wdt, /dev/watchdog0) that was never
+  # armed at runtime. Arming it lets a hang trigger an automatic hard reset
+  # instead of sitting frozen for hours.
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = "30s";
+    RebootWatchdogSec = "10min";
+  };
+
   #services.withings2intervals = {
   #  enable = true;
   #  configFile = config.age.secrets.withings2intervals.path;
