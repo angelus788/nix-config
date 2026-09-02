@@ -90,7 +90,8 @@
   # power-profiles-daemon runtime-suspends the Synaptics fingerprint reader
   # (USB 06cb:*) after 2s idle; libfprint doesn't always wake it in time,
   # causing "No such device" / "device is still busy" errors from fprintd
-  # and slow/unreliable scans (confirmed on mjolnir, same T490 hardware).
+  # and slow/unreliable scans (confirmed on mjolnir, same 06cb:00bd sensor
+  # despite this being an X12 Detachable rather than a T490).
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="06cb", TEST=="power/control", ATTR{power/control}="on"
   '';
