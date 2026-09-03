@@ -18,6 +18,7 @@ in
         "toml"
         "elixir"
         "make"
+        "catppuccin"
       ];
 
       userSettings = {
@@ -151,9 +152,8 @@ in
         base_keymap = "VSCode";
 
         theme = {
-          mode = "system";
-          light = "One Light";
-          dark = "One Dark";
+          mode = "dark";
+          dark = "Catppuccin Mocha";
         };
 
         show_whitespaces = "all";
