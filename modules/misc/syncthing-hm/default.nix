@@ -47,13 +47,24 @@ in
       enable = true;
       overrideDevices = true;
       overrideFolders = true;
+      # This (not settings.gui.address below) is what actually feeds the
+      # --gui-address= flag on syncthing's ExecStart - settings.gui.address
+      # only patches the on-disk config.xml via the merge-syncthing-config
+      # service, which does NOT change what the process was launched with.
+      # Listens on all interfaces so it's reachable over NetBird - same
+      # reasoning as modules/misc/syncthing (NixOS): a NetBird BYOP
+      # reverse-proxy target (see homelab_netbird_byop_proxy memory)
+      # connects to this peer's overlay IP from a different host, so
+      # loopback-only binding would make it unreachable even though the
+      # transport is already WireGuard-encrypted end to end regardless.
+      guiAddress = "0.0.0.0:8384";
 
       # Maps to Home Manager's services.syncthing.settings structure
       settings = {
         gui = {
           user = config.home.username;
           password = cfg.guiPassword;
-          address = "127.0.0.1:8384";
+          address = "0.0.0.0:8384";
           insecureSkipHostcheck = true;
         };
 
