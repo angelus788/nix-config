@@ -4,13 +4,8 @@
   pkgs,
   ...
 }:
-let
-  isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
-  isLinuxGui = isLinux && config.myHomeDots.enableGui;
-in
-
 {
-  config = lib.mkIf isLinuxGui {
+  config = lib.mkIf config.myHomeDots.enableGui {
     programs.zed-editor = {
       enable = true;
       extensions = [
