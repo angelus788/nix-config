@@ -45,6 +45,19 @@ in
     '';
   };
 
+  # Same wildcard cert as kvm.thorsaga.net above, fronting the Syncthing GUI
+  # (bound to loopback:8384, see modules/misc/syncthing) so it's reachable
+  # at the default HTTPS port instead of http://odin.thorsaga.net:8384.
+  # <hostname>-syncthing.thorsaga.net is the naming scheme for this across
+  # hosts, since the *.thorsaga.net cert is single-level (no room for a
+  # per-host syncthing.<hostname>.thorsaga.net nesting).
+  services.caddy.virtualHosts."odin-syncthing.thorsaga.net" = {
+    useACMEHost = "thorsaga.net";
+    extraConfig = ''
+      reverse_proxy 127.0.0.1:8384
+    '';
+  };
+
   homelab = {
     enable = true;
     baseDomain = "internalnetwork.party";
