@@ -2,6 +2,7 @@
 {
   age.secrets = {
     #cloudflareFirewallApiKey.file = "${inputs.secrets}/cloudflareFirewallApiKey.age";
+    cloudflareDnsApiCredentials.file = "${inputs.secrets}/cloudflareDnsApiCredentials.age";
     #duckDNSDomain.file = "${inputs.secrets}/duckDNSDomain.age";
     #duckDNSToken.file = "${inputs.secrets}/duckDNSToken.age";
     hashedPasswordFile.file = "${inputs.secrets}/hashedUserPassword.age";

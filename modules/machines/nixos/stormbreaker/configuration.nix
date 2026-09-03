@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, config, ... }:
 
 {
   _module.args.disks = [ "/dev/nvme0n1" ];
@@ -20,6 +20,38 @@
   services.netbird.ui.enable = false;
   environment.etc."xdg/autostart/netbird-ui.desktop".source =
     "${pkgs.netbird-ui}/share/applications/netbird.desktop";
+
+  # Fronts the Syncthing GUI (loopback:8384, see modules/misc/syncthing)
+  # with a real Let's Encrypt cert so it's reachable without :8384 - same
+  # pattern as odin's kvm.thorsaga.net / odin-syncthing.thorsaga.net (see
+  # modules/machines/nixos/odin/homelab/default.nix). Requires an Extra DNS
+  # Label on this host's own NetBird peer (stormbreaker-syncthing) - see
+  # [[homelab_netbird_extra_dns_labels]] memory for why that needs a full
+  # peer remove+re-register, not just `netbird up --extra-dns-labels`.
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "avgtechguy@mailbox.org";
+    certs."thorsaga.net" = {
+      reloadServices = [ "caddy.service" ];
+      domain = "thorsaga.net";
+      extraDomainNames = [ "*.thorsaga.net" ];
+      dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1:53";
+      dnsPropagationCheck = true;
+      group = config.services.caddy.group;
+      environmentFile = config.age.secrets.cloudflareDnsApiCredentials.path;
+    };
+  };
+  services.caddy = {
+    enable = true;
+    virtualHosts."stormbreaker-syncthing.thorsaga.net" = {
+      useACMEHost = "thorsaga.net";
+      extraConfig = ''
+        reverse_proxy 127.0.0.1:8384
+      '';
+    };
+  };
+  networking.firewall.interfaces.${config.services.netbird.clients.default.interface}.allowedTCPPorts = [ 443 ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
