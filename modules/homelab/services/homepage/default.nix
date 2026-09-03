@@ -128,10 +128,23 @@ in
             "Smart Home"
           ];
           hl = config.homelab.services;
+          # These service modules declare homepage.* like any other service
+          # but aren't actually deployed (enable = true) on any host yet -
+          # unlike hermes-agent/pocket-id below (deployed elsewhere, just
+          # need a customUrls fixup), there's no reachable target anywhere
+          # for these, so Homepage's httpProxy widget spams ENOTFOUND every
+          # refresh. Drop them from the dashboard until one of them
+          # actually gets enabled somewhere.
+          unimplementedServices = [
+            "homeassistant"
+            "raspberrymatic"
+          ];
           homepageServices =
             x:
             (lib.attrsets.filterAttrs (
-              _name: value: value ? homepage && value.homepage.category == x
+              name:
+              value:
+              !(builtins.elem name unimplementedServices) && value ? homepage && value.homepage.category == x
             ) homelab.services);
           serviceEntry =
             x:
@@ -146,6 +159,14 @@ in
                 # thor's actual bind target (its raw NetBird IP, plain HTTP,
                 # port 9119) since odin never overrides that option itself.
                 hermes-agent = "http://100.84.83.10:9119";
+                # Same footgun as hermes-agent above: pocket-id only runs on
+                # heimdall, which overrides its url to id.avgtechguy.com for
+                # the NetBird OIDC failover rehearsal. odin never sets that
+                # override, so hl.pocket-id.url falls back to the module
+                # default (id.internalnetwork.party), a hostname with no
+                # DNS record - Homepage's httpProxy widget then fails with
+                # ENOTFOUND on every refresh.
+                pocket-id = "https://id.avgtechguy.com";
               };
               serviceUrl = customUrls.${x} or "https://${hl.${x}.url}";
             in
