@@ -156,10 +156,16 @@ in
         # (killed pane, crash, dropped SSH connection), swallowing clicks
         # until the terminal's mouse-tracking modes are reset. Do it before
         # every prompt instead of relying on manually running `fixmouse`.
-        _reset_mouse_mode() {
-          printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
-        }
-        precmd_functions+=(_reset_mouse_mode)
+        # Only outside tmux: tmux owns the outer terminal's mouse-tracking
+        # state itself (`set -g mouse on`), and running this inside every
+        # pane on every prompt fights tmux's own mouse mode, causing mouse
+        # click/scroll artifacting.
+        if [[ -z "$TMUX" ]]; then
+          _reset_mouse_mode() {
+            printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
+          }
+          precmd_functions+=(_reset_mouse_mode)
+        fi
       '';
     };
   };
