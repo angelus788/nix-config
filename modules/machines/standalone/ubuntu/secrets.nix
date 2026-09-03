@@ -1,6 +1,8 @@
 { config, inputs, ... }: {
   age.secrets = {
 
+    netbirdSetupKey.file = "${inputs.secrets}/netbirdSetupKey.age";
+
     syncthing-cert = {
       file = "${inputs.secrets}/syncthing-cert-ubuntu.age";
       path = "${config.home.homeDirectory}/.config/syncthing/cert.pem";

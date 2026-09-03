@@ -7,9 +7,8 @@
 
 {
   imports = [
-    #../../../misc/netbird-hm
+    ../../../misc/netbird-hm
     ../../../misc/syncthing-hm # Uses the Home Manager refactored Syncthing module
-    ../../../misc/tailscale-hm
     ../../../misc/agenix
     ./secrets.nix
   ];
