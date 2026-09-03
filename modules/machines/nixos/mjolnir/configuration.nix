@@ -2,14 +2,23 @@
 
 {
 
-  # Upstream nixpkgs bug: netbird-ui's own .desktop Exec line is now
-  # `env WEBKIT_DISABLE_DMABUF_RENDERER=1 netbird-ui`, but the netbird NixOS
-  # module's wrapper still substitutes the literal `Exec=netbird-ui`, so
-  # --replace-fail aborts the build with "pattern doesn't match". ui.enable
-  # defaults to true on any host with a graphical session (cosmic here) -
-  # disable it until nixpkgs catches up. The CLI/daemon/tunnel work fine
-  # without the tray icon.
+  # Upstream nixpkgs bug: by the time netbird-ui finishes building, its own
+  # .desktop file's Exec= line is already an absolute store path, but the
+  # netbird NixOS module's wrapper still does `--replace-fail 'Exec=netbird-ui'`
+  # against it, so the substitution never matches and the build aborts.
+  # ui.enable defaults to true on any host with a graphical session (cosmic
+  # here) - disable it until nixpkgs catches up.
+  #
+  # Workaround below: netbird-ui's own default -daemon-addr
+  # (unix:///var/run/netbird/sock) already matches this module's default
+  # client socket path, so the wrapper isn't buying us anything for the
+  # default (unnamed) client - just install the unwrapped package directly
+  # and use its own (already-valid) .desktop file for autostart. The daemon
+  # socket is world read/write in this (non-hardened) config, so no group
+  # membership is needed to reach it.
   services.netbird.ui.enable = false;
+  environment.etc."xdg/autostart/netbird-ui.desktop".source =
+    "${pkgs.netbird-ui}/share/applications/netbird.desktop";
 
   networking = {
     networkmanager.enable = true;
@@ -37,6 +46,7 @@
 
   environment.systemPackages = with pkgs; [
     pkgs.android-tools
+    pkgs.netbird-ui
     claude-code
     cifs-utils
     google-chrome
