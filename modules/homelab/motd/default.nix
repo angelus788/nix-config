@@ -10,13 +10,15 @@ let
       name: value: value != "enable" && name != "backup" && value ? enable && value.enable
     ) config.homelab.services
   );
-  monitoredServices = lib.lists.flatten (
-    lib.lists.forEach enabledNixosServices (
-      x:
-      let
-        svc = config.homelab.services.${x};
-      in
-      if (svc ? monitoredServices) then svc.monitoredServices else [ x ]
+  monitoredServices = lib.lists.unique (
+    lib.lists.flatten (
+      lib.lists.forEach enabledNixosServices (
+        x:
+        let
+          svc = config.homelab.services.${x};
+        in
+        if (svc ? monitoredServices) then svc.monitoredServices else [ x ]
+      )
     )
   );
 
