@@ -154,18 +154,32 @@ in
 
         # nvim/tmux mouse mode can be left stuck on if they exit abnormally
         # (killed pane, crash, dropped SSH connection), swallowing clicks
-        # until the terminal's mouse-tracking modes are reset. Do it before
-        # every prompt instead of relying on manually running `fixmouse`.
-        # Only outside tmux: tmux owns the outer terminal's mouse-tracking
-        # state itself (`set -g mouse on`), and running this inside every
-        # pane on every prompt fights tmux's own mouse mode, causing mouse
-        # click/scroll artifacting.
-        if [[ -z "$TMUX" ]]; then
-          _reset_mouse_mode() {
-            printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
-          }
-          precmd_functions+=(_reset_mouse_mode)
-        fi
+        # until the terminal's mouse-tracking modes are reset. Resetting on
+        # *every* prompt (regardless of what ran) fights tmux's own mouse
+        # ownership inside panes and causes click/scroll artifacting, so
+        # instead only reset right after an ssh/mosh command exits - the
+        # actual moment a stuck remote mouse-mode escape could leak through.
+        # This is safe both inside and outside tmux since _last_cmd is
+        # cleared after firing, so it fires once per ssh/mosh run rather
+        # than continuously contesting tmux's state on every redraw.
+        _track_last_cmd() {
+          _last_cmd=''${1%% *}
+        }
+        preexec_functions+=(_track_last_cmd)
+
+        _reset_mouse_after_ssh() {
+          case "$_last_cmd" in
+            ssh|mosh)
+              printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
+              ;;
+          esac
+          # precmd also fires on prompt redraws with no new preexec (blank
+          # Enter, resize). Clear so the reset only fires once, right after
+          # ssh/mosh exits, instead of on every redraw for the rest of the
+          # session.
+          _last_cmd=
+        }
+        precmd_functions+=(_reset_mouse_after_ssh)
       '';
     };
   };
