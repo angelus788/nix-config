@@ -14,6 +14,7 @@
         "elixir"
         "make"
         "catppuccin"
+        "claude-code"
       ];
 
       userSettings = {
@@ -22,7 +23,7 @@
           version = "2";
           default_model = {
             provider = "zed.dev";
-            model = "claude-3-5-sonnet-latest";
+            model = "claude-sonnet-5";
           };
         };
 
@@ -97,7 +98,8 @@
               "nixd"
               "!nil"
             ];
-            format_on_save = {
+            format_on_save = "on";
+            formatter = {
               external = {
                 command = "nixpkgs-fmt";
                 arguments = [ ];
@@ -110,7 +112,8 @@
               "elixir-ls"
               "!next-ls"
             ];
-            format_on_save = {
+            format_on_save = "on";
+            formatter = {
               external = {
                 command = "mix";
                 arguments = [
@@ -128,7 +131,8 @@
               "elixir-ls"
               "!next-ls"
             ];
-            format_on_save = {
+            format_on_save = "on";
+            formatter = {
               external = {
                 command = "mix";
                 arguments = [
