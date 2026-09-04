@@ -155,10 +155,12 @@ in
                 # hermes-agent only runs on thor, not odin (where Homepage
                 # itself runs) - the default "https://${hl.hermes-agent.url}"
                 # falls back to the option's declared default
-                # (thor.thorsaga.net, unreliable split-DNS) instead of
-                # thor's actual bind target (its raw NetBird IP, plain HTTP,
-                # port 9119) since odin never overrides that option itself.
-                hermes-agent = "http://100.84.83.10:9119";
+                # (thor.thorsaga.net, plain HTTP, no TLS) since odin never
+                # overrides that option itself. Now routed through the
+                # NetBird BYOP reverse-proxy on heimdall instead, which
+                # terminates real TLS and works from anywhere, not just
+                # NetBird peers with split-DNS configured.
+                hermes-agent = "https://hermes.thorsaga.net";
                 # Same footgun as hermes-agent above: pocket-id only runs on
                 # heimdall, which overrides its url to id.avgtechguy.com for
                 # the NetBird OIDC failover rehearsal. odin never sets that
