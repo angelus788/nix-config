@@ -34,11 +34,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1788415428,
-        "narHash": "sha256-Ggz1GGeI8/qqqkDHOwTB6JAY/I71NrWrZlG/F6SiAC0=",
+        "lastModified": 1788501848,
+        "narHash": "sha256-/DWLr49zrslkvs08pgzbVC1eSZ+vJwae85gBXRH5GHc=",
         "owner": "Tenzer",
         "repo": "alga",
-        "rev": "35f450c413d1499fcd7f958dc095c978d52d02b0",
+        "rev": "f2a9dab133a1a5178281bf0cf1df03b9acb8cd0b",
         "type": "github"
       },
       "original": {
@@ -234,11 +234,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1788531420,
-        "narHash": "sha256-1c2DY5SXLMGCj8pt01pmCiU+poy6CdkG/bprLk/woZw=",
+        "lastModified": 1788567891,
+        "narHash": "sha256-fsI3zKji609iOAJzPn0qNs4ZLvmRM4vGQaFoi+t8tak=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "f1ccf436a27522c1bb5d36383a6f13b950676338",
+        "rev": "79445a496c86a19332ad786494b8384d2167e2d0",
         "type": "github"
       },
       "original": {
@@ -524,11 +524,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1788316716,
-        "narHash": "sha256-bc7rSpXIdn9QWGNqfWcPZWOhEVF8NoeAZkWq0XWnf/k=",
+        "lastModified": 1788404924,
+        "narHash": "sha256-lhEhY8X5EgkQ/eg6IFz4cc8jRuSYSvnxx1al7d1dvZ0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "3ed67ec0a4d3c7ab4ae1f04f8ee8df07bfa506a2",
+        "rev": "0968519e14f7aa7d3e9b389682bd74d2b51c8ce8",
         "type": "github"
       },
       "original": {
@@ -785,11 +785,11 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1788552929,
-        "narHash": "sha256-MFiVbmr3/KP/PgtBYd9Bt2lhAZVnV0pzz1KP6Df+Blw=",
+        "lastModified": 1788566836,
+        "narHash": "sha256-IsdMj46fuTbCZlFbtGnDAITgKTdu7VUcQJ445g7y4Ho=",
         "ref": "refs/heads/main",
-        "rev": "a1124dfc5bfb21cd47a0957f580e8f6b70b2ec42",
-        "revCount": 326,
+        "rev": "0b45d02daa31fef81fcf38ad74095da70aba7093",
+        "revCount": 327,
         "type": "git",
         "url": "ssh://forgejo@git.avgtechguy.com:69/avgtechguy/nix-private.git"
       },
