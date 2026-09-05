@@ -335,6 +335,24 @@ in
           reverse_proxy 127.0.0.1:33080
         }
 
+        # Route the WebSocket-wrapped gRPC transport the browser/WASM client
+        # uses (real gRPC over HTTP/2 isn't available in a browser) - this is
+        # what backs the dashboard's "SSH"/"RDP" buttons, which spin up a
+        # NetBird client compiled to WASM directly in the tab. Without these,
+        # that traffic falls through to the default handle block (dashboard
+        # static files) instead of reaching management/signal, and the WASM
+        # client's gRPC dial fails with "WebSocket connection failed" no
+        # matter which peer it's targeting. Paths from
+        # util/wsproxy/constants.go; management multiplexes its own
+        # /ws-proxy/management internally (same port as /api/*), while
+        # /ws-proxy/signal needs the signal server's own port.
+        handle /ws-proxy/management* {
+          reverse_proxy 127.0.0.1:8011
+        }
+        handle /ws-proxy/signal* {
+          reverse_proxy 127.0.0.1:10000
+        }
+
         # Serve the bundled dashboard files (now directly in the root of the derivation)
         handle {
         header /config.json Cache-Control "no-store"
