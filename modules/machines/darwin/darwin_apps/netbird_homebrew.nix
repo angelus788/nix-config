@@ -79,12 +79,16 @@
       # it just silences the startup error while leaving zero auth handlers
       # registered, meaning no login can ever succeed either way. The real
       # fix was server-side (management's HttpConfig.AuthAudience, see
-      # modules/homelab/services/netbird/default.nix) - leaving JWT auth
-      # enabled here so it can actually be used once SSO login is set up.
+      # modules/homelab/services/netbird/default.nix). Explicitly passing
+      # --disable-ssh-auth=false (not just omitting the flag) is required
+      # to actually clear it - like --disable-dns, this is a sticky
+      # per-peer setting that management remembers regardless of whether
+      # a later `up` call mentions it at all.
       "$NETBIRD_BIN" up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
         --allow-server-ssh \
+        --disable-ssh-auth=false \
         --disable-dns=false
     '';
     serviceConfig = {
