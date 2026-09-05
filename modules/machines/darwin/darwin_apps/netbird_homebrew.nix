@@ -70,14 +70,21 @@
 
       SETUP_KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
 
-      # See darwin_apps/netbird.nix for why --disable-dns=false is required,
-      # and why --disable-ssh-auth is required (self-hosted management has
-      # no IdP wired up for NetBird's identity-aware/JWT SSH auth).
+      # See darwin_apps/netbird.nix for why --disable-dns=false is required.
+      #
+      # --disable-ssh-auth was tried here previously to work around "SSH
+      # server requires valid JWT configuration", but it's a no-op: NetBird
+      # never registers a PublicKeyHandler regardless of this flag (see
+      # client/ssh/server/server.go), so it doesn't add a pubkey fallback -
+      # it just silences the startup error while leaving zero auth handlers
+      # registered, meaning no login can ever succeed either way. The real
+      # fix was server-side (management's HttpConfig.AuthAudience, see
+      # modules/homelab/services/netbird/default.nix) - leaving JWT auth
+      # enabled here so it can actually be used once SSO login is set up.
       "$NETBIRD_BIN" up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
         --allow-server-ssh \
-        --disable-ssh-auth \
         --disable-dns=false
     '';
     serviceConfig = {

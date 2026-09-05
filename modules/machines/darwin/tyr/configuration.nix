@@ -8,6 +8,11 @@
     ulimit -n 2048
   '';
 
+  # Real Remote Login (pubkey-only, via authorized_keys already set up for
+  # angelus), independent of NetBird's embedded SSH server - a fallback
+  # for reaching tyr if the NetBird overlay or its own SSH-JWT auth breaks.
+  services.openssh.enable = true;
+
   imports = [
     #"${inputs.secrets}/work.nix"
     ./networking.nix
