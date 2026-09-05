@@ -267,6 +267,17 @@ in
               ClientID = cfg.oidc.clientId;
               Scope = cfg.oidc.scope;
             };
+            # Without this, HttpConfig.AuthAudience stays empty (the module's
+            # own default HttpConfig only sets Address/OIDCConfigEndpoint/
+            # IdpSignKeyRefreshEnabled) and management's buildJWTConfig always
+            # returns nil - which makes NetBird's embedded SSH server
+            # permanently fail with "SSH server requires valid JWT
+            # configuration" for any peer whose SSH server hasn't already
+            # been running since before this was noticed.
+            HttpConfig = {
+              AuthAudience = cfg.oidc.audience;
+              AuthClientID = cfg.oidc.clientId;
+            };
           } // lib.optionalAttrs cfg.oidc.idpSyncEnabled {
             # Keycloak service-account client (see modules/homelab/services/keycloak) that lets
             # netbird-management sync/invite users. Read-only "view-users" role only - it cannot

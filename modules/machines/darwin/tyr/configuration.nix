@@ -12,7 +12,8 @@
     #"${inputs.secrets}/work.nix"
     ./networking.nix
     ./secrets.nix
-    ../darwin_apps/netbird.nix
+    #../darwin_apps/netbird.nix
+    ../darwin_apps/netbird_homebrew.nix
   ];
 
   #devShells.aarch64-darwin.default
