@@ -70,11 +70,14 @@
 
       SETUP_KEY=$(cat ${config.age.secrets.netbirdSetupKey.path})
 
-      # See darwin_apps/netbird.nix for why --disable-dns=false is required.
+      # See darwin_apps/netbird.nix for why --disable-dns=false is required,
+      # and why --disable-ssh-auth is required (self-hosted management has
+      # no IdP wired up for NetBird's identity-aware/JWT SSH auth).
       "$NETBIRD_BIN" up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
         --allow-server-ssh \
+        --disable-ssh-auth \
         --disable-dns=false
     '';
     serviceConfig = {
