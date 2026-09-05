@@ -51,6 +51,7 @@
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
         --allow-server-ssh \
+        --disable-ssh-auth \
         --disable-dns=false
     '';
     serviceConfig = {

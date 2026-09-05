@@ -83,11 +83,14 @@ in
   time.timeZone = "America/New_York";
     services.ntp.enable = true;
 
-  # NetBird registers thorsaga.net as a routing-only match domain (~thorsaga.net)
-  # on wt0, not a search domain, so unqualified names like `heimdall` never get
-  # `.thorsaga.net` appended and fall through to public DNS instead of NetBird's
-  # split resolver. Adding it here as an actual search domain lets bare peer
-  # hostnames resolve fleet-wide without needing the FQDN.
+  # NetBird registers thorsaga.net as a route-only domain (~thorsaga.net) on
+  # wt0, by design: it's tied to NetBird's own per-link DNS server, not a
+  # global search domain. `networking.search` here has no effect on that,
+  # because search-suffixing only routes through a DNS server attached to the
+  # *same* link/scope as the search domain (see resolved.conf(5) `Domains=`),
+  # and the global scope has no DNS server of its own. Bare peer hostnames
+  # (e.g. `heimdall`) that aren't also reachable via LLMNR/mDNS on the LAN
+  # must be addressed by FQDN (`heimdall.thorsaga.net`) instead.
   networking.search = [ "thorsaga.net" ];
 
   users.users = {
