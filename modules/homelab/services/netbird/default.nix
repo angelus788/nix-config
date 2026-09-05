@@ -349,8 +349,14 @@ in
         handle /ws-proxy/management* {
           reverse_proxy 127.0.0.1:8011
         }
+        # Signal's port 10000 (used by /signalexchange.SignalExchange/* above)
+        # is only a legacy gRPC-only compatibility listener for old agents
+        # (signal/cmd/run.go's serveGRPC, no ws-proxy support at all - hence
+        # the 502 when this route pointed there first). The listener that
+        # actually serves /ws-proxy/signal is signal's *primary* port
+        # (services.netbird.server.signal.port, 8012 by default).
         handle /ws-proxy/signal* {
-          reverse_proxy 127.0.0.1:10000
+          reverse_proxy 127.0.0.1:8012
         }
 
         # Serve the bundled dashboard files (now directly in the root of the derivation)
