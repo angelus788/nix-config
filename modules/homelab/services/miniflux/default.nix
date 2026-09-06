@@ -85,6 +85,21 @@ in
           EnvironmentFile= entries).
         '';
       };
+      clientSecretSourceFile = lib.mkOption {
+        type = lib.types.nullOr lib.types.path;
+        default = null;
+        description = ''
+          The encrypted .age file clientSecretFile is decrypted from (i.e.
+          age.secrets.<name>.file, not .path). Used only as a restart
+          trigger: agenix decrypts to the same runtime path on every
+          activation regardless of whether the secret actually changed, so
+          miniflux.service would never notice a rotated secret and keep
+          running with the stale one in memory until manually restarted -
+          hit this exact issue after recreating the Pocket ID client. Same
+          pattern as forgejo's clientSecretSourceFile/netbird's
+          proxy.tokenSourceFile.
+        '';
+      };
     };
   };
 
@@ -98,6 +113,11 @@ in
           CREATE_ADMIN = true;
           LISTEN_ADDR = "0.0.0.0:8067";
           OAUTH2_PROVIDER = "oidc";
+          # Without this, Miniflux rejects any OIDC login with a bare
+          # "Forbidden" unless that identity is already linked to an
+          # existing Miniflux account - there's no such link for a new
+          # Pocket ID identity, only the local CREATE_ADMIN account exists.
+          OAUTH2_USER_CREATION = "1";
           OAUTH2_CLIENT_ID = cfg.oidc.pocketId.clientId;
           # Pocket ID (unlike the Keycloak setup this replaced) runs on a
           # different host than Miniflux's client, so there's no local
@@ -119,6 +139,9 @@ in
       systemd.services.miniflux.serviceConfig.EnvironmentFile = [
         cfg.oidc.pocketId.clientSecretFile
       ];
+      systemd.services.miniflux.restartTriggers = lib.optional (
+        cfg.oidc.pocketId.clientSecretSourceFile != null
+      ) cfg.oidc.pocketId.clientSecretSourceFile;
 
       services.frp.instances.${config.networking.hostName}.settings.proxies = [
         {
