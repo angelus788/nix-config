@@ -35,6 +35,10 @@
     invoicePlaneDbPasswordFile.file = "${inputs.secrets}/invoicePlaneDbPasswordFile.age";
     #microbinCloudflared.file = "${inputs.secrets}/microbinCloudflared.age";
     minifluxAdminPassword.file = "${inputs.secrets}/minifluxAdminPassword.age";
+    # EnvironmentFile= is read by systemd (root) before it drops privileges
+    # to Miniflux's DynamicUser, same as minifluxAdminPassword above - no
+    # owner/group override needed, default root:root 0400 is fine.
+    minifluxPocketIdClientSecret.file = "${inputs.secrets}/minifluxPocketIdClientSecret.age";
     navidromeEnv.file = "${inputs.secrets}/navidromeEnv.age";
     nextcloudAdminPassword.file = "${inputs.secrets}/nextcloudAdminPassword.age";
     nextcloudCloudflared.file = "${inputs.secrets}/nextcloudCloudflared.age";

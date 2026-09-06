@@ -48,6 +48,44 @@ in
       ];
       default = "client";
     };
+
+    oidc.pocketId = {
+      url = lib.mkOption {
+        type = lib.types.str;
+        default = "id.avgtechguy.com";
+        description = ''
+          Pocket ID's hostname. NOT `config.homelab.services.pocket-id.url`
+          - that option's actual value depends on which host it's read
+          from: Pocket ID only runs on heimdall, which overrides it to
+          this same "id.avgtechguy.com" for its own NetBird OIDC-failover
+          rehearsal, but Miniflux's client runs on odin, where that option
+          was never overridden and just returns the unrelated module
+          default ("id.internalnetwork.party", a hostname with no DNS
+          record) - same cross-host footgun already documented in
+          homepage/default.nix's `customUrls.pocket-id` override.
+        '';
+      };
+      clientId = lib.mkOption {
+        type = lib.types.str;
+        default = "miniflux";
+        description = "Client ID of the OIDC client registered for Miniflux in Pocket ID.";
+      };
+      clientSecretFile = lib.mkOption {
+        type = lib.types.path;
+        description = ''
+          Path to an agenix-decrypted EnvironmentFile (systemd.exec(5)
+          format, i.e. `OAUTH2_CLIENT_SECRET=...`, not a raw value like
+          Forgejo's clientSecretFile) containing Miniflux's OAuth2 client
+          secret from Pocket ID. Miniflux's own `config` submodule renders
+          directly to plaintext systemd unit environment= lines in the
+          (world-readable) nix store, so the secret can't go through
+          `services.miniflux.config` like the rest of the OAuth2 settings -
+          it's injected as an extra EnvironmentFile instead, alongside the
+          module's own adminCredentialsFile (systemd merges multiple
+          EnvironmentFile= entries).
+        '';
+      };
+    };
   };
 
   config = lib.mkMerge [
@@ -60,22 +98,27 @@ in
           CREATE_ADMIN = true;
           LISTEN_ADDR = "0.0.0.0:8067";
           OAUTH2_PROVIDER = "oidc";
-          OAUTH2_CLIENT_ID = "miniflux";
-          OAUTH2_OIDC_AUTH_ENDPOINT = "https://login.internalnetwork.party/realms/master/protocol/openid-connect/auth";
-
-          # SERVER-FACING: Use the local loopback for the background heavy lifting
-          #OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://127.0.0.1:8821/realms/master";
-          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "http://login.internalnetwork.party:8821/realms/master";
-          OAUTH2_OIDC_TOKEN_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/token";
-          OAUTH2_OIDC_USERINFO_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/userinfo";
-          OAUTH2_OIDC_JWKS_ENDPOINT = "http://127.0.0.1:8821/realms/master/protocol/openid-connect/certs";
-
-          # MUST be 1 because the discovery data won't match the local URL
-          OAUTH2_OIDC_SKIP_ISSUER_VERIFICATION = "1";
+          OAUTH2_CLIENT_ID = cfg.oidc.pocketId.clientId;
+          # Pocket ID (unlike the Keycloak setup this replaced) runs on a
+          # different host than Miniflux's client, so there's no local
+          # loopback shortcut available for the backend-to-backend calls -
+          # every endpoint, browser-facing or not, is the same public
+          # hostname. That also means no issuer mismatch, so (unlike the
+          # old Keycloak config) OAUTH2_OIDC_SKIP_ISSUER_VERIFICATION isn't
+          # needed here.
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT = "https://${cfg.oidc.pocketId.url}";
+          OAUTH2_OIDC_AUTH_ENDPOINT = "https://${cfg.oidc.pocketId.url}/authorize";
+          OAUTH2_OIDC_TOKEN_ENDPOINT = "https://${cfg.oidc.pocketId.url}/api/oidc/token";
+          OAUTH2_OIDC_USERINFO_ENDPOINT = "https://${cfg.oidc.pocketId.url}/api/oidc/userinfo";
+          OAUTH2_OIDC_JWKS_ENDPOINT = "https://${cfg.oidc.pocketId.url}/.well-known/jwks.json";
           OAUTH2_REDIRECT_URL = "https://news.internalnetwork.party/oauth2/oidc/callback";
           BASE_URL = "https://news.internalnetwork.party";
         };
       };
+
+      systemd.services.miniflux.serviceConfig.EnvironmentFile = [
+        cfg.oidc.pocketId.clientSecretFile
+      ];
 
       services.frp.instances.${config.networking.hostName}.settings.proxies = [
         {

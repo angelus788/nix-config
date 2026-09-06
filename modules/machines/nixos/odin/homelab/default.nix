@@ -216,6 +216,7 @@ in
       miniflux = {
         enable = true;
         adminCredentialsFile = config.age.secrets.minifluxAdminPassword.path;
+        oidc.pocketId.clientSecretFile = config.age.secrets.minifluxPocketIdClientSecret.path;
       };
       navidrome = {
         enable = true;
