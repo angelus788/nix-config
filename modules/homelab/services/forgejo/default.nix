@@ -163,7 +163,11 @@ in
         FORGEJO_WORK_DIR = config.services.forgejo.stateDir;
         FORGEJO_CUSTOM = "${config.services.forgejo.stateDir}/custom";
       };
-      path = [ config.services.forgejo.package ];
+      path = [
+        config.services.forgejo.package
+        pkgs.gawk
+        pkgs.coreutils
+      ];
       script = ''
         set -euo pipefail
 
