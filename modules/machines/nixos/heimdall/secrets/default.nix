@@ -15,6 +15,11 @@
       #group = "plausible";
       file = "${inputs.secrets}/plausibleSecretKeybaseFile.age";
     };
+    forgejoPid = {
+      owner = "forgejo";
+      group = "forgejo";
+      file = "${inputs.secrets}/forgejoPid.age";
+    };
     forgejoRunnerTokenHeimdall = {
       owner = "gitea-runner";
       group = "gitea-runner";

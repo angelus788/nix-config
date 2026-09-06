@@ -76,7 +76,15 @@
       miniflux.role = "server";
       microbin.role = "server";
       vaultwarden.role = "server";
-      forgejo.enable = true;
+      forgejo = {
+        enable = true;
+        oidc.pocketId = {
+          enable = true;
+          clientId = "forgejo";
+          clientSecretFile = config.age.secrets.forgejoPid.path;
+          clientSecretSourceFile = config.age.secrets.forgejoPid.file;
+        };
+      };
       forgejo-runner = {
         enable = true;
         forgejoUrl = config.homelab.services.forgejo.url;
