@@ -132,7 +132,15 @@ in
     })
 
     # --- SERVER ROLE: Caddy Reverse Proxy ---
-    (lib.mkIf (cfg.enable && cfg.role == "server") {
+    # Not gated by cfg.enable, unlike the client role above - matches every
+    # other service's role split in this repo (nextcloud, navidrome,
+    # microbin, vaultwarden, keycloak), where the server-role Caddy vhost
+    # depends only on role. This module used to require both, which meant
+    # heimdall's `miniflux.role = "server";` (following the same convention
+    # as every other service there, none of which also set `.enable`) never
+    # actually produced a Caddy vhost - the site was unreachable through
+    # heimdall's Caddy from the day this was first set up.
+    (lib.mkIf (cfg.role == "server") {
       services.caddy.virtualHosts."${cfg.url}" = {
         useACMEHost = "internalnetwork.party";
         extraConfig = ''
