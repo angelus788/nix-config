@@ -185,6 +185,7 @@ in
     ./navidrome
     ./nextcloud
     ./netbird
+    ./oauth2-proxy
     ./pocket-id
     ./smarthome/homeassistant
     ./smarthome/raspberrymatic

@@ -36,15 +36,6 @@ in
     dbPasswordFile = lib.mkOption {
       type = lib.types.path;
     };
-    oauth2ProxyEnvFile = lib.mkOption {
-      type = lib.types.path;
-      example = lib.literalExpression ''
-        pkgs.writeText "oauth2proxy-envfile" '''
-          OAUTH2_PROXY_CLIENT_SECRET=foobar
-          OAUTH2_PROXY_COOKIE_SECRET=barfoo
-        '''
-      '';
-    };
     role = lib.mkOption {
       type = lib.types.enum [
         "client"
@@ -79,54 +70,6 @@ in
             };
           })
         ];
-        services.oauth2-proxy = {
-          enable = true;
-          keyFile = cfg.oauth2ProxyEnvFile;
-          reverseProxy = true;
-          trustedProxyIP = [ "127.0.0.1/32" "::1/128" ];
-          provider = "keycloak-oidc";
-          oidcIssuerUrl = "https://${cfg.url}/realms/master";
-
-          cookie = {
-            domain = lib.strings.removePrefix "login" cfg.url;
-            secure = true;
-            # Setting these explicitly is fine, but they are defaults
-            # refresh = "1h";
-          };
-
-          httpAddress = "127.0.0.1:4192";
-          clientID = "oauth2-proxy";
-          upstream = [ "http://127.0.0.1:0/" ];
-
-          # Consolidated typical OIDC settings
-          scope = "openid profile email";
-          email.domains = [ "*" ];
-
-          extraConfig =
-            let
-              # Internal endpoint base to avoid repeating http://127.0.0.1:8821
-              internalRoot = "http://127.0.0.1:8821/realms/master/protocol/openid-connect";
-              publicRoot = "https://${cfg.url}/realms/master/protocol/openid-connect";
-            in
-            {
-              skip-oidc-discovery = "true";
-
-              # Cleanly mapped endpoints
-              login-url = "${publicRoot}/auth";
-              redeem-url = "${internalRoot}/token";
-              validate-url = "${internalRoot}/userinfo";
-              oidc-jwks-url = "${internalRoot}/certs";
-
-              # Grouped Security & Logic
-              insecure-oidc-skip-issuer-verification = "true";
-              ssl-insecure-skip-verify = "true";
-              insecure-oidc-allow-unverified-email = "true";
-
-              skip-provider-button = "true";
-              code-challenge-method = "S256";
-              whitelist-domain = ".internalnetwork.party";
-            };
-        };
         services.${service} = {
           enable = true;
           initialAdminPassword = "schneke123";
@@ -156,14 +99,6 @@ in
             localPort = 8821;
             remotePort = 8821;
           }
-          {
-            name = "oauth2-proxy";
-            type = "tcp";
-            localIP = "127.0.0.1";
-            localPort = 4192;
-            remotePort = 4192;
-          }
-
         ];
       })
       # server
@@ -171,16 +106,9 @@ in
         services.caddy.virtualHosts."${cfg.url}" = {
           useACMEHost = "internalnetwork.party";
           extraConfig = ''
-            handle /oauth2/* {
-                reverse_proxy http://127.0.0.1:4192
-            }
-
-            # 2. Everything else on this domain goes to Keycloak
-            handle {
-                reverse_proxy http://127.0.0.1:8821 {
-                    header_up Host {host}
-                    header_up X-Real-IP {remote_host}
-                }
+            reverse_proxy http://127.0.0.1:8821 {
+                header_up Host {host}
+                header_up X-Real-IP {remote_host}
             }
           '';
         };

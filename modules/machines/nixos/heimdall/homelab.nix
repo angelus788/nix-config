@@ -71,6 +71,7 @@
     services = {
       enable = true;
       keycloak.role = "server";
+      oauth2-proxy.role = "server";
       nextcloud.role = "server";
       navidrome.role = "server";
       miniflux.role = "server";

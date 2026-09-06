@@ -137,7 +137,10 @@ in
       keycloak = {
         enable = true;
         dbPasswordFile = config.age.secrets.keycloakDbPasswordFile.path;
-        oauth2ProxyEnvFile = config.age.secrets.oauth2ProxyEnvFile.path;
+      };
+      oauth2-proxy = {
+        enable = true;
+        envFile = config.age.secrets.oauth2ProxyEnvFile.path;
       };
       radicale = {
         enable = true;

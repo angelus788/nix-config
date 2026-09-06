@@ -133,25 +133,11 @@ in
 
     # --- SERVER ROLE: Caddy Reverse Proxy ---
     (lib.mkIf (cfg.enable && cfg.role == "server") {
-      services.caddy.virtualHosts = {
-        # Redirect for the Miniflux Web UI
-        "${cfg.url}" = {
-          useACMEHost = "internalnetwork.party";
-          extraConfig = ''
-            reverse_proxy http://127.0.0.1:8067
-          '';
-        };
-
-        # Redirect for Keycloak (The login subdomain)
-        "login.internalnetwork.party" = {
-          useACMEHost = "internalnetwork.party";
-          extraConfig = ''
-            reverse_proxy http://127.0.0.1:8821 {
-                  header_up Host {host}
-                  header_up X-Real-IP {remote_host}
-                }
-          '';
-        };
+      services.caddy.virtualHosts."${cfg.url}" = {
+        useACMEHost = "internalnetwork.party";
+        extraConfig = ''
+          reverse_proxy http://127.0.0.1:8067
+        '';
       };
     })
   ];
