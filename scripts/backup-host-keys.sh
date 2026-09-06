@@ -14,6 +14,7 @@ HOSTS=(
   "mjolnir"
   "mayra"
   "mimir"
+  "njord"
   "stormbreaker"
 )
 

@@ -4,11 +4,11 @@
   disko.devices = {
 
     ####################################
-    # Root disk (nvme1n1)
+    # Root + home disk (nvme0n1)
     ####################################
-    disk.nvme1n1 = {
+    disk.nvme0n1 = {
       type = "disk";
-      device = "/dev/disk/by-id/nvme-CT500P1SSD8_1937E21F3758";
+      device = "/dev/disk/by-id/nvme-WDS100T1XHE-00AFY0_21411T802058";
 
       content = {
         type = "gpt";
@@ -28,7 +28,7 @@
           };
 
           root = {
-            size = "100%";
+            size = "150G";
 
             content = {
               type = "filesystem";
@@ -37,21 +37,16 @@
             };
           };
 
-        };
-      };
-    };
+          persist = {
+            size = "10G";
 
-    ####################################
-    # Home disk (nvme0n1)
-    ####################################
-    disk.nvme0n1 = {
-      type = "disk";
-      device = "/dev/disk/by-id/nvme-WD_BLACK_SN850X_HS_2000GB_24054Y800036";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/persist";
+            };
+          };
 
-      content = {
-        type = "gpt";
-
-        partitions = {
           home = {
             size = "100%";
 
@@ -61,6 +56,7 @@
               mountpoint = "/home";
             };
           };
+
         };
       };
     };
@@ -71,7 +67,7 @@
 
     disk.sda = {
       type = "disk";
-      device = "/dev/disk/by-id/ata-WDC_WD2003FZEX-00SRLA0_WD-WCC6NLCYUSU8";
+      device = "/dev/disk/by-id/ata-CT500MX500SSD1_1948E22B100C";
 
       content = {
         type = "gpt";
@@ -88,7 +84,7 @@
 
     disk.sdb = {
       type = "disk";
-      device = "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5JXMM";
+      device = "/dev/disk/by-id/ata-CT500MX500SSD1_1948E22B1062";
 
       content = {
         type = "gpt";
@@ -98,23 +94,6 @@
             type = "filesystem";
             format = "ext4";
             mountpoint = "/data/sdb";
-          };
-        };
-      };
-    };
-
-    disk.sdc = {
-      type = "disk";
-      device = "/dev/disk/by-id/ata-CT500MX500SSD1_1947E228A4A1";
-
-      content = {
-        type = "gpt";
-        partitions.data = {
-          size = "100%";
-          content = {
-            type = "filesystem";
-            format = "ext4";
-            mountpoint = "/data/sdc";
           };
         };
       };

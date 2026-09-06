@@ -51,7 +51,7 @@ in
   };
   services.caddy = {
     enable = true;
-    virtualHosts."mayra-syncthing.thorsaga.net" = {
+    virtualHosts."njord-syncthing.thorsaga.net" = {
       useACMEHost = "thorsaga.net";
       extraConfig = ''
         reverse_proxy 127.0.0.1:8384
@@ -149,8 +149,8 @@ in
   networking = {
     networkmanager.enable = true;
     hostName = "njord";
-    #hostId = "899635ed"; replace
-    interfaces.enp6s0.wakeOnLan = {
+    hostId = "8425e349";
+    interfaces.enp2s0.wakeOnLan = {
       #might need to be replaced as well
       #enp4s0
       enable = true;

@@ -19,7 +19,7 @@
     };
   };
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_12; #pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_latest; #pkgs.linuxPackages_6_12;
     consoleLogLevel = 0;
     initrd = {
       verbose = false;
