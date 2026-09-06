@@ -1,6 +1,8 @@
 {
   config,
   lib,
+  pkgs,
+  inputs,
   ...
 }:
 let
@@ -63,6 +65,12 @@ in
       "render"
     ];
     services.immich = {
+      # Main nixpkgs is pinned to 2.7.5, flagged insecure (CVE-2026-59258,
+      # CVE-2026-82272). nixpkgs-unstable (already used elsewhere in this
+      # repo, e.g. Forgejo's package override) has 3.1.0, not insecure, and
+      # its `immich` package still exposes the `.machine-learning` passthru
+      # the NixOS module's immich-machine-learning unit expects.
+      package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.immich;
       group = homelab.group;
       enable = true;
       port = 2283;
