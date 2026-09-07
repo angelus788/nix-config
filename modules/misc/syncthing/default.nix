@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, lib
+, ...
 }:
 
 with lib;
@@ -70,6 +69,9 @@ in
           };
           mjolnir = {
             id = "BGC2RDL-CNAFJHL-SKWNQXE-VBRC476-4PO2SGZ-CQIGYS7-WQ2TBV2-5X72JQV";
+          };
+          njord = {
+            id = "DHMI372-AODI7SS-QCR7PME-V2B3246-6UF3U5C-5YP5BPN-HMPYJ3A-OQ5Z5QW";
           };
           odin = {
             id = "ELS5VON-EMTH3H3-VI2DHOS-2AS7HXI-D6KAYMA-UHL4IW6-QY3X7JA-XWFOJAV";

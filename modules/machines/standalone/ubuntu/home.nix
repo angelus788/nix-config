@@ -1,14 +1,14 @@
-{
-  pkgs,
-  inputs,
-  config,
-  ...
+{ pkgs
+, inputs
+, config
+, ...
 }:
 
 {
   imports = [
     ../../../misc/netbird-hm
     ../../../misc/syncthing-hm # Uses the Home Manager refactored Syncthing module
+    ../../../misc/syncthing-settings
     ../../../misc/agenix
     ./secrets.nix
   ];
@@ -52,20 +52,6 @@
     '';
   };
 
-  # ---------------------------------------------------------------------------
-  # Server Syncthing Settings
-  # ---------------------------------------------------------------------------
-  # Uses config.home.homeDirectory so it dynamically expands to /home/angelus
-  # (or whatever username is defined in userMap for Ubuntu)
-  syncthingSettings = {
-    guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
-    folders = {
-      Documents.path = "${config.home.homeDirectory}/Documents";
-      Homework.path = "${config.home.homeDirectory}/Homework";
-      remarkable_sync.path = "${config.home.homeDirectory}/remarkable_sync";
-      pdf2remarkable.path = "${config.home.homeDirectory}/pdf2remarkable";
-    };
-  };
 
   # ---------------------------------------------------------------------------
   # User-Level Systemd Services (Ubuntu headless)

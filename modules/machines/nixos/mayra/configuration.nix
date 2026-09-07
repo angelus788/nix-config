@@ -1,9 +1,8 @@
-{
-  pkgs,
-  lib,
-  config,
-  inputs,
-  ...
+{ pkgs
+, lib
+, config
+, inputs
+, ...
 }:
 let
   iot = config.homelab.networks.local.iot.reservations;
@@ -92,12 +91,15 @@ in
   nixpkgs.overlays = lib.mkAfter [
     (_final: prev: {
       gamescope = prev.gamescope.overrideAttrs (old: {
-        patches = builtins.filter (
-          p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
-        ) old.patches;
-        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ] (
-          old.postPatch or ""
-        )
+        patches = builtins.filter
+          (
+            p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
+          )
+          old.patches;
+        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ]
+          (
+            old.postPatch or ""
+          )
         + ''
           substituteInPlace src/Utils/DirHelpers.cpp \
             --replace-fail 'return "/usr";' 'return "$out";'
@@ -113,6 +115,7 @@ in
     ../../../misc/ryzen-undervolting
     ../../../misc/samsung-tv
     ../../../misc/syncthing
+    ../../../misc/syncthing-settings
     ../../../misc/user-avatar
     ../../../apps/netbird
     #../../../misc/lgtv
@@ -130,8 +133,8 @@ in
     #pkgs.lutris #enable later on
     pkgs.s-tui
     pkgs.stress
-  ]; 
-  
+  ];
+
   nixpkgs.config.permittedInsecurePackages = [
     "pnpm-9.15.9"
     "electron-39.8.10"
@@ -233,7 +236,7 @@ in
     steamos = {
       useSteamOSConfig = true;
     };
-    decky-loader = { 
+    decky-loader = {
       enable = true;
       extraPackages = with pkgs; [
         curl
@@ -249,17 +252,6 @@ in
     autoStart = true;
     capSysAdmin = true; # Necessary for KMS display capture
     openFirewall = true; # Opens the default ports: 47984-48010
-  };
-
-    syncthingSettings = {
-    guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
-    folders = {
-      d2r-offline-saves.path = "/home/angelus/.local/share/Steam/steamapps/compatdata/2536520/pfx/drive_c/users/steamuser/Saved Games/Diablo II Resurrected";
-      Documents.path = "/home/angelus/Documents";
-      Homework.path = "/home/angelus/Homework";
-      remarkable_sync.path = "/home/angelus/remarkable_sync";
-      pdf2remarkable.path = "/home/angelus/pdf2remarkable";
-    };
   };
 
   home-manager.users.angelus.myHomeDots.enableGui = true;

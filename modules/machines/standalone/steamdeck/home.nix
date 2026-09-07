@@ -1,9 +1,8 @@
-{
-  pkgs,
-  inputs,
-  config,
-  lib,
-  ...
+{ pkgs
+, inputs
+, config
+, lib
+, ...
 }:
 
 {
@@ -46,19 +45,9 @@
     '';
   };
 
-  syncthingSettings = {
-    guiPassword = "$2b$05$Xl3P7nFnclVkHhkbRJjsAeOwsIP3O.2mvdQGm3jKUAwqWH72CDagC";
-    folders = {
-      d2r-offline-saves.path = "${config.home.homeDirectory}/d2r-offline-saves";
-      Documents.path = "${config.home.homeDirectory}/Documents";
-      Homework.path = "${config.home.homeDirectory}/Homework";
-      remarkable_sync.path = "${config.home.homeDirectory}/remarkable_sync";
-      pdf2remarkable.path = "${config.home.homeDirectory}/pdf2remarkable";
-    };
-  };
-
   imports = [
     ../../../misc/syncthing-hm
+    ../../../misc/syncthing-settings
     ../../../misc/netbird-hm
     ../../../misc/agenix
     ./secrets.nix
