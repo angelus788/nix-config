@@ -189,6 +189,21 @@ in
     ryzen-undervolting = {
       enable = true;
       offset = -25;
+      # Default coreCount (8) was sized for the 5800X3D this tool
+      # originally targeted (single CCD, 8 cores) - this is a 5900X
+      # (2 CCDs, 12 active cores). The underlying ruv.py addresses cores
+      # via a bit-encoded (CCD-group, slot-in-CCD) scheme, not Linux's own
+      # compacted 0..11 numbering, so real cores land at indices
+      # 0,1,3,4,6,7,8,9,12,13,14,15 (2,5,10,11 are the 4 disabled/phantom
+      # slots from each CCD's 8-slot layout binned down to 6 active cores).
+      # 16 is required to reach the highest real core (15) via the tool's
+      # simple range(0, coreCount) sweep - confirmed via `ruv.py -l -c 16`
+      # readback directly on mayra: cores 8,9,12,13,14,15 were completely
+      # unset (never touched) under the old coreCount=8, and writes to the
+      # 4 phantom indices are a verified no-op (readback identical
+      # before/after, same garbage values either way - the SMU firmware
+      # silently ignores out-of-range core requests).
+      coreCount = 16;
     };
   };
 
