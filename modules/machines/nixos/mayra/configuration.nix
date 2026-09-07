@@ -61,6 +61,51 @@ in
   };
   networking.firewall.interfaces.${config.services.netbird.clients.default.interface}.allowedTCPPorts = [ 443 ];
 
+  # Jovian vendors its own gamescope source (pinned to Valve's release tag,
+  # e.g. 3.16.26) for SteamOS feature parity, but still inherits nixpkgs'
+  # own gamescope patches/postPatch, which target wherever GetUsrDir() (the
+  # function controlling where gamescope looks for its ReShade shaders)
+  # lives in whatever *newer* gamescope version nixpkgs itself packages.
+  # Checked upstream directly: at Valve's 3.16.26 tag, GetUsrDir() is
+  # defined in src/Utils/DirHelpers.cpp returning a literal "/usr" - NOT in
+  # src/reshade_effect_manager.cpp (shaders-path.patch's target, presumably
+  # correct for some other gamescope version) and NOT already containing
+  # nixpkgs' "@out@" placeholder (nixpkgs' own postPatch's target, also
+  # presumably correct for a newer version). Both assumptions are wrong for
+  # 3.16.26 specifically - dropping both and substituting the real "/usr"
+  # literal in DirHelpers.cpp directly fixes it correctly for this version,
+  # rather than just papering over the build failure. Ported from njord's
+  # identical fix (2026-09-06) - same jovian pin, same vendored version, so
+  # mayra's next `system.autoUpgrade` run (Sat 02:30, see _common/default.nix)
+  # would otherwise hit the identical failure the first time it rebuilds
+  # gamescope against the current nixpkgs-unstable pin.
+  #
+  # If this starts hard-failing again (it uses --replace-fail, so a
+  # mismatch is loud, not silent), Jovian has likely bumped its vendored
+  # version - re-check GetUsrDir()'s actual location for whatever new tag
+  # directly from https://github.com/ValveSoftware/gamescope before
+  # assuming this override is still correct.
+  #
+  # mkAfter: must run after jovian's own overlay (which re-vendors
+  # gamescope's version/src but keeps nixpkgs' patches/postPatch) so this
+  # actually sees and can override that result, regardless of import order.
+  nixpkgs.overlays = lib.mkAfter [
+    (_final: prev: {
+      gamescope = prev.gamescope.overrideAttrs (old: {
+        patches = builtins.filter (
+          p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
+        ) old.patches;
+        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ] (
+          old.postPatch or ""
+        )
+        + ''
+          substituteInPlace src/Utils/DirHelpers.cpp \
+            --replace-fail 'return "/usr";' 'return "$out";'
+        '';
+      });
+    })
+  ];
+
   imports = [
     #./hardware-configuration.nix
     ./secrets
