@@ -88,8 +88,23 @@
       # `just deploy <host>` over NetBird's embedded SSH) forces a fresh
       # interactive browser SSO login (authorize request includes
       # prompt=login unconditionally) - there's no token caching by default.
-      # 3600s (1h) covers a normal work session's worth of deploys without
-      # caching a token for too long if this machine were ever compromised.
+      #
+      # 540s (9 min), NOT the 3600s originally tried: the SSH *server* side
+      # (client/ssh/server/server.go, DefaultJWTMaxTokenAge) independently
+      # enforces its own 10-minute max token age, and that ceiling is
+      # currently hardcoded management-side (management/internals/shared/
+      # grpc/proxy.go sends MaxTokenAgeSeconds: 0 unconditionally, meaning
+      # "use the client's own 10-minute default" - there's no config/flag
+      # to raise it in this NetBird version). A 3600s client-side cache
+      # just meant tyr kept confidently reusing a token for up to an hour
+      # that the target's SSH server would silently reject as expired
+      # after 10 minutes - confirmed via the target's own
+      # `journalctl -u netbird`: "JWT authentication failed: token expired
+      # ... age=34m47s, max=10m0s" - with zero indication on tyr's side
+      # that anything was wrong (no pkce_flow log lines at all for that
+      # attempt - tyr's cache said the token was still fine, so it never
+      # tried to refresh it). 540s leaves a minute of margin under the
+      # 600s server ceiling.
       #
       # `netbird up` is a complete no-op whenever the daemon already reports
       # Connected - it returns right after printing "Already connected",
@@ -110,7 +125,7 @@
         --allow-server-ssh \
         --disable-ssh-auth=false \
         --disable-dns=false \
-        --ssh-jwt-cache-ttl 3600
+        --ssh-jwt-cache-ttl 540
     '';
     serviceConfig = {
       RunAtLoad = true;
