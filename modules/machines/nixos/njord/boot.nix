@@ -10,7 +10,7 @@
   fonts.packages = [ pkgs.meslo-lgs-nf ];
   services.kmscon = {
     enable = true;
-    hwRender = true;
+    config.hwaccel = true;
   };
   boot = {
     kernelPackages = pkgs.linuxPackages_latest; #pkgs.linuxPackages_6_12;

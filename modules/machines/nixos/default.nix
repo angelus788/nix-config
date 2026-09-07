@@ -31,6 +31,11 @@ in
     let
       nixpkgsMap = {
         mayra = "-unstable";
+        # Same Jovian/gamescope Steam Machine setup as mayra - main
+        # nixpkgs' pinned gamescope 3.16.26 fails to build (shaders-path.patch
+        # doesn't apply cleanly against that version's source);
+        # nixpkgs-unstable already has 3.16.28 with this fixed.
+        njord = "-unstable";
       };
       systemArchMap = {
         mona = "aarch64-linux";

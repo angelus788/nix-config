@@ -60,6 +60,41 @@ in
   };
   networking.firewall.interfaces.${config.services.netbird.clients.default.interface}.allowedTCPPorts = [ 443 ];
 
+  # Jovian vendors its own gamescope source (pinned to Valve's release tag,
+  # e.g. 3.16.26) for SteamOS feature parity, but still inherits nixpkgs'
+  # own gamescope patches/postPatch, which target wherever GetUsrDir() (the
+  # function controlling where gamescope looks for its ReShade shaders)
+  # lives in whatever *newer* gamescope version nixpkgs itself packages.
+  # Checked upstream directly: at Valve's 3.16.26 tag, GetUsrDir() is
+  # defined in src/Utils/DirHelpers.cpp returning a literal "/usr" - NOT in
+  # src/reshade_effect_manager.cpp (shaders-path.patch's target, presumably
+  # correct for some other gamescope version) and NOT already containing
+  # nixpkgs' "@out@" placeholder (nixpkgs' own postPatch's target, also
+  # presumably correct for a newer version). Both assumptions are wrong for
+  # 3.16.26 specifically - dropping both and substituting the real "/usr"
+  # literal in DirHelpers.cpp directly fixes it correctly for this version,
+  # rather than just papering over the build failure.
+  #
+  # mkAfter: must run after jovian's own overlay (which re-vendors
+  # gamescope's version/src but keeps nixpkgs' patches/postPatch) so this
+  # actually sees and can override that result, regardless of import order.
+  nixpkgs.overlays = lib.mkAfter [
+    (_final: prev: {
+      gamescope = prev.gamescope.overrideAttrs (old: {
+        patches = builtins.filter (
+          p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
+        ) old.patches;
+        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ] (
+          old.postPatch or ""
+        )
+        + ''
+          substituteInPlace src/Utils/DirHelpers.cpp \
+            --replace-fail 'return "/usr";' 'return "$out";'
+        '';
+      });
+    })
+  ];
+
   imports = [
     #./hardware-configuration.nix
     ./secrets
@@ -93,7 +128,6 @@ in
   systemd.tmpfiles.rules = [
     "d /data/sda 0775 angelus angelus - -"
     "d /data/sdb 0775 angelus angelus - -"
-    "d /data/sdc 0775 angelus angelus - -"
   ];
 
 
