@@ -113,6 +113,7 @@ in
     ../../../misc/ryzen-undervolting
     ../../../misc/samsung-tv
     ../../../misc/syncthing
+    ../../../misc/user-avatar
     ../../../apps/netbird
     #../../../misc/lgtv
     inputs.jovian.nixosModules.default

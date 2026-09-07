@@ -12,6 +12,7 @@ in
 
   imports = [
     ./gitconfig.nix
+    ../../dots/avatar/default.nix
     ../../dots/cosmic/default.nix
     ../../dots/neofetch/default.nix
     ../../dots/ssh/default.nix
