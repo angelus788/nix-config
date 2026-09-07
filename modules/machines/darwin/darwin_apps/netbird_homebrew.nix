@@ -84,12 +84,19 @@
       # to actually clear it - like --disable-dns, this is a sticky
       # per-peer setting that management remembers regardless of whether
       # a later `up` call mentions it at all.
+      # --ssh-jwt-cache-ttl: without it, every SSH-JWT connection (e.g. each
+      # `just deploy <host>` over NetBird's embedded SSH) forces a fresh
+      # interactive browser SSO login (authorize request includes
+      # prompt=login unconditionally) - there's no token caching by default.
+      # 3600s (1h) covers a normal work session's worth of deploys without
+      # caching a token for too long if this machine were ever compromised.
       "$NETBIRD_BIN" up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
         --allow-server-ssh \
         --disable-ssh-auth=false \
-        --disable-dns=false
+        --disable-dns=false \
+        --ssh-jwt-cache-ttl 3600
     '';
     serviceConfig = {
       RunAtLoad = true;
