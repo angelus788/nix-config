@@ -179,6 +179,7 @@
     #../../../apps/wpaperd
     ../../../apps/smbshared
     ../../../misc/syncthing
+    ../../../misc/user-avatar
     ../../../apps/netbird
   ];
 
