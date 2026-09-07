@@ -99,13 +99,27 @@ in
       # 3. Bring loopback interface UP inside netns
       ${pkgs.iproute2}/bin/ip -n ${netnsName} link set lo up
 
-      # 4. Create wireguard interface DIRECTLY inside target namespace
-      ${pkgs.iproute2}/bin/ip -n ${netnsName} link add ${wgClientIf} type wireguard
+      # 4. Create the wireguard interface and apply credentials *before*
+      #    moving it into the isolated namespace: the kernel's WireGuard
+      #    transport socket binds to whatever namespace the device is in at
+      #    that moment, and stays there across a later `ip link set netns`
+      #    move. Doing it in this order means the encrypted handshake/data
+      #    packets go out via the root namespace's real route to the
+      #    internet, while only the *decrypted* tunneled traffic (via the
+      #    interface's own address/routes, set below) is isolated inside
+      #    the target namespace. Creating the interface directly inside the
+      #    namespace (as this used to) leaves its transport socket bound
+      #    there too, whose only route is the tunnel device itself - a
+      #    routing loop that silently drops every handshake packet
+      #    (confirmed on odin: `wg show` reported bytes "sent" but the peer
+      #    never received anything, across several different NordVPN
+      #    servers/keys - the routing, not the credentials, was broken).
+      ${pkgs.iproute2}/bin/ip link add ${wgClientIf} type wireguard
+      ${pkgs.wireguard-tools}/bin/wg setconf ${wgClientIf} ${secretPath}
+      ${pkgs.iproute2}/bin/ip link set ${wgClientIf} up
+      ${pkgs.iproute2}/bin/ip link set ${wgClientIf} netns ${netnsName}
 
-      # 5. Apply credentials INSIDE the network namespace
-      ${pkgs.iproute2}/bin/ip netns exec ${netnsName} ${pkgs.wireguard-tools}/bin/wg setconf ${wgClientIf} ${secretPath}
-
-      # 6. Assign IP, activate interface, and set default egress route
+      # 5. Assign IP, activate interface, and set default egress route
       ${pkgs.iproute2}/bin/ip -n ${netnsName} address add 10.5.0.2/32 dev ${wgClientIf}
       ${pkgs.iproute2}/bin/ip -n ${netnsName} link set ${wgClientIf} up
       ${pkgs.iproute2}/bin/ip -n ${netnsName} route add default dev ${wgClientIf}

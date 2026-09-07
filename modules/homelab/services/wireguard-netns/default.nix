@@ -89,11 +89,25 @@ in
           with pkgs;
           writers.writeBash "wg-up" ''
             set -e
+            # wg setconf (and bringing the link up) must happen *before* the
+            # interface is moved into the isolated namespace: the kernel's
+            # WireGuard transport socket binds to whatever namespace the
+            # device is in at that moment, and stays there across a later
+            # `ip link set netns` move. Doing it in this order means the
+            # encrypted handshake/data packets are sent via this namespace's
+            # real route to the internet, while only the *decrypted* tunneled
+            # traffic (via the interface's own address/routes, set below) is
+            # actually isolated inside the target namespace. Setting it up
+            # the other way around (as this used to) leaves the transport
+            # socket bound inside the target namespace too, whose only route
+            # is the tunnel device itself - a routing loop that silently
+            # drops every handshake packet (confirmed on odin: `wg show`
+            # reported bytes "sent" but the peer never received anything).
             ${iproute2}/bin/ip link add wg0 type wireguard
+            ${wireguard-tools}/bin/wg setconf wg0 ${cfg.configFile}
+            ${iproute2}/bin/ip link set wg0 up
             ${iproute2}/bin/ip link set wg0 netns ${cfg.namespace}
             ${iproute2}/bin/ip -n ${cfg.namespace} address add ${cfg.privateIP} dev wg0
-            ${iproute2}/bin/ip netns exec ${cfg.namespace} \
-            ${wireguard-tools}/bin/wg setconf wg0 ${cfg.configFile}
             ${iproute2}/bin/ip -n ${cfg.namespace} link set wg0 up
             ${iproute2}/bin/ip -n ${cfg.namespace} link set lo up
             ${iproute2}/bin/ip -n ${cfg.namespace} route add default dev wg0
