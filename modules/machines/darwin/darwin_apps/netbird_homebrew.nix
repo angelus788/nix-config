@@ -90,6 +90,20 @@
       # prompt=login unconditionally) - there's no token caching by default.
       # 3600s (1h) covers a normal work session's worth of deploys without
       # caching a token for too long if this machine were ever compromised.
+      #
+      # `netbird up` is a complete no-op whenever the daemon already reports
+      # Connected - it returns right after printing "Already connected",
+      # before ever reaching the code that applies flag values like this one
+      # (client/cmd/up.go). The daemon auto-reconnects from its own saved
+      # config on every launchd start/restart, so by the time this script's
+      # `up` call runs it's usually already Connected again, and any new
+      # flag here (this one included) silently never takes effect - verified
+      # live: `netbird debug config` kept showing sshJWTCacheTTL: 0 no matter
+      # how many times this ran or the daemon was restarted, until `down`
+      # was called first. `|| true` since `down` on an already-disconnected
+      # daemon (a genuinely fresh boot) isn't guaranteed to exit 0, and
+      # either way `up` below is what actually needs to succeed.
+      "$NETBIRD_BIN" down || true
       "$NETBIRD_BIN" up \
         --setup-key="$SETUP_KEY" \
         --management-url https://netbird.avgtechguy.com \
