@@ -81,12 +81,15 @@ in
   nixpkgs.overlays = lib.mkAfter [
     (_final: prev: {
       gamescope = prev.gamescope.overrideAttrs (old: {
-        patches = builtins.filter (
-          p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
-        ) old.patches;
-        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ] (
-          old.postPatch or ""
-        )
+        patches = builtins.filter
+          (
+            p: !(lib.strings.hasSuffix "shaders-path.patch" (toString p))
+          )
+          old.patches;
+        postPatch = lib.replaceStrings [ ''--replace-fail "@out@" "$out"'' ] [ "" ]
+          (
+            old.postPatch or ""
+          )
         + ''
           substituteInPlace src/Utils/DirHelpers.cpp \
             --replace-fail 'return "/usr";' 'return "$out";'
@@ -115,6 +118,7 @@ in
     pkgs.firefox-bin
     pkgs.bitwarden-cli
     pkgs.bitwarden-desktop
+    pkgs.google-chrome
     #pkgs.lutris #enable later on
     pkgs.s-tui
     pkgs.stress
